@@ -1,6 +1,6 @@
 <?php
 class CategoryData {
-	public static $tablename = "category";
+	public static $tablename = "tb_categoria";
 
 
 
@@ -14,7 +14,7 @@ class CategoryData {
 	}
 
 	public function add(){
-		$sql = "insert into category (name,created_at) ";
+		$sql = "insert into tb_categoria (name,created_at) ";
 		$sql .= "value (\"$this->name\",$this->created_at)";
 		Executor::doit($sql);
 	}

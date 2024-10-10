@@ -13,6 +13,7 @@ class Database {
 		return $con;
 	}
 
+
 	public static function getCon(){
 		if(self::$con==null && self::$db==null){
 			self::$db = new Database();
