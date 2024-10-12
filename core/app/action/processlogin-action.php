@@ -35,13 +35,6 @@ if (!isset($_SESSION["username_id"])) {
         $found = false;
     }
 
-
-
-
-
-
-
-
     // Si se encontró el usuario, iniciar sesión
     if ($found == true) {
         $_SESSION['user_id'] = $userid;

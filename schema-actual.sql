@@ -150,7 +150,7 @@ INSERT INTO tb_almacen (id_producto, stock, stock_minimo, stock_maximo, fecha_in
 INSERT INTO tb_compras (id_proveedor, id_producto, cantidad, precio_compra, fecha_compra, id_usuario) VALUES
 (1, 1, 12, '350.00', '2024-10-05', 1);
 
-INSERT INTO tb_ventas (id_persona, id_usuario, id_tipo_operacion, id_caja, cantidad, efectivo, fyh_creacion) VALUES
+INSERT INTO tb_ventas (id_persona, id_usuario, , id_caja, cantidad, efectivo, fyh_creacion) VALUES
 (1, 2, 1, 1, 1, 70.00, '2024-10-04 21:16:10'),
 (1, 1, 1, 1, 1, 400.00, '2024-10-05 20:07:10');
 
