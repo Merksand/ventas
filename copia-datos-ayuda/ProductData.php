@@ -95,12 +95,6 @@ class ProductData {
 		return Model::many($query[0],new ProductData());
 	}
 
-
-
-
-
-
-
 }
 
 ?>

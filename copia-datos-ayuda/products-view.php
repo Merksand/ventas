@@ -27,14 +27,11 @@ if(isset($_GET["limit"]) && $_GET["limit"]!="" && $_GET["limit"]!=$limit){
 
 $products = ProductData::getAll();
 if(count($products)>0){
-	
-	if($page==1){
-	echo "cuentas " . count($products). " ";
-	// echo "limit " . $limit;
-	$curr_products = ProductData::getAllByPage($products[0]->id_producto,$limit);
-$curr_products = ProductData::getAllByPage($products[0]->id_producto,$limit);
+
+if($page==1){
+$curr_products = ProductData::getAllByPage($products[0]->id,$limit);
 }else{
-$curr_products = ProductData::getAllByPage($products[($page-1)*$limit]->id_producto,$limit);
+$curr_products = ProductData::getAllByPage($products[($page-1)*$limit]->id,$limit);
 
 }
 $npaginas = floor(count($products)/$limit);
@@ -62,55 +59,40 @@ if($px<=$npaginas):
 </div>
 <div class="clearfix"></div>
 <br><table class="table table-bordered table-hover">
-    <thead>
-        <th>Código</th>
-        <th>Imagen</th>
-        <th>Nombre</th>
-        <th>Precio Entrada</th>
-        <th>Precio Salida</th>
-        <th>Categoría</th>
-        <th>Mínimo Inventario</th> <!-- Aquí el stock mínimo -->
-        <th>Activo</th>
-        <th></th>
-    </thead>
-    <?php foreach($curr_products as $product): ?>
-    <tr>
-        <td><?php echo $product->codigo_producto; ?></td>
-        <td>
-            <?php if($product->imagen != ""): ?>
-                <img src="storage/products/<?php echo $product->imagen; ?>" style="width:64px;">
-            <?php endif; ?>
-        </td>
-        <td><?php echo $product->nombre_producto; ?></td>
-        <td>$ <?php echo number_format($product->precio_compra, 2, '.', ','); ?></td>
-        <td>$ <?php echo number_format($product->precio_venta, 2, '.', ','); ?></td>
-        <td>
-            <?php if($product->id_categoria != null) {
-                echo $product->getCategory()->name;
-            } else { 
-                echo "<center>----</center>"; 
-            } ?>
-        </td>
-        <td><?php echo $product->stock_minimo; ?></td> <!-- Mostrando stock mínimo -->
-        <td>
-            <?php if($product->is_active): ?>
-                <i class="fa fa-check"></i>
-            <?php endif; ?>
-        </td>
+	<thead>
+		<th>Codigo</th>
+		<th>Imagen</th>
+		<th>Nombre</th>
+		<th>Precio Entrada</th>
+		<th>Precio Salida</th>
+		<th>Categoria</th>
+		<th>Minima</th>
+		<th>Activo</th>
+		<th></th>
+	</thead>
+	<?php foreach($curr_products as $product):?>
+	<tr>
+		<td><?php echo $product->barcode; ?></td>
+		<td>
+			<?php if($product->image!=""):?>
+				<img src="storage/products/<?php echo $product->image;?>" style="width:64px;">
+			<?php endif;?>
+		</td>
+		<td><?php echo $product->name; ?></td>
+		<td>$ <?php echo number_format($product->price_in,2,'.',','); ?></td>
+		<td>$ <?php echo number_format($product->price_out,2,'.',','); ?></td>
+		<td><?php if($product->category_id!=null){echo $product->getCategory()->name;}else{ echo "<center>----</center>"; }  ?></td>
+		<td><?php echo $product->inventary_min; ?></td>
+		<td><?php if($product->is_active): ?><i class="fa fa-check"></i><?php endif;?></td>
+		
 
-        <td style="width:70px;">
-            <a href="index.php?view=editproduct&id=<?php echo $product->id_producto; ?>" class="btn btn-xs btn-warning">
-                <i class="glyphicon glyphicon-pencil"></i>
-            </a>
-            <a href="index.php?view=delproduct&id=<?php echo $product->id_producto; ?>" class="btn btn-xs btn-danger">
-                <i class="fa fa-trash"></i>
-            </a>
-        </td>
-    </tr>
-    <?php endforeach; ?>
+		<td style="width:70px;">
+		<a href="index.php?view=editproduct&id=<?php echo $product->id; ?>" class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-pencil"></i></a>
+		<a href="index.php?view=delproduct&id=<?php echo $product->id; ?>" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>
+		</td>
+	</tr>
+	<?php endforeach;?>
 </table>
-
-
 <div class="btn-group pull-right">
 <?php
 
