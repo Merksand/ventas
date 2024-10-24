@@ -2,7 +2,7 @@
 class SellData {
 	public static $tablename = "sell";
 
-	public function SellData(){
+	public function __construct(){
 		$this->created_at = "NOW()";
 	}
 

@@ -2,7 +2,7 @@
 class ProductData {
 	public static $tablename = "product";
 
-	public function ProductData(){
+	public function __construct(){
 		$this->name = "";
 		$this->price_in = "";
 		$this->price_out = "";
