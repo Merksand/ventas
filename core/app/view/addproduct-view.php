@@ -1,61 +1,61 @@
 <?php
 
+if (count($_POST) > 0) {
+    $product = new ProductData();
+    
+    // Asignar los valores del formulario a las propiedades del objeto ProductData
+    $product->codigo_producto = $_POST["codigo_producto"]; // Código del producto
+    $product->nombre_producto = $_POST["nombre_producto"]; // Nombre del producto
+    $product->precio_compra = $_POST["precio_compra"]; // Precio de compra
+    $product->precio_venta = $_POST["precio_venta"]; // Precio de venta
+    $product->descripcion = $_POST["descripcion"]; // Descripción
+    $product->stock = $_POST["stock"]; // Cantidad en stock
 
-if(count($_POST)>0){
-  $product = new ProductData();
-  $product->barcode = $_POST["barcode"];
-  $product->name = $_POST["name"];
-  $product->price_in = $_POST["price_in"];
-  $product->price_out = $_POST["price_out"];
-  $product->unit = $_POST["unit"];
-  $product->description = $_POST["description"];
-  $product->presentation = $_POST["presentation"];
-  //$product->inventary_min = $_POST["inventary_min"];
-  $category_id="NULL";
-  if($_POST["category_id"]!=""){ $category_id=$_POST["category_id"];}
-  $inventary_min="\"\"";
-  if($_POST["inventary_min"]!=""){ $inventary_min=$_POST["inventary_min"];}
-
-  $product->category_id=$category_id;
-  $product->inventary_min=$inventary_min;
-  $product->user_id = $_SESSION["user_id"];
-
-
-  if(isset($_FILES["image"])){
-    $image = new Upload($_FILES["image"]);
-    if($image->uploaded){
-      $image->Process("storage/products/");
-      if($image->processed){
-        $product->image = $image->file_dst_name;
-        $prod = $product->add_with_image();
-      }
-    }else{
-
-  $prod= $product->add();
+    // Manejo del stock mínimo
+    $stock_minimo = "NULL"; // Por defecto a NULL
+    if (!empty($_POST["stock_minimo"])) {
+        $stock_minimo = $_POST["stock_minimo"];
     }
-  }
-  else{
-  $prod= $product->add();
+    $product->stock_minimo = $stock_minimo; // Asignar stock mínimo
 
-  }
+    // Asignar la categoría, si se seleccionó
+    $category_id = "NULL"; // Por defecto a NULL
+    if (!empty($_POST["id_categoria"])) {
+        $category_id = $_POST["id_categoria"];
+    }
+    $product->id_categoria = $category_id;
 
+    // Asignar el ID del usuario que está agregando el producto
+    $product->user_id = $_SESSION["user_id"];
 
+    // Manejo de la imagen
+    if (isset($_FILES["imagen"])) {
+        $image = new Upload($_FILES["imagen"]);
+        if ($image->uploaded) {
+            $image->Process("storage/products/");
+            if ($image->processed) {
+                $product->imagen = $image->file_dst_name; // Nombre del archivo de la imagen
+                $prod = $product->add_with_image(); // Agregar producto con imagen
+            }
+        } else {
+            $prod = $product->add(); // Agregar producto sin imagen
+        }
+    } else {
+        $prod = $product->add(); // Agregar producto sin imagen
+    }
 
+    // Manejo del stock inicial
+    if (!empty($_POST["stock"]) && $_POST["stock"] != "0") {
+        $op = new OperationData();
+        $op->product_id = $prod[1]; // ID del producto agregado
+        $op->operation_type_id = OperationTypeData::getByName("entrada")->id; // Tipo de operación: entrada
+        $op->q = $_POST["stock"]; // Cantidad inicial en stock
+        $op->sell_id = "NULL"; // Sin ID de venta
+        $op->is_oficial = 1; // Marcar como oficial
+        $op->add(); // Agregar operación de stock
+    }
 
-if($_POST["q"]!="" || $_POST["q"]!="0"){
- $op = new OperationData();
- $op->product_id = $prod[1] ;
- $op->operation_type_id=OperationTypeData::getByName("entrada")->id;
- $op->q= $_POST["q"];
- $op->sell_id="NULL";
-$op->is_oficial=1;
-$op->add();
+    // Redirigir después de agregar el producto
+    print "<script>window.location='index.php?view=products';</script>";
 }
-
-print "<script>window.location='index.php?view=products';</script>";
-
-
-}
-
-
 ?>
