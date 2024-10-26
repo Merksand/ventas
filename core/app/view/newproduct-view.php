@@ -16,7 +16,7 @@ $categories = CategoryData::getAll();
             <div class="form-group">
                 <label for="inputEmail1" class="col-lg-2 control-label">Código de Producto*</label>
                 <div class="col-md-6">
-                    <input type="text" name="codigo_producto" required class="form-control" id="product_code" placeholder="Código del Producto">
+                    <input type="number" name="codigo_producto" required class="form-control" id="product_code" placeholder="Código del Producto">
                 </div>
             </div>
             <div class="form-group">

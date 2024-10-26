@@ -18,28 +18,27 @@ if (count($_POST) > 0) {
     $product->id_categoria = !empty($_POST["id_categoria"]) ? $_POST["id_categoria"] : NULL; // Asignar categoría
 
     // Agregar producto a la base de datos
-    $prod = $product->add(); // Método que agrega el producto sin imagen ni lógica de stock
+    // $prod = $product->add(); // Método que agrega el producto sin imagen ni lógica de stock
 
     // Redirigir después de agregar el producto
 
-    if(isset($_FILES["imagen"])){
-        $image = new Upload($_FILES["imagen"]);
-        if($image->uploaded){
-          $image->Process("storage/products/");
-          if($image->processed){
-            $product->image = $image->file_dst_name;
-            $prod = $product->add_with_image();
+    if (isset($_FILES["imagen"])) {
+      if ($_FILES["imagen"]["error"] === UPLOAD_ERR_OK) {
+  
+          $image = new Upload($_FILES["imagen"]);
+          if ($image->uploaded) {
+              $image->Process("storage/products/");
+              if ($image->processed) {
+                  $product->imagen = $image->file_dst_name;
+                  $prod = $product->add_with_image();
+              }
           }
-        }else{
-    
-      $prod= $product->add();
-        }
+      } else {
+          echo "Error al cargar la imagen: " . $_FILES["imagen"]["error"];
       }
-      else{
-      $prod= $product->add();
+  }
+  
     
-      }
-    
-    // print "<script>window.location='index.php?view=products';</script>";
+    print "<script>window.location='index.php?view=products';</script>";
 }
 ?>

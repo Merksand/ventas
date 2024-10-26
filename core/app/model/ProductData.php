@@ -69,5 +69,11 @@ class ProductData {
 		return Model::many($query[0], new ProductData());
 	}
 	
+    public function add_with_image(){
+        $sql = "INSERT INTO tb_productos (codigo_producto, imagen, nombre_producto, descripcion, precio_compra, precio_venta , stock, id_categoria) ";
+        $sql .= "VALUES (\"$this->codigo_producto\", \"$this->imagen\", \"$this->nombre_producto\", \"$this->descripcion\", \"$this->precio_compra\", \"$this->precio_venta\", \"$this->stock\", \"$this->id_categoria\")";
+        return Executor::doit($sql);
+    }
+    
 }
 ?>

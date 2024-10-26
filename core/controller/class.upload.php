@@ -2659,17 +2659,23 @@ class upload {
      * @return integer Size in bytes
      */
     function getsize($size) {
-        $last = strtolower(substr($size, -1));
+        $last = strtolower(substr($size, -1)); // Obtiene el último carácter
+        $size = (int) $size; // Convierte el tamaño a número antes de multiplicar
+        
         switch($last) {
             case 'g':
-                $size *= 1024;
+                $size *= 1024 * 1024 * 1024; // Convierte de GB a bytes
+                break;
             case 'm':
-                $size *= 1024;
+                $size *= 1024 * 1024; // Convierte de MB a bytes
+                break;
             case 'k':
-                $size *= 1024;
+                $size *= 1024; // Convierte de KB a bytes
+                break;
         }
         return $size;
     }
+    
 
     /**
      * Decodes offsets
