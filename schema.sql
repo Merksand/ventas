@@ -132,3 +132,24 @@ insert into configuration(short,name,kind,val) value("active_reports_word","Acti
 insert into configuration(short,name,kind,val) value("active_reports_excel","Activar reportes en Excel",1,0);
 insert into configuration(short,name,kind,val) value("active_reports_pdf","Activar reportes en PDF",1,0);
 
+
+
+
+200 Bs
+80 Bs
+100 Bs
+200 Bs
+300 Bs
+100 Bs
+250 Bs
+100 Bs
+300 Bs
+300 Bs
+220 Bs
+800 Bs
+400 Bs
+200 Bs
+220 Bs
+800 Bs
+300bs
+200bs

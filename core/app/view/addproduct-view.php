@@ -22,7 +22,21 @@ if (count($_POST) > 0) {
 
     // Redirigir después de agregar el producto
 
+    if (isset($_FILES["imagen"]) && $_FILES["imagen"]["error"] == UPLOAD_ERR_OK) {
+        $image = new Upload($_FILES["imagen"]);
+        $image->file_max_size = '10M'; // Ajustar a un valor adecuado
+        $image->process("storage/products/");
     
+        if ($image->processed) {
+            $product->imagen = $image->file_dst_name; // Guardar el nombre del archivo de la imagen en el producto
+            $prod = $product->add_with_image(); // Agregar producto con imagen
+        } else {
+            echo 'Error al procesar la imagen: ' . $image->error;
+        }
+    } else {
+        echo 'Error en la carga de la imagen: ' . $_FILES["imagen"]["error"];
+        // Manejar errores específicos
+    }
     
     print "<script>window.location='index.php?view=products';</script>";
 }
