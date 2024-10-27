@@ -5,6 +5,7 @@ class ProductData
 
     public function __construct()
     {
+        $this->id_producto = "";
         $this->codigo_producto = "";
         $this->nombre_producto = "";
         $this->descripcion = "";

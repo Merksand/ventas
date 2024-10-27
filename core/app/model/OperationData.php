@@ -89,22 +89,43 @@ class OperationData
 
 
 
+	// public static function getQYesF($product_id)
+	// {
+	// 	$q = 0;
+	// 	$operations = self::getAllByProductId($product_id);
+	// 	$input_id = OperationTypeData::getByName("entrada")->id;
+	// 	$output_id = OperationTypeData::getByName("salida")->id;
+	// 	foreach ($operations as $operation) {
+	// 		if ($operation->operation_type_id == $input_id) {
+	// 			$q += $operation->q;
+	// 		} else if ($operation->operation_type_id == $output_id) {
+	// 			$q += (-$operation->q);
+	// 		}
+	// 	}
+	// 	// print_r($data);
+	// 	return $q;
+	// }
+
+
 	public static function getQYesF($product_id)
 	{
+		print_r($product_id);
 		$q = 0;
-		$operations = self::getAllByProductId($product_id);
-		$input_id = OperationTypeData::getByName("entrada")->id;
-		$output_id = OperationTypeData::getByName("salida")->id;
+		$operations = self::getAllByProductId($product_id); // Asegúrate de que esta función devuelve todas las operaciones para el producto
+		$input_type = "entrada";
+		$output_type = "salida";
+
 		foreach ($operations as $operation) {
-			if ($operation->operation_type_id == $input_id) {
-				$q += $operation->q;
-			} else if ($operation->operation_type_id == $output_id) {
-				$q += (-$operation->q);
+			if ($operation->tipo_operacion === $input_type) {
+				$q += $operation->stock_actual;  // Sumar stock para entradas
+			} elseif ($operation->tipo_operacion === $output_type) {
+				$q -= $operation->stock_actual;  // Restar stock para salidas
 			}
 		}
-		// print_r($data);
+
 		return $q;
 	}
+
 
 
 
@@ -117,10 +138,14 @@ class OperationData
 
 	public static function getAllByProductId($product_id)
 	{
-		$sql = "select * from " . self::$tablename . " where product_id=$product_id  order by created_at desc";
+		// Nos aseguramos de obtener los datos desde tb_almacen
+		$sql = "SELECT * FROM tb_almacen WHERE id_producto = $product_id ORDER BY fyh_creacion DESC";
 		$query = Executor::doit($sql);
+
+		// Si `OperationData` es la clase que representa datos de `tb_almacen`, la usamos aquí
 		return Model::many($query[0], new OperationData());
 	}
+
 
 
 	public static function getAllByProductIdCutIdOficial($product_id, $cut_id)
