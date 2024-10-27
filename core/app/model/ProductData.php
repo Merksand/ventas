@@ -11,7 +11,7 @@ class ProductData
         $this->precio_compra = 0;
         $this->precio_venta = 0;
         $this->stock = 0;
-        $this->stock_minimo = 2;
+        $this->stock_minimo = 0;
         $this->imagen = "";
         $this->id_categoria = null;
         $this->fyh_creacion = "NOW()";
@@ -27,10 +27,22 @@ class ProductData
     }
 
     // Obtener productos por página con límite
+
+
+
     public static function getAllByPage($id, $limit)
     {
-        $sql = "SELECT * FROM " . self::$tablename . " WHERE id_producto >= $id LIMIT $limit";
+        // Consulta SQL con JOIN para obtener datos de productos y almacen
+        $sql = "SELECT p.*, a.stock_minimo, a.stock_actual
+            FROM " . self::$tablename . " p
+            JOIN tb_almacen a ON p.id_producto = a.id_producto
+            WHERE p.id_producto >= $id
+            ORDER BY p.id_producto ASC
+            LIMIT $limit";
+
         $query = Executor::doit($sql);
+
+        // Retorna los resultados como objetos de ProductData
         return Model::many($query[0], new ProductData());
     }
 
@@ -79,29 +91,29 @@ class ProductData
     }
 
 
-
-    // public static function getAllWithStockMin() {
-    // 	$sql = "SELECT p.*, a.stock_minimo 
-    // 			FROM tb_productos p
-    // 			JOIN tb_almacen a ON p.id_producto = a.id_producto";
-    // 	$query = Executor::doit($sql);
-    // 	return Model::many($query[0], new ProductData());
-    // }
-
-
     public static function getAllWithStockMin()
     {
-        $sql = "SELECT p.*, a.stock_minimo 
+        // Consulta para obtener todos los productos junto con su stock mínimo desde la tabla almacen
+        $sql = "SELECT p.*, a.stock_minimo, a.stock_actual 
                 FROM tb_productos p
                 JOIN tb_almacen a ON p.id_producto = a.id_producto";
+;
         $query = Executor::doit($sql);
 
+        // Cargar los resultados en objetos ProductData
         $products = Model::many($query[0], new ProductData());
+
+        // Asignar los valores adicionales que se necesiten de la tabla almacen
         foreach ($products as $product) {
+            // Esto ya se carga en el objeto ProductData desde el JOIN
             $product->stock_minimo = $product->stock_minimo;  // Asegura que se almacene correctamente
+            $product->stock_actual = $product->stock_actual;  // Asegura que el stock actual también se almacene
+
         }
+
         return $products;
     }
+
 
     public static function getLastId()
     {
