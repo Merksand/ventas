@@ -18,8 +18,10 @@ if(count($products)>0){
 $products_in_cero=0;
 	 foreach($products as $product):
 $q= OperationData::getQYesF($product->id);
-	?>
+
+?>
 	<?php 
+		print_r($q);
 	if($q>0):?>
 		
 	<tr class="<?php if($q<=$product->inventary_min){ echo "danger"; }?>">

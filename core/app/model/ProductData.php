@@ -130,4 +130,25 @@ class ProductData
         $sql .= "VALUES ($id_producto, '$tipo_operacion', $stock_minimo, $stock_actual)";
         return Executor::doit($sql);
     }
+
+    public static function getLikes($p){
+		$sql = "select * from ".self::$tablename." where barcode like '%$p%' or name like '%$p%' or id like '%$p%'";
+		$query = Executor::doit($sql);
+		return Model::many($query[0],new ProductData());
+	}
+
+    public static function getLike($p)
+{
+    $sql = "SELECT p.*, a.stock_minimo, a.stock_actual
+            FROM " . self::$tablename . " p
+            JOIN tb_almacen a ON p.id_producto = a.id_producto
+            WHERE p.codigo_producto LIKE '%$p%' 
+               OR p.nombre_producto LIKE '%$p%' 
+               OR p.id_producto LIKE '%$p%'";
+
+    $query = Executor::doit($sql);
+
+    return Model::many($query[0], new ProductData());
+}
+
 }
