@@ -25,11 +25,28 @@ if(isset($_GET["limit"]) && $_GET["limit"]!="" && $_GET["limit"]!=$limit){
 	$limit=$_GET["limit"];
 }
 
+$productss = ProductData::getAllWithStockMin();
+
+$lowStockProducts = [];
+foreach ($productss as $product) {
+    if ($product->stock < $product->stock_minimo) {
+        $lowStockProducts[] = $product;
+    }
+}
+echo "Total de productos con bajo stock: " . count($lowStockProducts) . "<br />";
+
+// Mostrar productos con bajo stock
+foreach ($lowStockProducts as $product) {
+    echo "Código: " . $product->codigo_producto . " - Nombre: " . $product->nombre_producto . " - Stock: " . $product->stock . " - Stock Mínimo: " . $product->stock_minimo . "<br />";
+}
+
+
 $products = ProductData::getAll();
+
 if(count($products)>0){
 	
 	if($page==1){
-	echo "cuentas " . count($products). " ";
+	// echo "cuentas " . count($products). " ";
 	// echo "limit " . $limit;
 	$curr_products = ProductData::getAllByPage($products[0]->id_producto,$limit);
 $curr_products = ProductData::getAllByPage($products[0]->id_producto,$limit);
