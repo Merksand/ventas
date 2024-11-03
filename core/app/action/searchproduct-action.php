@@ -10,19 +10,22 @@
                 <th>Nombre</th>
                 <th>Precio unitario</th>
                 <th>En inventario</th>
-                <th>Cantidad</th>
+                <th>CantidadP</th>
             </thead>
             <?php
             $products_in_cero = 0;
             foreach ($products as $product):
-                $q = OperationData::getQYesF($product->id_producto); // Asegúrate de que `id_producto` es correcto
+                $q = OperationData::getQYesF($product->id_producto);
+                echo "<pre>";
+                print_r($q);
+                echo "</pre>";
             ?>
                 <?php if ($q > 0): ?>
                     <tr class="<?php echo ($q <= $product->stock_minimo) ? "danger" : ""; ?>">
                         <td style="width:80px;"><?php echo $product->codigo_producto; ?></td>
                         <td><?php echo $product->nombre_producto; ?></td>
                         <td><b>$<?php echo $product->precio_venta; ?></b></td>
-                        <td><?php echo $q; ?></td>
+                        <td><?php echo $product->stock_actual; ?></td>
                         <td style="width:250px;">
                             <form method="post" action="index.php?view=addtocart">
                                 <input type="hidden" name="product_id" value="<?php echo $product->id_producto; ?>">

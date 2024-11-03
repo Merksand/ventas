@@ -47,6 +47,7 @@ class OperationData
 
 
 
+
 	public static function getAll()
 	{
 		$sql = "select * from " . self::$tablename;
@@ -107,26 +108,6 @@ class OperationData
 	// }
 
 
-	public static function getQYesF($product_id)
-	{
-		print_r($product_id);
-		$q = 0;
-		$operations = self::getAllByProductId($product_id); // Asegúrate de que esta función devuelve todas las operaciones para el producto
-		$input_type = "entrada";
-		$output_type = "salida";
-
-		foreach ($operations as $operation) {
-			if ($operation->tipo_operacion === $input_type) {
-				$q += $operation->stock_actual;  // Sumar stock para entradas
-			} elseif ($operation->tipo_operacion === $output_type) {
-				$q -= $operation->stock_actual;  // Restar stock para salidas
-			}
-		}
-
-		return $q;
-	}
-
-
 
 
 	public static function getAllByProductIdCutId($product_id, $cut_id)
@@ -136,15 +117,6 @@ class OperationData
 		return Model::many($query[0], new OperationData());
 	}
 
-	public static function getAllByProductId($product_id)
-	{
-		// Nos aseguramos de obtener los datos desde tb_almacen
-		$sql = "SELECT * FROM tb_almacen WHERE id_producto = $product_id ORDER BY fyh_creacion DESC";
-		$query = Executor::doit($sql);
-
-		// Si `OperationData` es la clase que representa datos de `tb_almacen`, la usamos aquí
-		return Model::many($query[0], new OperationData());
-	}
 
 
 
@@ -278,6 +250,40 @@ class OperationData
 	}
 
 	////////////////////////////////////////////////////////////////////////////
+
+	public static function getAllByProductId($product_id)
+	{
+		// Nos aseguramos de obtener los datos desde tb_almacen
+		$sql = "SELECT * FROM tb_almacen WHERE id_producto = $product_id ORDER BY fyh_creacion DESC";
+		$query = Executor::doit($sql);
+
+		// Si `OperationData` es la clase que representa datos de `tb_almacen`, la usamos aquí
+		return Model::many($query[0], new OperationData());
+	}
+
+
+	
+	public static function getQYesF($product_id)
+	{
+		$q = 0;
+		$operations = self::getAllByProductId($product_id); // Asegúrate de que esta función devuelve todas las operaciones para el producto
+		$input_type = "entrada";
+		$output_type = "salida";
+		echo "<pre>";
+		print_r($operations);
+		echo "</pre>";
+		foreach ($operations as $operation) {
+			if ($operation->tipo_operacion === $input_type) {
+				$q += $operation->stock_actual;  // Sumar stock para entradas
+			} elseif ($operation->tipo_operacion === $output_type) {
+				$q -= $operation->stock_actual;  // Restar stock para salidas
+			}
+		}
+
+		return $q;
+	}
+
+
 
 
 }

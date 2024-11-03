@@ -17,6 +17,8 @@ class ProductData
         $this->id_categoria = null;
         $this->fyh_creacion = "NOW()";
         $this->fyh_actualizacion = "NOW()";
+
+        $this->cantidad = 0;
     }
 
     // Obtener todos los productos
@@ -97,8 +99,7 @@ class ProductData
         // Consulta para obtener todos los productos junto con su stock mínimo desde la tabla almacen
         $sql = "SELECT p.*, a.stock_minimo, a.stock_actual 
                 FROM tb_productos p
-                JOIN tb_almacen a ON p.id_producto = a.id_producto";
-;
+                JOIN tb_almacen a ON p.id_producto = a.id_producto";;
         $query = Executor::doit($sql);
 
         // Cargar los resultados en objetos ProductData
@@ -132,24 +133,42 @@ class ProductData
         return Executor::doit($sql);
     }
 
-    public static function getLikes($p){
-		$sql = "select * from ".self::$tablename." where barcode like '%$p%' or name like '%$p%' or id like '%$p%'";
-		$query = Executor::doit($sql);
-		return Model::many($query[0],new ProductData());
-	}
+    public static function getLikes($p)
+    {
+        $sql = "select * from " . self::$tablename . " where barcode like '%$p%' or name like '%$p%' or id like '%$p%'";
+        $query = Executor::doit($sql);
+        return Model::many($query[0], new ProductData());
+    }
 
     public static function getLike($p)
-{
-    $sql = "SELECT p.*, a.stock_minimo, a.stock_actual
+    {
+        $sql = "SELECT p.*, a.stock_minimo, a.stock_actual
             FROM " . self::$tablename . " p
             JOIN tb_almacen a ON p.id_producto = a.id_producto
             WHERE p.codigo_producto LIKE '%$p%' 
                OR p.nombre_producto LIKE '%$p%' 
                OR p.id_producto LIKE '%$p%'";
 
-    $query = Executor::doit($sql);
+        $query = Executor::doit($sql);
 
-    return Model::many($query[0], new ProductData());
-}
+        return Model::many($query[0], new ProductData());
+    }
 
+    public static function setVenta($id_cliente, $id_usuario, $total_venta, $cantidad_total, $efectivo)
+    {
+        $sql = "INSERT INTO tb_ventas (id_cliente, id_usuario, total_venta, cantidad_total, efectivo) ";
+        $sql .= "VALUES ($id_cliente, $id_usuario, $total_venta, $cantidad_total, $efectivo)";
+        return Executor::doit($sql);
+    }
+
+
+    public function setCantidad( $cantidadProducto)
+    {
+        $this -> cantidad = $cantidadProducto;
+    }
+    public function getCantidad()
+    {
+        return $this -> cantidad;
+    }
+    
 }
