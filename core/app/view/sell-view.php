@@ -47,8 +47,6 @@
             <?php foreach ($_SESSION["errors"] as $error):
                 $product = ProductData::getById($error["product_id"]);
             ?>
-
-			
                 <tr class="danger">
                     <td><?php echo $product->codigo_producto; ?></td>
                     <td><?php echo $product->nombre_producto; ?></td>
@@ -59,49 +57,44 @@
         <?php unset($_SESSION["errors"]); ?>
     <?php endif; ?>
 
-    <?php if (isset($_SESSION["cart"])): 
+    <?php if (isset($_SESSION["cart"])):
         $total = 0;
     ?>
         <h2>
-            
         </h2>
         <table class="table table-bordered table-hover">
             <thead>
                 <th style="width:30px;">Código</th>
                 <th style="width:30px;">Imagen</th>
                 <th style="width:30px;">Cantidad</th>
-                <th>Producto</th>
+                <th style="width:200px;">Producto</th>
                 <th style="width:30px;">Precio Unitario</th>
                 <th style="width:30px;">Precio Total</th>
                 <th></th>
             </thead>
             <?php
-            $idUsuario= UserData::getById($_SESSION["user_id"])->id;
+            $idUsuario = UserData::getById($_SESSION["user_id"])->id;
+            $total = 0; // Inicializa la variable total
             ?>
-            <?php foreach ($_SESSION["cart"] as $p): 
+            <?php foreach ($_SESSION["cart"] as $p):
                 $product = ProductData::getById($p["product_id"]);
-               
-                $idUsuario = UserData::getById($_SESSION["user_id"])->id;
-
-                // $agregarAlmacen = ProductData::setVenta($p["product_id"],0,$idUsuario, $p["stock"], 0);
             ?>
-			<?php 
-				// echo "<pre>";
-				// print_r($product);
-				// echo "</pre>";
-			?>
                 <tr>
                     <td><?php echo $product->codigo_producto; ?></td>
-					<td><img src="storage/products/<?php echo $product->imagen; ?>" width="40px" height="40px"></td>
-                    <td><?php echo $p["stock"]; ?></td>
+                    <td><img src="storage/products/<?php echo $product->imagen; ?>" width="40px" height="40px"></td>
+                    <td><?php echo $p["q"]; // Muestra la cantidad almacenada en el carrito 
+                        ?></td> <!-- Modificado -->
                     <td><?php echo $product->nombre_producto; ?></td>
-                    <td><b>$ <?php echo number_format($product->precio_venta, 2); ?></b></td>
-                    <td><b>$ <?php $pt = $product->precio_venta * $p["stock"]; $total += $pt; echo number_format($pt, 2); ?></b></td>
+                    <td><b>Bs <?php echo number_format($product->precio_venta, 2); ?></b></td>
+                    <td><b>Bs <?php $pt = $product->precio_venta * $p["q"];
+                                $total += $pt;
+                                echo number_format($pt, 2); ?></b></td> <!-- Modificado -->
                     <td style="width:30px;"><a href="index.php?view=clearcart&product_id=<?php echo $product->id_producto; ?>" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i> Cancelar</a></td>
                 </tr>
             <?php endforeach; ?>
         </table>
-        
+
+
         <form method="post" class="form-horizontal" id="processsell" action="index.php?view=processsell">
             <h2>Resumen</h2>
             <div class="form-group">
@@ -110,15 +103,9 @@
                     <select name="client_id" class="form-control">
                         <option value="">-- NINGUNO --</option>
                         <?php foreach (PersonData::getClients() as $client): ?>
-                            <option value="<?php echo $client->id; ?>"><?php echo $client->nombre . " " . $client->apellido; ?></option>
+                            <option value="<?php echo $client->id; ?>"><?php echo $client->name . " " . $client->lastname; ?></option>
                         <?php endforeach; ?>
                     </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="discount" class="col-lg-2 control-label">Descuento</label>
-                <div class="col-lg-10">
-                    <input type="text" name="discount" class="form-control" value="0" id="discount" placeholder="Descuento">
                 </div>
             </div>
             <div class="form-group">
@@ -132,15 +119,15 @@
             <table class="table table-bordered">
                 <tr>
                     <td>Subtotal</td>
-                    <td><b>$ <?php echo number_format($total * 0.84, 2); ?></b></td>
+                    <td><b>Bs <?php echo number_format($total * 0.84, 2); ?></b></td>
                 </tr>
                 <tr>
                     <td>IVA</td>
-                    <td><b>$ <?php echo number_format($total * 0.16, 2); ?></b></td>
+                    <td><b>Bs <?php echo number_format($total * 0.16, 2); ?></b></td>
                 </tr>
                 <tr>
                     <td>Total</td>
-                    <td><b>$ <?php echo number_format($total, 2); ?></b></td>
+                    <td><b>Bs <?php echo number_format($total, 2); ?></b></td>
                 </tr>
             </table>
 
@@ -154,14 +141,13 @@
 
         <script>
             $("#processsell").submit(function(e) {
-                const discount = parseFloat($("#discount").val());
                 const money = parseFloat($("#money").val());
-                if (money < (<?php echo $total; ?> - discount)) {
+                if (money < (<?php echo $total; ?>)) {
                     alert("No se puede efectuar la operación");
                     e.preventDefault();
                 } else {
-                    const cambio = money - (<?php echo $total; ?> - discount);
-                    if (!confirm("Cambio: $" + cambio.toFixed(2))) {
+                    const cambio = money - (<?php echo $total; ?>);
+                    if (!confirm("Cambio: Bs" + cambio.toFixed(2))) {
                         e.preventDefault();
                     }
                 }

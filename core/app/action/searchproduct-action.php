@@ -3,7 +3,7 @@
     $products = ProductData::getLike($_GET["product"]);
     if (count($products) > 0) {
     ?>
-        <h3>Resultados de la Búsqueda</h3>
+        <h3>Resultados de la Búsquedssa</h3>
         <table class="table table-bordered table-hover">
             <thead>
                 <th>Código</th>
@@ -16,9 +16,7 @@
             $products_in_cero = 0;
             foreach ($products as $product):
                 $q = OperationData::getQYesF($product->id_producto);
-                echo "<pre>";
-                print_r($q);
-                echo "</pre>";
+              
             ?>
                 <?php if ($q > 0): ?>
                     <tr class="<?php echo ($q <= $product->stock_minimo) ? "danger" : ""; ?>">
