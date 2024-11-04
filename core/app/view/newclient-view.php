@@ -12,9 +12,15 @@
     </div>
   </div>
   <div class="form-group">
-    <label for="inputEmail1" class="col-lg-2 control-label">Apellido*</label>
+    <label for="inputEmail1" class="col-lg-2 control-label">Apellido Paterno</label>
     <div class="col-md-6">
-      <input type="text" name="lastname" required class="form-control" id="lastname" placeholder="Apellido">
+      <input type="text" name="lastname1" required class="form-control" id="lastname" placeholder="Apellido">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputEmail1" class="col-lg-2 control-label">Apellido Materno</label>
+    <div class="col-md-6">
+      <input type="text" name="lastname2" required class="form-control" id="lastname" placeholder="Apellido">
     </div>
   </div>
   <div class="form-group">
@@ -34,6 +40,12 @@
     <label for="inputEmail1" class="col-lg-2 control-label">Telefono*</label>
     <div class="col-md-6">
       <input type="text" name="phone1" class="form-control" id="phone1" placeholder="Telefono">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputEmail1" class="col-lg-2 control-label">C.I.</label>
+    <div class="col-md-6">
+      <input type="text" name="CI" class="form-control" id="CI" placeholder="Telefono">
     </div>
   </div>
 
