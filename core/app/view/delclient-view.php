@@ -1,7 +1,9 @@
 <?php
+if (isset($_GET["id"])) {
+    $id = $_GET["id"];
+    PersonData::deleteById($id); // Llamada al método de eliminación
 
-$client = PersonData::getById($_GET["id"]);
-$client->del();
 Core::redir("./index.php?view=clients");
+}
 
 ?>

@@ -14,7 +14,7 @@ class PersonData
 		$this->lastname = "";
 		$this->lastname2 = "";
 		$this->email = "";
-		$this->image = "";
+		// $this->image = "";
 		$this->password = "";
 		$this->CI = "";
 		$this->phone = "";
@@ -66,11 +66,23 @@ class PersonData
 		Executor::doit($sql);
 	}
 
-	public static function delById($id)
+	// public static function delById($id)
+	// {
+	// 	$sql = "delete from " . self::$tablename . " where id=$id";
+	// 	Executor::doit($sql);
+	// }
+
+	public static function deleteById($id)
 	{
-		$sql = "delete from " . self::$tablename . " where id=$id";
-		Executor::doit($sql);
+		// Eliminar el registro en tb_clientes
+		$sql1 = "DELETE FROM tb_clientes WHERE id_persona = $id";
+		Executor::doit($sql1);
+
+		// Eliminar el registro en tb_persona
+		$sql2 = "DELETE FROM tb_persona WHERE id_persona = $id";
+		Executor::doit($sql2);
 	}
+
 	public function del()
 	{
 		$sql = "delete from " . self::$tablename . " where id=$this->id";
@@ -86,9 +98,39 @@ class PersonData
 
 	public function update_client()
 	{
-		$sql = "update " . self::$tablename . " set name=\"$this->name\",email1=\"$this->email1\",address1=\"$this->address1\",lastname=\"$this->lastname\",phone1=\"$this->phone1\" where id=$this->id";
-		Executor::doit($sql);
+		$con = Database::getCon(); // Obtener la conexión
+
+		// Iniciar una transacción
+		$con->begin_transaction();
+		try {
+			// Actualizar la tabla tb_persona
+			$sql_persona = "UPDATE tb_persona 
+                        SET nombre = '$this->name', 
+                            apellido_paterno = '$this->lastname', 
+                            apellido_materno = '$this->lastname2', 
+                            direccion = '$this->address', 
+                            celular = '$this->phone', 
+                            email = '$this->email' 
+                        WHERE id_persona = $this->id";
+
+			Executor::doit($sql_persona);
+
+			// Actualizar la tabla tb_clientes
+			$sql_cliente = "UPDATE tb_clientes 
+                        SET nit_ci = '$this->CI' 
+                        WHERE id_persona = $this->id";
+
+			Executor::doit($sql_cliente);
+
+			// Confirmar la transacción
+			$con->commit();
+		} catch (Exception $e) {
+			// Si hay un error, revertir la transacción
+			$con->rollback();
+			throw $e; // O maneja el error de otra forma
+		}
 	}
+
 
 	public function update_provider()
 	{
@@ -105,23 +147,43 @@ class PersonData
 
 	public static function getById($id)
 	{
-		$sql = "select * from " . self::$tablename . " where id=$id";
+		// Definir la consulta SQL para obtener los datos de la persona y cliente con el ID proporcionado
+		$sql = "SELECT 
+                p.id_persona AS id, 
+                p.nombre AS name, 
+                p.apellido_paterno AS lastname, 
+                p.apellido_materno AS lastname2, 
+                p.direccion AS address, 
+                p.celular AS phone, 
+                p.email AS email, 
+                p.fyh_creacion AS created_at, 
+                c.nit_ci AS CI 
+            FROM tb_persona p
+            JOIN tb_clientes c ON p.id_persona = c.id_persona
+            WHERE p.id_persona = $id";
+
+		// Ejecutar la consulta
 		$query = Executor::doit($sql);
 		$found = null;
 		$data = new PersonData();
-		while ($r = $query[0]->fetch_array()) {
+
+		// Recorrer los resultados de la consulta (se espera un solo registro)
+		if ($r = $query[0]->fetch_array()) {
 			$data->id = $r['id'];
 			$data->name = $r['name'];
 			$data->lastname = $r['lastname'];
-			$data->address1 = $r['address1'];
-			$data->phone1 = $r['phone1'];
-			$data->email1 = $r['email1'];
+			$data->lastname2 = $r['lastname2'];
+			$data->CI = $r['CI'];
+			$data->address = $r['address'];
+			$data->phone = $r['phone'];
+			$data->email = $r['email'];
 			$data->created_at = $r['created_at'];
 			$found = $data;
-			break;
 		}
+
 		return $found;
 	}
+
 
 
 

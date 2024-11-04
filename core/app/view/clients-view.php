@@ -11,7 +11,7 @@
 				</ul>
 			</div>
 		</div>
-		<h1>Directorio de Clienteszs</h1>
+		<h1>Directorio de Clientes</h1>
 		<br>
 		<?php
 

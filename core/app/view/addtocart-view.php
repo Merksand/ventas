@@ -1,5 +1,5 @@
 <?php
-session_start(); // Asegúrate de que la sesión esté activa // Modificado
+// session_start(); // Asegúrate de que la sesión esté activa // Modificado
 
 if (!isset($_SESSION["cart"])) {
 	// Crear el carrito con el primer producto

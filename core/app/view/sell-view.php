@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-12">
-        <h1>Ventas</h1>
+        <h1>Ventaszz</h1>
         <p><b>Buscar producto por nombre o por código:</b></p>
         <form id="searchp">
             <div class="row">

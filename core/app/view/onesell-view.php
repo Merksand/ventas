@@ -80,10 +80,13 @@
 
 	?>
 
+		
 	<table class="table table-bordered">
 		<?php if ($sell->id_cliente): ?>
 			<?php
 			$client = $sell->getClient(); // Asume que esta función obtiene datos del cliente relacionado
+
+			print_r($client);
 			?>
 			<tr>
 				<td style="width:150px;">Cliente</td>
