@@ -1,5 +1,7 @@
 <?php
 
+echo "<style> :root { color-scheme: light dark; } </style>";
+
 define("ROOT", dirname(__FILE__));
 
 $debug= false;

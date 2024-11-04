@@ -269,9 +269,7 @@ class OperationData
 		$operations = self::getAllByProductId($product_id); // Asegúrate de que esta función devuelve todas las operaciones para el producto
 		$input_type = "entrada";
 		$output_type = "salida";
-		echo "<pre>";
-		print_r($operations);
-		echo "</pre>";
+		// 
 		foreach ($operations as $operation) {
 			if ($operation->tipo_operacion === $input_type) {
 				$q += $operation->stock_actual;  // Sumar stock para entradas

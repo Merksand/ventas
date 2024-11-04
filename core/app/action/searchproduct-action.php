@@ -22,7 +22,7 @@
                     <tr class="<?php echo ($q <= $product->stock_minimo) ? "danger" : ""; ?>">
                         <td style="width:80px;"><?php echo $product->codigo_producto; ?></td>
                         <td><?php echo $product->nombre_producto; ?></td>
-                        <td><b>$<?php echo $product->precio_venta; ?></b></td>
+                        <td><b>Bs<?php echo $product->precio_venta; ?></b></td>
                         <td><?php echo $product->stock_actual; ?></td>
                         <td style="width:250px;">
                             <form method="post" action="index.php?view=addtocart">
