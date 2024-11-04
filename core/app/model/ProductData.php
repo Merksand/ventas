@@ -80,7 +80,11 @@ class ProductData
     // Obtener un producto por ID
     public static function getById($id)
     {
-        $sql = "SELECT * FROM " . self::$tablename . " WHERE id_producto=$id";
+
+        if (empty($id)) {
+            die("Error: ID proporcionado está vacío.");
+        }
+        $sql = "SELECT * FROM tb_productos WHERE id_producto=$id";
         $query = Executor::doit($sql);
         return Model::one($query[0], new ProductData());
     }
@@ -162,13 +166,13 @@ class ProductData
     }
 
 
-    public function setCantidad( $cantidadProducto)
-    {
-        $this -> cantidad = $cantidadProducto;
-    }
-    public function getCantidad()
-    {
-        return $this -> cantidad;
-    }
+    // public function setCantidad( $cantidadProducto)
+    // {
+    //     $this -> cantidad = $cantidadProducto;
+    // }
+    // public function getCantidad()
+    // {
+    //     return $this -> cantidad;
+    // }
     
 }

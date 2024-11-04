@@ -46,6 +46,9 @@
             </tr>
             <?php foreach ($_SESSION["errors"] as $error):
                 $product = ProductData::getById($error["product_id"]);
+                echo "<pre>";
+                print_r($product);
+                echo "</pre>";
             ?>
                 <tr class="danger">
                     <td><?php echo $product->codigo_producto; ?></td>
@@ -88,12 +91,12 @@
 
         // session_destroy();
 
-      foreach (PersonData::getClients() as $client){
+        foreach (PersonData::getClients() as $client) {
             echo "<pre>";
             print_r($client->id);
             echo "</pre>";
-      }
-        
+        }
+
 
         ?>
         <h2>
@@ -111,11 +114,13 @@
             <?php
             $idUsuario = UserData::getById($_SESSION["user_id"])->id;
             $total = 0; // Inicializa la variable total
-            echo "ID : ".$_SESSION["user_id"];
-            echo "ID : ".$idUsuario;
+            echo "ID : " . $_SESSION["user_id"];
             ?>
             <?php foreach ($_SESSION["cart"] as $p):
                 $product = ProductData::getById($p["product_id"]);
+                echo "<pre>";
+                print_r($product);
+                echo "</pre>";
             ?>
                 <tr>
                     <td><?php echo $product->codigo_producto; ?></td>
@@ -143,7 +148,7 @@
                         <?php foreach (PersonData::getClients() as $client): ?>
                             <option value="<?php echo $client->id; ?>"><?php echo $client->name . " " . $client->lastname; ?></option>
                         <?php endforeach; ?>
-                        
+
                     </select>
                 </div>
             </div>

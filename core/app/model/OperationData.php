@@ -5,12 +5,12 @@ class OperationData
 
 	public function __construct()
 	{
-		$this->name = "";
-		$this->product_id = "";
-		$this->q = "";
-		$this->cut_id = "";
-		$this->operation_type_id = "";
-		$this->created_at = "NOW()";
+		// $this->name = "culo";
+		// $this->product_id = "";
+		// $this->q = "";
+		// $this->cut_id = "";
+		// $this->operation_type_id = "";
+		// $this->created_at = "NOW()";
 	}
 
 	public function add()
@@ -77,10 +77,34 @@ class OperationData
 		return Model::many($query[0], new OperationData());
 	}
 
-	public function getProduct()
+	public static function getProduct($id)
 	{
-		return ProductData::getById($this->product_id);
+		return ProductData::getById($id);
 	}
+
+
+	public static function getProductAlmacenVenta($sellID)
+	{
+		$sql = "SELECT 
+    dv.id_detalle_venta,
+    dv.id_producto,
+    p.nombre_producto AS product_name,
+    a.stock_minimo,
+    a.stock_actual,
+    dv.cantidad,
+    dv.precio_unitario FROM tb_detalle_venta dv JOIN tb_productos p ON dv.id_producto = p.id_producto 
+	JOIN tb_almacen a ON p.id_producto = a.id_producto 
+	WHERE dv.id_venta = $sellID";
+		$query = Executor::doit($sql);
+		return Model::many($query[0], new OperationData());
+	}
+
+	// public static function getProduct($id)
+	// {
+	// 	return ProductData::getById($id);
+	// }
+
+
 	public function getOperationtype()
 	{
 		return OperationTypeData::getById($this->operation_type_id);
@@ -127,12 +151,7 @@ class OperationData
 	}
 
 
-	public static function getAllProductsBySellId($sell_id)
-	{
-		$sql = "select * from " . self::$tablename . " where sell_id=$sell_id order by created_at desc";
-		$query = Executor::doit($sql);
-		return Model::many($query[0], new OperationData());
-	}
+
 
 
 	public static function getAllByProductIdCutIdYesF($product_id, $cut_id)
@@ -262,7 +281,7 @@ class OperationData
 	}
 
 
-	
+
 	public static function getQYesF($product_id)
 	{
 		$q = 0;
@@ -282,6 +301,10 @@ class OperationData
 	}
 
 
-
-
+	public static function getAllProductsBySellId($sell_id)
+	{
+		$sql = "SELECT * FROM tb_detalle_venta WHERE id_venta = $sell_id";
+		$query = Executor::doit($sql);
+		return Model::many($query[0], new OperationData());
+	}
 }

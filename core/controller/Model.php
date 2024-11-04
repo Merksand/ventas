@@ -33,24 +33,29 @@ class Model {
 		return $array;
 	}
 	//////////////////////////////////
-	public static function one($query,$aclass){
+	public static function one($query, $aclass) {
+		if (!$query) {
+			die("Error en la consulta SQL: " . mysqli_error(Database::getCon()));
+		}
+	
 		$cnt = 0;
 		$found = null;
 		$data = new $aclass;
-		while($r = $query->fetch_array()){
-			$cnt=1;
+	
+		while ($r = $query->fetch_array()) {
+			$cnt = 1;
 			foreach ($r as $key => $v) {
-				if($cnt>0 && $cnt%2==0){ 
+				if ($cnt > 0 && $cnt % 2 == 0) { 
 					$data->$key = $v;
 				}
 				$cnt++;
 			}
-
 			$found = $data;
 			break;
 		}
 		return $found;
 	}
+	
 
 }
 
