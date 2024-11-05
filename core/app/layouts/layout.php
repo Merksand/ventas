@@ -66,22 +66,21 @@
                   <!-- hidden-xs hides the username on small devices so only the image appears. -->
 
                   <span class=""><?php if (isset($_SESSION["user_id"])) {
-                      echo $_SESSION["user_id"];
-                    // $user = UserData::getById($_SESSION["user_id"]);
-                    //                 echo "<pre>";
+                                    // $user = UserData::getById($_SESSION["user_id"]);
+                                    //                 echo "<pre>";
 
-                    //                 print_r($user);
+                                    //                 print_r($user);
 
-                    //                 echo "</pre>";
+                                    //                 echo "</pre>";
                                     echo UserData::getById($_SESSION["user_id"])->{13};
                                   } ?> <b class="caret"></b> </span>
 
                 </a>
                 <ul class="dropdown-menu">
                   <!-- The user image in the menu -->
-                  <li class="">
+                  <!-- <li class="">
                     <a href="http://evilnapsis.com/product/inventio-max/" target="_blank" class="">Ver Inventio Max</a>
-                  </li>
+                  </li> -->
 
                   <!-- Menu Footer-->
                   <li class="user-footer">
@@ -119,8 +118,7 @@
             <?php if (isset($_SESSION["user_id"])): ?>
               <li><a href="./index.php?view=home"><i class='fa fa-home'></i> <span>Inicio</span></a></li>
               <li><a href="./?view=sell"><i class='fa fa-usd'></i> <span>Vender</span></a></li>
-              <li><a href="./?view=sells"><i class='fa fa-shopping-cart'></i> <span>Ventas</span></a></li>
-              <li><a href="./?view=box"><i class='fa fa-cube'></i> <span>Caja</span></a></li>
+              <!-- <li><a href="./?view=box"><i class='fa fa-cube'></i> <span>Caja</span></a></li> -->
               <li><a href="./?view=products"><i class='fa fa-glass'></i> <span>Productos</span></a></li>
 
               <li class="treeview">
@@ -145,6 +143,8 @@
                 <ul class="treeview-menu">
                   <li><a href="./?view=reports">Inventario</a></li>
                   <li><a href="./?view=sellreports">Ventas</a></li>
+                  <li><a href="./?view=sells"><i class='fa fa-shopping-cart'></i> <span>Lista de Ventas</span></a></li>
+
                 </ul>
               </li>
 

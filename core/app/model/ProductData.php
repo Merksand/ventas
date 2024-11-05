@@ -24,7 +24,11 @@ class ProductData
     // Obtener todos los productos
     public static function getAll()
     {
-        $sql = "SELECT * FROM " . self::$tablename;
+        $sql = "SELECT
+  *
+FROM
+  tb_almacen a
+  JOIN tb_productos p ON a.id_producto = p.id_producto";
         $query = Executor::doit($sql);
         return Model::many($query[0], new ProductData());
     }
@@ -174,5 +178,5 @@ class ProductData
     // {
     //     return $this -> cantidad;
     // }
-    
+
 }
