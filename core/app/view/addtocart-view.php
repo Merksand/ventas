@@ -44,6 +44,7 @@ if (!isset($_SESSION["cart"])) {
 	$q = OperationData::getQYesF($_POST["product_id"]);
 
 	$can = true;
+	$errors = array();
 	if ($_POST["q"] <= $q) {
 	} else {
 		$error = array("product_id" => $_POST["product_id"], "message" => "No hay suficiente cantidad de producto en inventario."); // Modificado

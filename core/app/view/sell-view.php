@@ -46,9 +46,9 @@
             </tr>
             <?php foreach ($_SESSION["errors"] as $error):
                 $product = ProductData::getById($error["product_id"]);
-                echo "<pre>";
-                print_r($product);
-                echo "</pre>";
+                // echo "<pre>";
+                // print_r($product);
+                // echo "</pre>";
             ?>
                 <tr class="danger">
                     <td><?php echo $product->codigo_producto; ?></td>
@@ -91,11 +91,11 @@
 
         // session_destroy();
 
-        foreach (PersonData::getClients() as $client) {
-            echo "<pre>";
-            print_r($client->id);
-            echo "</pre>";
-        }
+        // foreach (PersonData::getClients() as $client) {
+        //     echo "<pre>";
+        //     print_r($client->id);
+        //     echo "</pre>";
+        // }
 
 
         ?>
@@ -112,23 +112,23 @@
                 <th></th>
             </thead>
             <?php
-            $idUsuario = UserData::getById($_SESSION["user_id"])->id_persona;
-            echo "<pre>";
-            print_r(UserData::getById($_SESSION["user_id"]));
-            echo "</pre>";
-            $total = 0; 
-            echo "ID : " . $_SESSION["user_id"];
+            // $idUsuario = UserData::getById($_SESSION["user_id"])->id_persona;
+            // echo "<pre>";
+            // print_r(UserData::getById($_SESSION["user_id"]));
+            // echo "</pre>";
+            // $total = 0; 
+            // echo "ID : " . $_SESSION["user_id"];
             ?>
             <?php foreach ($_SESSION["cart"] as $p):
                 $product = ProductData::getById($p["product_id"]);
-                echo "<pre>";
-                print_r($product);
-                echo "</pre>";
+                // echo "<pre>";
+                // print_r($product);
+                // echo "</pre>";
             ?>
                 <tr>
                     <td><?php echo $product->codigo_producto; ?></td>
                     <td><img src="storage/products/<?php echo $product->imagen; ?>" width="40px" height="40px"></td>
-                    <td><?php echo $p["q"]; 
+                    <td><?php echo $p["q"];
                         ?></td>
                     <td><?php echo $product->nombre_producto; ?></td>
                     <td><b>Bs <?php echo number_format($product->precio_venta, 2); ?></b></td>

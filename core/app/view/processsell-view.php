@@ -3,13 +3,13 @@
 
 if (isset($_SESSION["cart"]) && count($_SESSION["cart"]) > 0) {
 
-    // if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    //     echo "<pre>"; 
-    //     foreach ($_POST as $key => $value) {
-    //         echo "$key: $value\n"; 
-    //     }
-    //     echo "</pre>";
-    // }
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        echo "<pre>";
+        foreach ($_POST as $key => $value) {
+            echo "$key: $value\n";
+        }
+        echo "</pre>";
+    }
 
     $cart = $_SESSION["cart"];
     $errors = [];
@@ -91,7 +91,7 @@ if (isset($_SESSION["cart"]) && count($_SESSION["cart"]) > 0) {
 
     $stmtVenta->bind_param("iidii", $idCliente, $idUsuario, $totalVenta, $cantidadTotal, $efectivo);
 
- 
+
     $stmtVenta->execute();
 
 
@@ -103,16 +103,37 @@ if (isset($_SESSION["cart"]) && count($_SESSION["cart"]) > 0) {
     $sqlDetalle = "INSERT INTO tb_detalle_venta (id_venta, id_producto, cantidad, precio_unitario) VALUES (?, ?, ?, ?)";
     $stmtDetalle = $con->prepare($sqlDetalle);
 
+    $sqlUpdateInventario = "UPDATE tb_almacen SET stock_actual = stock_actual - ? WHERE id_producto = ?";
+    $stmtUpdate = $con->prepare($sqlUpdateInventario);
+
     foreach ($cart as $item) {
         $idProducto = $item["product_id"];
         $cantidad = $item["q"];
         $precioUnitario = ProductData::getById($idProducto)->precio_venta;
 
+        echo "ID del producto : " . $idProducto . "<br>";
+        echo "Cantidad : " . $cantidad . "<br>";
+        echo "Precio unitario : " . $precioUnitario . "<br>";
+
+        // Inserta el detalle de la venta
         $stmtDetalle->bind_param("iiid", $idVenta, $idProducto, $cantidad, $precioUnitario);
         $stmtDetalle->execute();
+
+        // Disminuye el inventario en `tb_almacen`
+        $stmtUpdate->bind_param("ii", $cantidad, $idProducto);
+        if ($stmtUpdate->execute()) {
+            if ($stmtUpdate->affected_rows > 0) {
+                echo "Inventario actualizado correctamente para el producto con ID: $idProducto<br>";
+            } else {
+                echo "No se encontró el producto con ID: $idProducto en el inventario, o no se necesitó ajustar el stock.<br>";
+            }
+        } else {
+            echo "Error al actualizar el inventario para el producto con ID: $idProducto. Error: " . $stmtUpdate->error . "<br>";
+        }
     }
 
     $stmtDetalle->close();
+    $stmtUpdate->close();
 
 
     // 6. Limpia el carrito de la sesión y redirige a la página de confirmación
