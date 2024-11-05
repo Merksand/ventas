@@ -16,31 +16,23 @@
 	$sell = SellData::getById($sellId); // Asume que esta función obtiene datos de `tb_ventas`
 	$operations = OperationData::getAllProductsBySellId($sellId); // Asume que esta función obtiene datos de `tb_detalle_venta`
 	$total = 0;
-	echo $sellId;
-	echo "<pre>";
-	// print_r($sell);
-	print_r($operations[0]->getProduct(93));
-	echo "</pre>";
+
 	?>
 
 	<?php
 	if (isset($_GET["id"]) && $_GET["id"] != "") {
 		$sellId = $_GET["id"];
-		echo "Sell ID: " . $sellId; // Agrega esta línea para ver el ID de la venta
-		echo "CULO";
+		// echo "Sell ID: " . $sellId; // Agrega esta línea para ver el ID de la venta
 
 
 
 
 		$operations = OperationData::getAllProductsBySellId($sellId);
 		$stockActual = OperationData::getQYesF(94);
-		echo "<pre>";
-		// print_r($operations[0]->getProduct(93)); // Verifica los datos de las operaciones de la venta
-		// $producto = ProductData::getById(94);
+
 		$product = OperationData::getProduct(94);
 
-		print_r($stockActual);
-		echo "</pre>";
+
 	} else {
 		echo "Error: ID de venta no proporcionado o es inválido.";
 	}
@@ -53,17 +45,17 @@
 		$products = OperationData::getProductAlmacenVenta($sellId); // Asume que devuelve un array de productos
 
 		$user = $sell; // Asume que esta función obtiene datos del usuario relacionado
-		echo "hofff";
-		echo "<pre>";
-		print_r(OperationData::getProductAlmacenVenta($sellId));
-		echo "</pre>";
+		// echo "hofff";
+		// echo "<pre>";
+		// print_r(OperationData::getProductAlmacenVenta($sellId));
+		// echo "</pre>";
 
 
 		foreach ($products as $product) {
-			echo "Putoss";
-			echo "<pre>";
-			print_r($product); // Muestra la información del producto
-			echo "</pre>";
+			// echo "Putoss";
+			// echo "<pre>";
+			// print_r($product); // Muestra la información del producto
+			// echo "</pre>";
 
 			// Verifica la cantidad disponible en el inventario
 			$stockActual = $product->stock_actual; // Utiliza el stock actual del producto obtenido de la consulta
@@ -152,11 +144,10 @@
 		?>
 		<?php foreach ($operationss as $producto): ?>
 			<?php
-			// echo $producto;
 			// $idPro = $operations[0]->id_producto;
-			// $idProducto = $producto->id_producto;
+			$idProducto = $producto->id_producto;
 			// echo "<pre>";
-			// print_r($producto->id_producto);
+			// // print_r($producto->id_producto);
 			// print_r($producto);
 			// echo "</pre>";
 			?>
@@ -164,7 +155,7 @@
 
 			<?php
 			// echo $producto;
-			// $product = $producto->getProduct($idProducto);
+			$product = $producto->getProduct($idProducto);
 			// echo "antes lo";
 			// echo "<pre>";
 			// // echo print_r(OperationData::getProductAlmacenVenta($sellId));
@@ -174,7 +165,7 @@
 
 
 			// echo "<pre>";
-			// print_r($productVenta);
+			// print_r($producto->getProduct($producto->id_producto));
 			// echo "</pre>";
 			$precioUnitario = $producto->precio_unitario; // Precio unitario guardado en `tb_detalle_venta`
 			$cantidad = $producto->cantidad; // Cantidad de producto en el detalle de la venta
@@ -182,7 +173,7 @@
 			$total += $subtotal;
 			?>
 			<tr>
-				<td><?php echo $product->id_producto; ?></td>
+				<td><?php echo $product->codigo_producto; ?></td>
 				<td><?php echo $cantidad; ?></td>
 				<td><?php echo $product->nombre_producto; ?></td>
 				<td>Bs <?php echo number_format($product->precio_venta, 2, ".", ","); ?></td>
