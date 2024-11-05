@@ -16,6 +16,10 @@
 		<?php
 
 		$users = PersonData::getProviders();
+
+		// echo "<pre>";
+		// print_r($users);
+		// echo "</pre>";
 		if(count($users)>0){
 			// si hay usuarios
 			?>
@@ -26,16 +30,20 @@
 			<th>Direccion</th>
 			<th>Email</th>
 			<th>Telefono</th>
+			<th>Empresa</th>
+			<th>NIT</th>
 			<th></th>
 			</thead>
 			<?php
 			foreach($users as $user){
 				?>
 				<tr>
-				<td><?php echo $user->name." ".$user->lastname; ?></td>
+				<td><?php echo $user->name." ".$user->lastname. " ". $user->lastname2; ?></td>
 				<td><?php echo $user->address1; ?></td>
 				<td><?php echo $user->email1; ?></td>
 				<td><?php echo $user->phone1; ?></td>
+				<td><?php echo $user->empresa; ?></td>
+				<td><?php echo $user->NIT; ?></td>
 				<td style="width:130px;">
 				<a href="index.php?view=editprovider&id=<?php echo $user->id;?>" class="btn btn-warning btn-xs">Editar</a>
 				<a href="index.php?view=delprovider&id=<?php echo $user->id;?>" class="btn btn-danger btn-xs">Eliminar</a>
