@@ -184,6 +184,29 @@ class PersonData
 		return $found;
 	}
 
+	public static function getClientIdByPersonId($id_persona)
+	{
+		if (empty($id_persona)) {
+			return null;
+		}
+		echo "id_persona: " . $id_persona;
+		// Definir la consulta SQL para obtener el id_cliente con base en el id_persona
+		$sql = "SELECT c.id_cliente 
+				FROM tb_clientes c
+				JOIN tb_persona p ON c.id_persona = p.id_persona
+				WHERE p.id_persona = $id_persona";
+
+		// Ejecutar la consulta
+		$query = Executor::doit($sql);
+		$client_id = null;
+
+		// Obtener el resultado
+		if ($r = $query[0]->fetch_array()) {
+			$client_id = $r['id_cliente'];
+		}
+		echo "ID del cliente: " . $client_id;
+		return $client_id; // Retorna el id_cliente si existe, de lo contrario, retorna null
+	}
 
 
 

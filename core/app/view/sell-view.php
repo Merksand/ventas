@@ -112,8 +112,11 @@
                 <th></th>
             </thead>
             <?php
-            $idUsuario = UserData::getById($_SESSION["user_id"])->id;
-            $total = 0; // Inicializa la variable total
+            $idUsuario = UserData::getById($_SESSION["user_id"])->id_persona;
+            echo "<pre>";
+            print_r(UserData::getById($_SESSION["user_id"]));
+            echo "</pre>";
+            $total = 0; 
             echo "ID : " . $_SESSION["user_id"];
             ?>
             <?php foreach ($_SESSION["cart"] as $p):
@@ -125,8 +128,8 @@
                 <tr>
                     <td><?php echo $product->codigo_producto; ?></td>
                     <td><img src="storage/products/<?php echo $product->imagen; ?>" width="40px" height="40px"></td>
-                    <td><?php echo $p["q"]; // Muestra la cantidad almacenada en el carrito 
-                        ?></td> <!-- Modificado -->
+                    <td><?php echo $p["q"]; 
+                        ?></td>
                     <td><?php echo $product->nombre_producto; ?></td>
                     <td><b>Bs <?php echo number_format($product->precio_venta, 2); ?></b></td>
                     <td><b>Bs <?php $pt = $product->precio_venta * $p["q"];

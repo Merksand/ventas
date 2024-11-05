@@ -39,6 +39,7 @@
     <!-- Main Header -->
     <?php if (isset($_SESSION["user_id"]) || isset($_SESSION["client_id"])): ?>
       <header class="main-header">
+
         <!-- Logo -->
         <a href="./" class="logo">
           <!-- mini logo for sidebar mini 50x50 pixels -->
@@ -63,8 +64,16 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                   <!-- The user image in the navbar-->
                   <!-- hidden-xs hides the username on small devices so only the image appears. -->
+
                   <span class=""><?php if (isset($_SESSION["user_id"])) {
-                                    echo UserData::getById($_SESSION["user_id"])->name;
+                      echo $_SESSION["user_id"];
+                    // $user = UserData::getById($_SESSION["user_id"]);
+                    //                 echo "<pre>";
+
+                    //                 print_r($user);
+
+                    //                 echo "</pre>";
+                                    echo UserData::getById($_SESSION["user_id"])->{13};
                                   } ?> <b class="caret"></b> </span>
 
                 </a>
@@ -163,7 +172,7 @@
         </div>
       </div><!-- /.content-wrapper -->
 
-     
+
     <?php else: ?>
       <div class="login-box">
         <div class="login-logo">

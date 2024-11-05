@@ -16,10 +16,10 @@
 	$sell = SellData::getById($sellId); // Asume que esta función obtiene datos de `tb_ventas`
 	$operations = OperationData::getAllProductsBySellId($sellId); // Asume que esta función obtiene datos de `tb_detalle_venta`
 	$total = 0;
-
+	echo $sellId;
 	echo "<pre>";
-	print_r($sell);
-	print_r($operations);
+	// print_r($sell);
+	print_r($operations[0]->getProduct(93));
 	echo "</pre>";
 	?>
 
@@ -27,6 +27,9 @@
 	if (isset($_GET["id"]) && $_GET["id"] != "") {
 		$sellId = $_GET["id"];
 		echo "Sell ID: " . $sellId; // Agrega esta línea para ver el ID de la venta
+		echo "CULO";
+
+
 
 
 		$operations = OperationData::getAllProductsBySellId($sellId);
@@ -52,8 +55,9 @@
 		$user = $sell; // Asume que esta función obtiene datos del usuario relacionado
 		echo "hofff";
 		echo "<pre>";
-		print_r($user);
+		print_r(OperationData::getProductAlmacenVenta($sellId));
 		echo "</pre>";
+
 
 		foreach ($products as $product) {
 			echo "Putoss";
@@ -80,31 +84,45 @@
 
 	?>
 
-		
+
 	<table class="table table-bordered">
+
 		<?php if ($sell->id_cliente): ?>
 			<?php
-			$client = $sell->getClient(); // Asume que esta función obtiene datos del cliente relacionado
 
-			print_r($client);
+			// echo "ID del cliente: " . $sell->id_cliente;
+			// echo "<pre>";
+			// print_r($sell);
+			// echo "</pre>";
+			$client = $sell->getClient($sell->id_cliente); // Asume que esta función obtiene datos del cliente relacionado
+			// echo "<pre>";
+			// print_r($client);
+			// echo "</pre>";
 			?>
 			<tr>
 				<td style="width:150px;">Cliente</td>
-				<td><?php echo $client->name . " " . $client->lastname; ?></td>
+				<td><?php echo $client->name . " " . $client->lastname . " " . $client->lastname2; ?></td>
 			</tr>
 		<?php endif; ?>
 
 		<?php if ($sell->id_usuario): ?>
 			<?php
-			$user = $sell->getUser(); // Asume que esta función obtiene datos del usuario relacionado
 
-			echo "<pre>";
-			print_r($user);
-			echo "</pre>";
+			echo "ID del usuario: " . $sell->id_usuario;
+			$user = $sell->getUser($sell->id_usuario); // Asume que esta función obtiene datos del usuario relacionado
+
+			// echo "<pre>";
+			// print_r($user);
+			// echo "</pre>";
+
 			?>
+
+
 			<tr>
 				<td>Atendido por</td>
-				<td><?php echo $user->name . " " . $user->lastname; ?></td>
+
+
+				<td><?php echo $user->{5} . " " . $user->{6} . " " . $user->{7}; ?></td>
 			</tr>
 		<?php endif; ?>
 	</table>
@@ -119,19 +137,55 @@
 			<th>Precio Unitario</th>
 			<th>Total</th>
 		</thead>
-		<?php foreach ($operations as $operation): ?>
+
+		<?php
+		$operationss = OperationData::getAllProductsBySellId($sellId); // Asume que esta función obtiene datos de `tb_detalle_venta`
+
+		$total = 0;
+		// echo $sellId;
+		// echo "<pre>";
+		// print_r($sell);
+		// echo $operations[0]->id_producto;
+		// // print_r($operations[0]->getProduct($idPro));
+		// print_r($operations);
+		// echo "</pre>";
+		?>
+		<?php foreach ($operationss as $producto): ?>
 			<?php
-			$product = $operation->getProduct(); // Obtiene el producto relacionado con el detalle de la venta
-			$precioUnitario = $operation->precio_unitario; // Precio unitario guardado en `tb_detalle_venta`
-			$cantidad = $operation->cantidad; // Cantidad de producto en el detalle de la venta
+			// echo $producto;
+			// $idPro = $operations[0]->id_producto;
+			// $idProducto = $producto->id_producto;
+			// echo "<pre>";
+			// print_r($producto->id_producto);
+			// print_r($producto);
+			// echo "</pre>";
+			?>
+
+
+			<?php
+			// echo $producto;
+			// $product = $producto->getProduct($idProducto);
+			// echo "antes lo";
+			// echo "<pre>";
+			// // echo print_r(OperationData::getProductAlmacenVenta($sellId));
+			// echo "</pre>";
+			// $productVenta = OperationData::getProductAlmacenVenta($sellId);
+			// echo $producto->id_almacen;
+
+
+			// echo "<pre>";
+			// print_r($productVenta);
+			// echo "</pre>";
+			$precioUnitario = $producto->precio_unitario; // Precio unitario guardado en `tb_detalle_venta`
+			$cantidad = $producto->cantidad; // Cantidad de producto en el detalle de la venta
 			$subtotal = $cantidad * $precioUnitario;
 			$total += $subtotal;
 			?>
 			<tr>
-				<td><?php echo $product->id; ?></td>
+				<td><?php echo $product->id_producto; ?></td>
 				<td><?php echo $cantidad; ?></td>
-				<td><?php echo $product->name; ?></td>
-				<td>$ <?php echo number_format($precioUnitario, 2, ".", ","); ?></td>
+				<td><?php echo $product->nombre_producto; ?></td>
+				<td>Bs <?php echo number_format($product->precio_venta, 2, ".", ","); ?></td>
 				<td><b>$ <?php echo number_format($subtotal, 2, ".", ","); ?></b></td>
 			</tr>
 		<?php endforeach; ?>
@@ -141,20 +195,20 @@
 	<div class="row">
 		<div class="col-md-4">
 			<table class="table table-bordered">
-				<tr>
+				<!-- <tr>
 					<td>
 						<h4>Subtotal:</h4>
 					</td>
 					<td>
-						<h4>$ <?php echo number_format($total, 2, '.', ','); ?></h4>
+						<h4>Bs <?php echo number_format($total, 2, '.', ','); ?></h4>
 					</td>
-				</tr>
+				</tr> -->
 				<tr>
 					<td>
 						<h4>Total:</h4>
 					</td>
 					<td>
-						<h4>$ <?php echo number_format($total, 2, '.', ','); ?></h4>
+						<h4>Bs <?php echo number_format($total, 2, '.', ','); ?></h4>
 					</td>
 				</tr>
 			</table>

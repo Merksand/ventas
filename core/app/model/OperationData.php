@@ -77,27 +77,39 @@ class OperationData
 		return Model::many($query[0], new OperationData());
 	}
 
-	public static function getProduct($id)
-	{
-		return ProductData::getById($id);
-	}
 
 
+	// public static function getProductAlmacenVenta($sellID)
+	// {
+	// 	$sql = "SELECT 
+    // dv.id_detalle_venta,
+    // dv.id_producto,
+    // p.nombre_producto AS product_name,
+    // a.stock_minimo,
+    // a.stock_actual,
+    // dv.cantidad,2
+    // dv.precio_unitario FROM tb_detalle_venta dv JOIN tb_productos p ON dv.id_producto = p.id_producto 
+	// JOIN tb_almacen a ON p.id_producto = a.id_producto 
+	// WHERE dv.id_venta = $sellID";
+	// 	$query = Executor::doit($sql);
+	// 	return Model::many($query[0], new OperationData());
+	// }
 	public static function getProductAlmacenVenta($sellID)
 	{
 		$sql = "SELECT 
-    dv.id_detalle_venta,
-    dv.id_producto,
-    p.nombre_producto AS product_name,
-    a.stock_minimo,
-    a.stock_actual,
-    dv.cantidad,
-    dv.precio_unitario FROM tb_detalle_venta dv JOIN tb_productos p ON dv.id_producto = p.id_producto 
+    * FROM tb_detalle_venta dv JOIN tb_productos p ON dv.id_producto = p.id_producto 
 	JOIN tb_almacen a ON p.id_producto = a.id_producto 
 	WHERE dv.id_venta = $sellID";
 		$query = Executor::doit($sql);
 		return Model::many($query[0], new OperationData());
 	}
+
+	public static function getProduct($id)
+	{
+		// echo "idddddddddddddddddd: " . $id;
+		return ProductData::getById($id);
+	}
+
 
 	// public static function getProduct($id)
 	// {

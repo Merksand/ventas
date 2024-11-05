@@ -29,7 +29,7 @@ if (!isset($_SESSION["username_id"])) {
     if ($query && $query->num_rows > 0) {
         $found = true;
         while ($row = $query->fetch_assoc()) {
-            $userid = $row['id_persona'];
+            $userid = $row['id_usuario'];
         }
     } else {
         $found = false;
@@ -39,8 +39,6 @@ if (!isset($_SESSION["username_id"])) {
     if ($found == true) {
         $_SESSION['user_id'] = $userid;
         // print "Cargando ... $user";
-
-
         print "<script>window.location='index.php?view=home';</script>";
     } else {
         // echo $sql;

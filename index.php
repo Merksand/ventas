@@ -4,7 +4,7 @@ echo "<style> :root { color-scheme: light dark; } </style>";
 
 define("ROOT", dirname(__FILE__));
 
-$debug = false;
+$debug = true;
 if ($debug) {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
