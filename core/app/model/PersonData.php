@@ -29,7 +29,21 @@ class PersonData
 	// 	$sql .= "value (\"$this->name\",\"$this->lastname\",\"$this->address1\",\"$this->email1\",\"$this->phone1\",1,$this->created_at)";
 	// 	Executor::doit($sql);
 	// }
+	// public static function getLastId()
+	// {
+	// 	$sql = "SELECT LAST_INSERT_ID() AS id";
+	// 	$query = Executor::doit($sql); // Asegúrate de que esto sea correcto
+	// 	$result = $query[0]->fetch_assoc();
+	// 	return $result['id'];
+	// }
 
+	public static function getLastId()
+	{
+		$sql = "SELECT LAST_INSERT_ID() AS id";
+		$query = Executor::doit($sql); // Asegúrate de que esto sea correcto
+		$result = $query[0]->fetch_assoc();
+		return $result['id'];
+	}
 	public function add_client()
 	{
 		// Primero, insertemos la persona en la tabla tb_persona
@@ -51,21 +65,28 @@ class PersonData
 	}
 
 
-	public static function getLastId()
-	{
-		$sql = "SELECT LAST_INSERT_ID() AS id";
-		$query = Executor::doit($sql); // Asegúrate de que esto sea correcto
-		$result = $query[0]->fetch_assoc();
-		return $result['id'];
-	}
+
 
 
 
 	public function add_provider()
 	{
-		$sql = "insert into person (name,lastname,address1,email1,phone1,kind,created_at) ";
-		$sql .= "value ($this->name\",\"$this->lastname\",\"$this->address1\",\"$this->email1\",\"$this->phone1\",2,$this->created_at)";
+		// Insertar en la tabla tb_persona (datos generales de la persona)
+		$sql = "INSERT INTO tb_persona (nombre, apellido_paterno, apellido_materno, direccion, celular, email)
+				VALUES ('$this->name', '$this->lastname', '$this->lastname2', '$this->address', '$this->phone', '$this->email')";
+
+		// Ejecutar la consulta para agregar a la persona
 		Executor::doit($sql);
+
+		// Obtener el último ID insertado para la persona (id_persona)
+		$person_id = self::getLastId();
+
+		// Insertar en la tabla tb_proveedores (datos específicos del proveedor)
+		$sql_provider = "INSERT INTO tb_proveedores (id_persona, nit_empresa, nombre_empresa)
+						 VALUES ('$person_id', '$this->NIT', '$this->empresa')";
+
+		// Ejecutar la consulta para agregar al proveedor
+		Executor::doit($sql_provider);
 	}
 
 	// public static function delById($id)

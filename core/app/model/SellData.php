@@ -1,26 +1,107 @@
 <?php
 class SellData
 {
-	public static $tablename = "sell";
-
+	public $user_id;
+	public $person_id;
 	public function __construct()
 	{
 		$this->created_at = "NOW()";
 		$this->person_id = 0;
+		$this->user_id = 0;
 	}
 
-	// public function getPerson()
-	// {
-	// 	return PersonData::getById($this->person_id);
-	// }
-	// public function getUser($idUsuario)
-	// {
-	// 	return UserData::getById($idUsuario);
-	// }
+	public function add_re()
+	{
+		// Inserción directa en tb_compras
+		$query = "INSERT INTO tb_compras (id_usuario, id_proveedor, total_compra, fecha_compra) 
+              VALUES ('" . $this->user_id . "', 0, 0, NOW())";
+
+		// Ejecutar la consulta
+		$result = Executor::doit($query);
+
+		// Verificar el resultado de la inserción
+		if ($result && $result[0]) {
+			return [$result[1], "Compra registrada sin proveedor"]; // Éxito, devuelve ID y mensaje
+		} else {
+			return [null, "Error al registrar la compra sin proveedor"];
+		}
+	}
+
+
+	public function add_re_with_client()
+	{
+		echo "Entrado al metodo add re with client";
+		// Consulta para obtener el id_proveedor
+		$query_proveedor = "SELECT id_proveedor FROM tb_proveedores WHERE id_persona = '" . $this->person_id . "'";
+
+		// Ejecutar la consulta
+		$result_proveedor = Executor::doit($query_proveedor);
+
+		// Verificar el resultado y obtener el id_proveedor
+		if ($result_proveedor && $result_proveedor[0] instanceof mysqli_result) {
+			$row = $result_proveedor[0]->fetch_assoc();
+			if ($row) {
+				$id_proveedor = $row['id_proveedor'];
+				echo "<pre><b>Proveedor ID:</b> $id_proveedor</pre>";
+			} else {
+				echo "<pre><b>Error:</b> No se encontró un proveedor con id_persona = {$this->person_id}</pre>";
+				return [null, "Error: Proveedor no encontrado"];
+			}
+		} else {
+			echo "<pre><b>Error en la consulta SQL:</b> " . $result_proveedor[1] . "</pre>";
+			return [null, "Error en la consulta para obtener el proveedor"];
+		}
+
+		// Inserción en tb_compras
+		$query = "INSERT INTO tb_compras (id_usuario, id_proveedor, total_compra) 
+              VALUES ('" . $this->user_id . "', '" . $id_proveedor . "', 0)";
+		echo "<pre><b>SQL Query for Insertion:</b> $query</pre>";
+
+		// Ejecutar la inserción
+		$result = Executor::doit($query);
+
+		if ($result && $result[0]) {
+			return [$result[1], "Compra registrada con proveedor"];
+		} else {
+			echo "<pre><b>Error en la inserción SQL:</b> " . $result[1] . "</pre>";
+			return [null, "Error al registrar la compra con proveedor"];
+		}
+	}
+
+
+
+
+
+	public function add_detail($compra_id, $product_id, $quantity, $unit_price)
+	{
+		// Inserción directa en tb_detalle_compra
+		$query = "INSERT INTO tb_detalle_compra (id_compra, id_producto, cantidad, precio_unitario) 
+				  VALUES ('" . $compra_id . "', '" . $product_id . "', '" . $quantity . "', '" . $unit_price . "')";
+
+		// Ejecutar la consulta
+		$result = Executor::doit($query);
+
+		// Verificar el resultado de la inserción
+		if ($result && $result[0]) {
+			return [$result[1], "Detalle de compra agregado"];
+		} else {
+			return [null, "Error al agregar el detalle de compra"];
+		}
+	}
+
+
+
+
+	public function add()
+	{
+		$sql = "insert into " . self::$tablename . " (total,discount,user_id,created_at) ";
+		$sql .= "value ($this->total,$this->discount,$this->user_id,$this->created_at)";
+		return Executor::doit($sql);
+	}
+
 
 	public static function getUser($id)
 	{
-		// Definir la consulta SQL para obtener toda la información del usuario, incluyendo el nombre del rol
 		$sql = "SELECT u.*, p.*, r.nombre_rol AS rol_nombre FROM tb_usuarios u
 				INNER JOIN tb_persona p ON u.id_persona = p.id_persona
 				INNER JOIN tb_roles r ON u.id_rol = r.id_rol
@@ -33,32 +114,10 @@ class SellData
 		return Model::one($query[0], new UserData());
 	}
 
-	public function add()
-	{
-		$sql = "insert into " . self::$tablename . " (total,discount,user_id,created_at) ";
-		$sql .= "value ($this->total,$this->discount,$this->user_id,$this->created_at)";
-		return Executor::doit($sql);
-	}
-
-	public function add_re()
-	{
-		$sql = "insert into " . self::$tablename . " (user_id,operation_type_id,created_at) ";
-		$sql .= "value ($this->user_id,1,$this->created_at)";
-		return Executor::doit($sql);
-	}
-
-
 	public function add_with_client()
 	{
 		$sql = "insert into " . self::$tablename . " (total,discount,person_id,user_id,created_at) ";
 		$sql .= "value ($this->total,$this->discount,$this->person_id,$this->user_id,$this->created_at)";
-		return Executor::doit($sql);
-	}
-
-	public function add_re_with_client()
-	{
-		$sql = "insert into " . self::$tablename . " (person_id,operation_type_id,user_id,created_at) ";
-		$sql .= "value ($this->person_id,1,$this->user_id,$this->created_at)";
 		return Executor::doit($sql);
 	}
 

@@ -100,7 +100,7 @@
 		<?php if ($sell->id_usuario): ?>
 			<?php
 
-			echo "ID del usuario: " . $sell->id_usuario;
+			// echo "ID del usuario: " . $sell->id_usuario;
 			$user = $sell->getUser($sell->id_usuario); // Asume que esta función obtiene datos del usuario relacionado
 
 			// echo "<pre>";

@@ -23,12 +23,16 @@ if(isset($_GET["limit"]) && $_GET["limit"]!="" && $_GET["limit"]!=$limit){
 	$limit=$_GET["limit"];
 }
 $products = ProductData::getAll();
+
+// echo "<pre>";
+// print_r($products);
+// echo "</pre>";
 if(count($products)>0){
 
 if($page==1){
-$curr_products = ProductData::getAllByPage($products[0]->id,$limit);
+$curr_products = ProductData::getAllByPage($products[0]->id_producto,$limit);
 }else{
-$curr_products = ProductData::getAllByPage($products[($page-1)*$limit]->id,$limit);
+$curr_products = ProductData::getAllByPage($products[($page-1)*$limit]->id_producto,$limit);
 
 }
 $npaginas = floor(count($products)/$limit);
@@ -63,19 +67,19 @@ if($px<=$npaginas):
 		<th></th>
 	</thead>
 	<?php foreach($curr_products as $product):
-	$q=OperationData::getQYesF($product->id);
+	$q=OperationData::getQYesF($product->id_producto);
 	?>
-	<tr class="<?php if($q<=$product->inventary_min/2){ echo "danger";}else if($q<=$product->inventary_min){ echo "warning";}?>">
-		<td><?php echo $product->id; ?></td>
-		<td><?php echo $product->name; ?></td>
+	<tr class="<?php if($q<=$product->stock_minimo/2){ echo "danger";}else if($q<=$product->stock_minimo){ echo "warning";}?>">
+		<td><?php echo $product->id_producto; ?></td>
+		<td><?php echo $product->nombre_producto; ?></td>
 		<td>
 			
 			<?php echo $q; ?>
 
 		</td>
 		<td style="width:93px;">
-<!--		<a href="index.php?view=input&product_id=<?php echo $product->id; ?>" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-circle-arrow-up"></i> Alta</a>-->
-		<a href="index.php?view=history&product_id=<?php echo $product->id; ?>" class="btn btn-xs btn-success"><i class="glyphicon glyphicon-time"></i> Historial</a>
+<!--		<a href="index.php?view=input&product_id=<?php echo $product->id_producto; ?>" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-circle-arrow-up"></i> Alta</a>-->
+		<a href="index.php?view=history&product_id=<?php echo $product->id_producto; ?>" class="btn btn-xs btn-success"><i class="glyphicon glyphicon-time"></i> Historial</a>
 		</td>
 	</tr>
 	<?php endforeach;?>

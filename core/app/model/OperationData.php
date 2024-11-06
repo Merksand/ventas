@@ -3,6 +3,12 @@ class OperationData
 {
 	public static $tablename = "operation";
 
+	public $product_id;
+	public $operation_type_id; // 1 - entrada, 2 - salida
+	public $sell_id;
+	public $q; // Cantidad
+	public $is_oficial; // Indicador si es oficial
+
 	public function __construct()
 	{
 		// $this->name = "culo";
@@ -11,14 +17,42 @@ class OperationData
 		// $this->cut_id = "";
 		// $this->operation_type_id = "";
 		// $this->created_at = "NOW()";
+
+
+
 	}
 
-	public function add()
+	private function updateInventory()
 	{
-		$sql = "insert into " . self::$tablename . " (product_id,q,operation_type_id,sell_id,created_at) ";
-		$sql .= "value (\"$this->product_id\",\"$this->q\",$this->operation_type_id,$this->sell_id,$this->created_at)";
-		return Executor::doit($sql);
+		// Aquí debes implementar la lógica para actualizar el inventario
+		$query = "UPDATE tb_productos SET cantidad = cantidad + $this->q WHERE id_producto = '$this->product_id'";
+		Executor::doit($query);
 	}
+
+	public function add($product_id, $sell_id, $quantity)
+	{
+		echo "<pre><b>Product ID:</b> $product_id</pre>";
+		echo "<pre><b>Sell ID:</b> $sell_id</pre>";
+		echo "<pre><b>Quantity:</b> $quantity</pre>";
+
+		$query = "INSERT INTO tb_detalle_compra (id_compra, id_producto, cantidad, precio_unitario) 
+              VALUES ('$sell_id', '$product_id', '$quantity', 
+              (SELECT precio_compra FROM tb_productos WHERE id_producto = '$product_id'))";
+
+		echo "<pre><b>SQL Query for Detail:</b> $query</pre>";
+
+		$result = Executor::doit($query);
+
+		if ($result && $result[0]) {
+			return [true, "Detalle de compra agregado"];
+		} else {
+			echo "<pre><b>SQL Error:</b> " . $result[1] . "</pre>";
+			return [false, "Producto no válido o precio no definido"];
+		}
+	}
+
+
+
 
 	public static function delById($id)
 	{
@@ -82,13 +116,13 @@ class OperationData
 	// public static function getProductAlmacenVenta($sellID)
 	// {
 	// 	$sql = "SELECT 
-    // dv.id_detalle_venta,
-    // dv.id_producto,
-    // p.nombre_producto AS product_name,
-    // a.stock_minimo,
-    // a.stock_actual,
-    // dv.cantidad,2
-    // dv.precio_unitario FROM tb_detalle_venta dv JOIN tb_productos p ON dv.id_producto = p.id_producto 
+	// dv.id_detalle_venta,
+	// dv.id_producto,
+	// p.nombre_producto AS product_name,
+	// a.stock_minimo,
+	// a.stock_actual,
+	// dv.cantidad,2
+	// dv.precio_unitario FROM tb_detalle_venta dv JOIN tb_productos p ON dv.id_producto = p.id_producto 
 	// JOIN tb_almacen a ON p.id_producto = a.id_producto 
 	// WHERE dv.id_venta = $sellID";
 	// 	$query = Executor::doit($sql);

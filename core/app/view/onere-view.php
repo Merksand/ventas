@@ -10,8 +10,13 @@
 <h1>Resumen de Reabastecimiento</h1>
 <?php if(isset($_GET["id"]) && $_GET["id"]!=""):?>
 <?php
+echo $_GET["id"];
 $sell = SellData::getById($_GET["id"]);
 $operations = OperationData::getAllProductsBySellId($_GET["id"]);
+
+echo "<pre>";
+print_r($operations);
+echo "</pre>";
 $total = 0;
 ?>
 <?php
@@ -34,6 +39,10 @@ if(isset($_COOKIE["selled"])){
 
 ?>
 <table class="table table-bordered">
+
+<?php 
+	print_r($sell) ;
+?>
 <?php if($sell->person_id!=""):
 $client = $sell->getPerson();
 ?>
