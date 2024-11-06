@@ -72,7 +72,7 @@
                                     //                 print_r($user);
 
                                     //                 echo "</pre>";
-                                    echo UserData::getById($_SESSION["user_id"])->{13};
+                                    echo UserData::getById($_SESSION["user_id"])->{14};
                                   } ?> <b class="caret"></b> </span>
 
                 </a>
