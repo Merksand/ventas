@@ -11,7 +11,7 @@ class Core {
 
 
 	public static $user = null;
-	public static $debug_sql = false;
+	public static $debug_sql = true;
 
 
 	public static function includeCSS(){

@@ -46,9 +46,9 @@
             </tr>
             <?php foreach ($_SESSION["errors"] as $error):
                 $product = ProductData::getById($error["product_id"]);
-                // echo "<pre>";
-                // print_r($product);
-                // echo "</pre>";
+                echo "<pre>";
+                print_r($product);
+                echo "</pre>";
             ?>
                 <tr class="danger">
                     <td><?php echo $product->codigo_producto; ?></td>
@@ -107,7 +107,7 @@
                 <th style="width:30px;">Imagen</th>
                 <th style="width:30px;">Cantidad</th>
                 <th style="width:200px;">Producto</th>
-                <th style="width:30px;">Precio Unitario</th>
+                <th style="width:30px;">Precio Unitariot</th>
                 <th style="width:30px;">Precio Total</th>
                 <th></th>
             </thead>
@@ -121,9 +121,9 @@
             ?>
             <?php foreach ($_SESSION["cart"] as $p):
                 $product = ProductData::getById($p["product_id"]);
-                // echo "<pre>";
-                // print_r($product);
-                // echo "</pre>";
+                echo "<pre>";
+                print_r($product);
+                echo "</pre>";
             ?>
                 <tr>
                     <td><?php echo $product->codigo_producto; ?></td>

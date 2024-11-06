@@ -9,7 +9,7 @@
 				<th>Codigo</th>
 				<th>Nombre</th>
 				<th>Unidad</th>
-				<th>Precio unitario</th>
+				<th>Precio unitarioe</th>
 				<th>En inventario</th>
 				<th>CantidadAC</th>
 				<th style="width:100px;"></th>

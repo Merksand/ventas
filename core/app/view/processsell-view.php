@@ -3,13 +3,13 @@
 
 if (isset($_SESSION["cart"]) && count($_SESSION["cart"]) > 0) {
 
-    // if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    //     echo "<pre>"; 
-    //     foreach ($_POST as $key => $value) {
-    //         echo "$key: $value\n"; 
-    //     }
-    //     echo "</pre>";
-    // }
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        echo "<pre>"; 
+        foreach ($_POST as $key => $value) {
+            echo "$key: $value\n"; 
+        }
+        echo "</pre>";
+    }
 
     $cart = $_SESSION["cart"];
     $errors = [];

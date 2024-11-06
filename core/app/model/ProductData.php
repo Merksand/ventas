@@ -148,19 +148,23 @@ FROM
         return Model::many($query[0], new ProductData());
     }
 
+
+    // TODO Agregado tipo de entrada, aviso por error futuro
     public static function getLike($p)
     {
-        $sql = "SELECT p.*, a.stock_minimo, a.stock_actual
-            FROM " . self::$tablename . " p
-            JOIN tb_almacen a ON p.id_producto = a.id_producto
-            WHERE p.codigo_producto LIKE '%$p%' 
-               OR p.nombre_producto LIKE '%$p%' 
-               OR p.id_producto LIKE '%$p%'";
+        $sql = "SELECT p.*, a.stock_minimo, a.stock_actual, a.tipo_operacion
+                FROM " . self::$tablename . " p
+                JOIN tb_almacen a ON p.id_producto = a.id_producto
+                WHERE a.tipo_operacion = 'entrada' 
+                  AND (p.codigo_producto LIKE '%$p%' 
+                       OR p.nombre_producto LIKE '%$p%' 
+                       OR p.id_producto LIKE '%$p%')";
 
         $query = Executor::doit($sql);
 
         return Model::many($query[0], new ProductData());
     }
+
 
     public static function setVenta($id_cliente, $id_usuario, $total_venta, $cantidad_total, $efectivo)
     {
