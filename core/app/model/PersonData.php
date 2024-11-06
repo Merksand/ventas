@@ -37,6 +37,9 @@ class PersonData
 	// 	return $result['id'];
 	// }
 
+
+
+
 	public static function getLastId()
 	{
 		$sql = "SELECT LAST_INSERT_ID() AS id";
@@ -94,6 +97,22 @@ class PersonData
 	// 	$sql = "delete from " . self::$tablename . " where id=$id";
 	// 	Executor::doit($sql);
 	// }
+
+	public static function addRole($roleName)
+	{
+		// Consulta SQL para insertar el nuevo rol
+		$sql = "INSERT INTO tb_roles (nombre_rol) VALUES ('$roleName')";
+
+		// Ejecutar la consulta
+		Executor::doit($sql);
+	}
+
+	public static function getRoles()
+	{
+		$sql = "SELECT * FROM tb_roles";
+		$query = Executor::doit($sql);
+		return $query[0];
+	}
 
 	public static function deleteById($id)
 	{

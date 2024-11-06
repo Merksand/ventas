@@ -152,7 +152,8 @@
               <li class="treeview">
                 <a href="#"><i class='fa fa-cog'></i> <span>Administracion</span> <i class="fa fa-angle-left pull-right"></i></a>
                 <ul class="treeview-menu">
-                  <li><a href="./?view=users">Usuarios</a></li>
+                  <li><a href="./?view=users">Usuarios</a></li> 
+                  <li><a href="./?view=addrol">Rol</a></li> 
                   <!-- <li><a href="./?view=settings">Configuracion</a></li> -->
                 </ul>
               </li>

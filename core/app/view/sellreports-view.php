@@ -1,5 +1,8 @@
 <?php
 $clients = PersonData::getClients();
+// echo "<pre>";
+// print_r($clients);
+// echo "</pre>";
 ?>
 <section class="content">
 <div class="row">
@@ -72,6 +75,7 @@ $clients = PersonData::getClients();
 			$operations = SellData::getAllByDateOp($_GET["sd"],$_GET["ed"],2);
 			}
 			else{
+				echo $_GET["client_id"];
 			$operations = SellData::getAllByDateBCOp($_GET["client_id"],$_GET["sd"],$_GET["ed"],2);
 			} 
 
@@ -84,7 +88,7 @@ $clients = PersonData::getClients();
 	<thead>
 		<th>Id</th>
 		<th>Subtotal</th>
-		<th>Descuento</th>
+		<!-- <th>Descuento</th> -->
 		<th>Total</th>
 		<th>Fecha</th>
 	</thead>
@@ -92,7 +96,7 @@ $clients = PersonData::getClients();
 	<tr>
 		<td><?php echo $operation->id; ?></td>
 		<td>$ <?php echo number_format($operation->total,2,'.',','); ?></td>
-		<td>$ <?php echo number_format($operation->discount,2,'.',','); ?></td>
+		<!-- <td>$ <?php echo number_format($operation->discount,2,'.',','); ?></td> -->
 		<td>$ <?php echo number_format($operation->total-$operation->discount,2,'.',','); ?></td>
 		<td><?php echo $operation->created_at; ?></td>
 	</tr>

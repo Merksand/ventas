@@ -1,6 +1,7 @@
 <?php
 class SellData
 {
+	public static $tablename = "sell";
 	public $user_id;
 	public $person_id;
 	public function __construct()
@@ -201,7 +202,16 @@ class SellData
 	}
 	public static function getAllByDateBCOp($clientid, $start, $end, $op)
 	{
-		$sql = "select * from " . self::$tablename . " where date(created_at) >= \"$start\" and date(created_at) <= \"$end\" and client_id=$clientid  and operation_type_id=$op order by created_at desc";
+		// Realizamos el JOIN entre tb_ventas y tb_clientes, también se usa el filtro de la operación.
+		$sql = "SELECT v.*, c.*, v.created_at, v.operation_type_id
+            FROM " . self::$tablename . " v
+            JOIN tb_clientes c ON v.id_cliente = c.id_cliente
+            WHERE date(v.created_at) >= \"$start\" 
+              AND date(v.created_at) <= \"$end\" 
+              AND c.id_cliente = $clientid
+              AND v.operation_type_id = $op
+            ORDER BY v.created_at DESC";
+
 		$query = Executor::doit($sql);
 		return Model::many($query[0], new SellData());
 	}

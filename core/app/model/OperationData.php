@@ -91,25 +91,67 @@ class OperationData
 
 
 
-	public static function getAllByDateOfficial($start, $end)
+	public static function getProductsByDateAndOperation($start, $end)
 	{
-		$sql = "select * from " . self::$tablename . " where date(created_at) >= \"$start\" and date(created_at) <= \"$end\" order by created_at desc";
+		// Consulta para obtener productos con su cantidad, tipo operación y fecha
 		if ($start == $end) {
-			$sql = "select * from " . self::$tablename . " where date(created_at) = \"$start\" order by created_at desc";
+			$sql = "SELECT p.nombre_producto AS producto, 
+                       dv.cantidad, 
+                       v.fecha_venta, 
+                       CASE 
+                           WHEN a.tipo_operacion = 'entrada' THEN 'Entrada'
+                           WHEN a.tipo_operacion = 'salida' THEN 'Salida'
+                       END AS tipo_operacion
+                FROM tb_detalle_venta dv
+                JOIN tb_ventas v ON dv.id_venta = v.id_venta
+                JOIN tb_productos p ON dv.id_producto = p.id_producto
+                JOIN tb_almacen a ON dv.id_producto = a.id_producto
+                WHERE DATE(v.fecha_venta) = \"$start\"
+                ORDER BY v.fecha_venta DESC";
+		} else {
+			$sql = "SELECT p.nombre_producto AS producto, 
+                       dv.cantidad, 
+                       v.fecha_venta, 
+                       CASE 
+                           WHEN a.tipo_operacion = 'entrada' THEN 'Entrada'
+                           WHEN a.tipo_operacion = 'salida' THEN 'Salida'
+                       END AS tipo_operacion
+                FROM tb_detalle_venta dv
+                JOIN tb_ventas v ON dv.id_venta = v.id_venta
+                JOIN tb_productos p ON dv.id_producto = p.id_producto
+                JOIN tb_almacen a ON dv.id_producto = a.id_producto
+                WHERE DATE(v.fecha_venta) BETWEEN \"$start\" AND \"$end\"
+                ORDER BY v.fecha_venta DESC";
 		}
+
+		// Ejecutar la consulta y devolver los resultados
+		$query = Executor::doit($sql);
+		return Model::many($query[0], new ProductData());
+	}
+
+
+
+	public static function getAllByDateOfficialBP($product, $start, $end)
+	{
+		// Consulta para un rango de fechas con el filtro de producto
+		if ($start === $end) {
+			$sql = "SELECT * FROM tb_detalle_venta 
+                WHERE DATE(fecha_venta) = \"$start\" 
+                AND id_producto = $product 
+                ORDER BY fecha_venta DESC";
+		} else {
+			$sql = "SELECT * FROM tb_detalle_venta 
+                WHERE DATE(fecha_venta) >= \"$start\" 
+                AND DATE(fecha_venta) <= \"$end\" 
+                AND id_producto = $product 
+                ORDER BY fecha_venta DESC";
+		}
+
+		// Ejecutar la consulta y devolver los resultados
 		$query = Executor::doit($sql);
 		return Model::many($query[0], new OperationData());
 	}
 
-	public static function getAllByDateOfficialBP($product, $start, $end)
-	{
-		$sql = "select * from " . self::$tablename . " where date(created_at) >= \"$start\" and date(created_at) <= \"$end\" and product_id=$product order by created_at desc";
-		if ($start == $end) {
-			$sql = "select * from " . self::$tablename . " where date(created_at) = \"$start\" order by created_at desc";
-		}
-		$query = Executor::doit($sql);
-		return Model::many($query[0], new OperationData());
-	}
 
 
 

@@ -58,15 +58,15 @@
 			// echo "</pre>";
 
 			// Verifica la cantidad disponible en el inventario
-			$stockActual = $product->stock_actual; // Utiliza el stock actual del producto obtenido de la consulta
+			$stockActual = $product->{20}; // Utiliza el stock actual del producto obtenido de la consulta
 			if ($stockActual == 0) {
-				echo "<p class='alert alert-danger'>El producto <b style='text-transform:uppercase;'> $product->product_name</b> no tiene existencias en inventario.</p>";
-			} elseif ($stockActual <= $product->stock_minimo / 2) {
-				echo "<p class='alert alert-danger'>El producto <b style='text-transform:uppercase;'> $product->product_name</b> tiene muy pocas existencias en inventario.</p>";
-			} elseif ($stockActual <= $product->stock_minimo) {
-				echo "<p class='alert alert-warning'>El producto <b style='text-transform:uppercase;'> $product->product_name</b> tiene pocas existencias en inventario.</p>";
+				echo "<p class='alert alert-danger'>El producto <b style='text-transform:uppercase;'> {$product->{'20'}}</b> no tiene existencias en inventario.</p>";
+			} elseif ($stockActual <= $product->{22} / 2) {
+				echo "<p class='alert alert-danger'>El producto <b style='text-transform:uppercase;'> {$product->{'20'}}</b> tiene muy pocas existencias en inventario.</p>";
+			} elseif ($stockActual <= $product->{22}) {
+				echo "<p class='alert alert-warning'>El producto <b style='text-transform:uppercase;'>{$product->{'20'}}</b> tiene pocas existencias en inventario.</p>";
 			} else {
-				echo "<p>El producto <b style='text-transform:uppercase;'> $product->product_name</b> tiene suficiente stock.</p>";
+				echo "<p>El producto <b style='text-transform:uppercase;'> {$product->{'20'}}</b> tiene suficiente stock.</p>";
 			}
 		}
 		setcookie("selled", "", time() - 18600);

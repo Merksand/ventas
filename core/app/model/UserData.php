@@ -34,11 +34,29 @@ class UserData
 	}
 
 	// partiendo de que ya tenemos creado un objecto UserData previamente utilizamos el contexto
-	public function update()
+	public static function update($persona_id, $user_id, $nombre, $apellido_paterno, $apellido_materno, $email, $is_active, $rol_id, $password)
 	{
-		$sql = "update " . self::$tablename . " set name=\"$this->name\",email=\"$this->email\",username=\"$this->username\",lastname=\"$this->lastname\",is_active=\"$this->is_active\",is_admin=\"$this->is_admin\" where id=$this->id";
-		Executor::doit($sql);
+		// Actualizar en tb_persona
+		$sql1 = "UPDATE tb_persona 
+            SET nombre = \"$nombre\",
+                apellido_paterno = \"$apellido_paterno\",
+                apellido_materno = \"$apellido_materno\",
+                email = \"$email\"
+				
+            WHERE id_persona = \"$persona_id\"";
+		Executor::doit($sql1);
+
+		// Actualizar en tb_usuarios incluyendo el rol
+		$sql2 = "UPDATE tb_usuarios 
+            SET 
+				password = \"$password\",
+                is_active = \"$is_active\",
+                id_rol = \"$rol_id\"
+            WHERE id_usuario = \"$user_id\"";
+		Executor::doit($sql2);
 	}
+
+
 
 	public function update_passwd()
 	{
@@ -74,10 +92,20 @@ class UserData
 
 	public static function getAll()
 	{
-		$sql = "select * from " . self::$tablename;
+		// Consulta para obtener todos los usuarios, incluyendo datos de la tabla tb_persona si es necesario
+		$sql = "    
+SELECT * FROM tb_persona tp
+inner join tb_usuarios tc on tc.id_persona = tp.id_persona
+inner join tb_roles r on r.id_rol = tc.id_rol
+";
+
+		// Ejecutar la consulta
 		$query = Executor::doit($sql);
+
+		// Retornar los resultados usando el modelo adecuado para mapear los datos
 		return Model::many($query[0], new UserData());
 	}
+
 
 
 	public static function getLike($q)
