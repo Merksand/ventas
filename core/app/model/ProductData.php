@@ -12,23 +12,28 @@ class ProductData
         $this->precio_compra = 0;
         $this->precio_venta = 0;
         $this->stock = 0;
-        $this->stock_minimo = 0;
+        $this->stock_minimo = "";
         $this->imagen = "";
+
         $this->id_categoria = null;
-        $this->fyh_creacion = "NOW()";
-        $this->fyh_actualizacion = "NOW()";
+        $this->is_active = 1;
+        $this->unidad = "";
+        $this->presentacion = "";
+        $this->fyh_creacion = null;
+        $this->fyh_actualizacion = null;
+        $this->user_id = null;
 
         $this->cantidad = 0;
+        // $this->fyh_actualizacion = "NOW()";
+        // $this->fyh_creacion = "NOW()";
     }
 
     // Obtener todos los productos
     public static function getAll()
     {
-        $sql = "SELECT
-  *
-FROM
-  tb_almacen a
-  JOIN tb_productos p ON a.id_producto = p.id_producto";
+        $sql = "SELECT * FROM tb_productos tp
+INNER JOIN tb_almacen ta ON tp.id_producto = ta.id_producto
+WHERE tp.id_producto = p.id_producto";
         $query = Executor::doit($sql);
         return Model::many($query[0], new ProductData());
     }
@@ -98,9 +103,23 @@ FROM
     // Actualizar un producto
     public function update()
     {
-        $sql = "UPDATE " . self::$tablename . " SET codigo_producto=\"$this->codigo_producto\", nombre_producto=\"$this->nombre_producto\", descripcion=\"$this->descripcion\", precio_compra=$this->precio_compra, precio_venta=$this->precio_venta, stock=$this->stock, imagen=\"$this->imagen\", id_categoria=$this->id_categoria, fyh_actualizacion=NOW() WHERE id_producto=$this->id_producto";
+        $sql = "UPDATE " . self::$tablename . " SET 
+                codigo_producto = \"$this->codigo_producto\", 
+                nombre_producto = \"$this->nombre_producto\", 
+                descripcion = \"$this->descripcion\", 
+                precio_compra = $this->precio_compra, 
+                precio_venta = $this->precio_venta, 
+                stock = $this->stock, 
+                imagen = \"$this->imagen\", 
+                id_categoria = " . ($this->id_categoria ? $this->id_categoria : "NULL") . ", 
+                is_active = $this->is_active, 
+                fyh_actualizacion = NOW() 
+            WHERE id_producto = $this->id_producto";
+
         Executor::doit($sql);
     }
+
+
 
     // Eliminar un producto
     public static function delete($id)
@@ -116,7 +135,10 @@ FROM
         if (empty($id)) {
             die("Error: ID proporcionado está vacío.");
         }
-        $sql = "SELECT * FROM tb_productos WHERE id_producto=$id";
+        $sql = "SELECT * FROM tb_productos tp
+INNER JOIN tb_almacen ta ON tp.id_producto = ta.id_producto
+WHERE tp.id_producto=$id";
+
         $query = Executor::doit($sql);
         return Model::one($query[0], new ProductData());
     }

@@ -46,16 +46,16 @@
 
 		$user = $sell; // Asume que esta función obtiene datos del usuario relacionado
 		// echo "hofff";
-		echo "<pre>";
-		print_r($products);
-		echo "</pre>";
+		// echo "<pre>";
+		// print_r($products);
+		// echo "</pre>";
 // 
 
 		foreach ($products as $product) {
 			// echo "Putoss";
-			echo "<pre>";
-			print_r($products); // Muestra la información del producto
-			echo "</pre>";
+			// echo "<pre>";
+			// print_r($products); // Muestra la información del producto
+			// echo "</pre>";
 
 			// Verifica la cantidad disponible en el inventario
 			$stockActual = $product->producto_stock; // Utiliza el stock actual del producto obtenido de la consulta
@@ -63,11 +63,11 @@
 			print_r($stockActual);
 			echo "</pre>";
 			if ($stockActual == 0) {
-				echo "<p class='alert alert-danger'>El producto <b style='text-transform:uppercase;'> {$product->{'8'}}</b> no tiene existencias en inventario.</p>";
+				echo "<p class='alert alert-danger'>El producto <b style='text-transform:uppercase;'> $product->producto_nombre</b> no tiene existencias en inventario.</p>";
 			} elseif ($stockActual <= $product->almacen_stock_minimo / 2) {
-				echo "<p class='alert alert-danger'>El producto <b style='text-transform:uppercase;'> {$product->{'8'}}</b> tiene muy pocas existencias en inventario.</p>";
+				echo "<p class='alert alert-danger'>El producto <b style='text-transform:uppercase;'> $product->producto_nombre</b> tiene muy pocas existencias en inventario.</p>";
 			} elseif ($stockActual <= $product->almacen_stock_minimo) {
-				echo "<p class='alert alert-warning'>El producto <b style='text-transform:uppercase;'>{$product->{'8'}}</b> tiene pocas existencias en inventario.</p>";
+				echo "<p class='alert alert-warning'>El producto <b style='text-transform:uppercase;'>$product->producto_nombre</b> tiene pocas existencias en inventario.</p>";
 			} else {
 				echo "<p>El producto <b style='text-transform:uppercase;'> $product->producto_nombre</b> tiene suficiente stock.</p>";
 			}

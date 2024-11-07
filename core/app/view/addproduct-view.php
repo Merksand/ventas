@@ -1,6 +1,16 @@
 <?php
 
 if (count($_POST) > 0) {
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // Mostrar todos los datos del formulario
+        echo "<pre>"; // Para formatear mejor la salida
+        foreach ($_POST as $key => $value) {
+            echo "$key: $value\n"; // Imprime la clave y el valor
+        }
+        echo "</pre>";
+    }
+
     $product = new ProductData();
 
     // Asignar los valores del formulario a las propiedades del objeto ProductData
@@ -10,7 +20,7 @@ if (count($_POST) > 0) {
     $product->precio_venta = $_POST["precio_venta"]; // Precio de venta
     $product->descripcion = $_POST["descripcion"]; // Descripción
     $product->stock = $_POST["stock"]; // Cantidad en stock
-    $product-> stock_minimo = $_POST["stock_minimo"];
+    $product->stock_minimo = $_POST["stock_minimo"];
 
     // Manejo del stock mínimo
     $product->stock_minimo = !empty($_POST["stock_minimo"]) ? $_POST["stock_minimo"] : NULL; // Asignar stock mínimo
@@ -40,7 +50,7 @@ if (count($_POST) > 0) {
     }
 
 
-    
+
     // $product -> addAlmacenEntry(1, 'entrada', $stock_minimo, 5);
     // $product->add_with_stock();  
 
@@ -52,5 +62,5 @@ if (count($_POST) > 0) {
 
 
 
-    print "<script>window.location='index.php?view=products';</script>";
+    // print "<script>window.location='index.php?view=products';</script>";
 }
