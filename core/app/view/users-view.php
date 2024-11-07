@@ -14,6 +14,7 @@
 			<table class="table table-bordered table-hover">
 				<thead>
 					<th>Nombre completo</th>
+					<th>Telefono</th>
 					<th>Rol</th>
 					<th>Email</th>
 					<th>Activo</th>
@@ -22,9 +23,13 @@
 				</thead>
 				<?php
 				foreach ($users as $user) {
+					// echo "<pre>";
+					// print_r($users[1]);
+					// echo "</pre>";
 				?>
 					<tr>
 						<td><?php echo $user->nombre . " " . $user->apellido_paterno . " " . $user->apellido_materno; ?></td>
+						<td><?php echo $user->celular; ?></td>
 						<td><?php echo $user->nombre_rol; ?></td>
 						<td><?php echo $user->email; ?></td>
 						<td>

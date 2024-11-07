@@ -65,37 +65,7 @@
 
     ?>
         <?php
-        // echo $_SESSION["cart"];
-        // echo "<pre>";
-        // print_r($_SESSION["cart"]);
-        // echo "</pre>";
-
-
-        // $sessionPath = ini_get('session.save_path');
-        // $sessions = scandir($sessionPath);
-
-        // foreach ($sessions as $sessionFile) {
-        //     if (strpos($sessionFile, 'sess_') === 0) {
-        //         $sessionId = substr($sessionFile, 5); // Extraer ID
-
-        //         // Mostrar contenido de la sesión
-        //         echo "Contenido de la sesión $sessionId: ";
-        //         print_r($_SESSION);
-        //         echo "<br>";
-
-        //         session_abort(); // Cerrar la sesión sin guardar cambios
-        //     }
-        // }
-
-
-
-        // session_destroy();
-
-        // foreach (PersonData::getClients() as $client) {
-        //     echo "<pre>";
-        //     print_r($client->id);
-        //     echo "</pre>";
-        // }
+      
 
 
         ?>

@@ -1,6 +1,11 @@
 <?php $user = UserData::getById($_GET["id"]); ?>
 
+<?php 
 
+  // echo "<pre>";
+  // print_r($user);
+  // echo "</pre>";
+?>
 <div class="row">
   <div class="col-md-12">
     <h1>Editar Usuario</h1>
@@ -10,20 +15,20 @@
       <div class="form-group">
         <label for="inputEmail1" class="col-lg-2 control-label">Nombre*</label>
         <div class="col-md-6">
-          <input type="hidden" name="id_persona" value="<?php echo $user->id_persona; ?>">
-          <input type="text" name="name" value="<?php echo $user->{6}; ?>" class="form-control" id="name" placeholder="Nombre">
+          <input type="hidden" name="id_persona" value="<?php echo $user->usuario_id_persona; ?>">
+          <input type="text" name="name" value="<?php echo $user->persona_nombre; ?>" class="form-control" id="name" placeholder="Nombre">
         </div>
       </div>
       <div class="form-group">
         <label for="inputEmail1" class="col-lg-2 control-label">Apellido Paterno</label>
         <div class="col-md-6">
-          <input type="text" name="lastname" value="<?php echo $user->{7}; ?>" required class="form-control" id="lastname" placeholder="Apellido">
+          <input type="text" name="lastname" value="<?php echo $user->persona_apellido_paterno; ?>" required class="form-control" id="lastname" placeholder="Apellido">
         </div>
       </div>
       <div class="form-group">
         <label for="inputEmail1" class="col-lg-2 control-label">Apellido Materno</label>
         <div class="col-md-6">
-          <input type="text" name="lastname2" value="<?php echo $user->{8}; ?>" required class="form-control" id="lastname" placeholder="Apellido">
+          <input type="text" name="lastname2" value="<?php echo $user->persona_apellido_materno; ?>" required class="form-control" id="lastname" placeholder="Apellido">
         </div>
       </div>
 
@@ -49,7 +54,21 @@
       <div class="form-group">
         <label for="inputEmail1" class="col-lg-2 control-label">Email*</label>
         <div class="col-md-6">
-          <input type="text" name="email" value="<?php echo $user->{10}; ?>" class="form-control" id="email" placeholder="Email">
+          <input type="text" name="email" value="<?php echo $user->persona_email; ?>" class="form-control" id="email" placeholder="Email">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="inputEmail1" class="col-lg-2 control-label">Telefono*</label>
+        <div class="col-md-6">
+          <input type="text" name="telefono" value="<?php echo $user->persona_celular; ?>" class="form-control" id="email" placeholder="Email">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="inputEmail1" class="col-lg-2 control-label">Dirección*</label>
+        <div class="col-md-6">
+          <input type="text" name="direccion" value="<?php echo $user->persona_direccion; ?>" class="form-control" id="email" placeholder="Email">
         </div>
       </div>
 
@@ -92,7 +111,7 @@
 
       <div class="form-group">
         <div class="col-lg-offset-2 col-lg-10">
-          <input type="hidden" name="user_id" value="<?php echo $user->id_persona; ?>">
+          <input type="hidden" name="user_id" value="<?php echo $user->usuario_id_persona; ?>">
           <button type="submit" class="btn btn-primary">Actualizar Usuario</button>
         </div>
       </div>

@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-12">
-    <h1>Agregar Usuario</h1>
+    <h1>Agregar Usuarios</h1>
     <br>
     <form class="form-horizontal" method="post" id="adduser" action="index.php?view=adduser" role="form">
 
@@ -53,12 +53,12 @@
       </div>
 
       <!-- Nombre de usuario (tb_usuarios) -->
-      <div class="form-group">
+      <!-- <div class="form-group">
         <label for="username" class="col-lg-2 control-label">Nombre de usuario*</label>
         <div class="col-md-6">
           <input type="text" name="username" class="form-control" id="username" placeholder="Nombre de usuario" required>
         </div>
-      </div>
+      </div> -->
 
       <!-- Campo para Contraseña (tb_usuarios) -->
       <div class="form-group">
