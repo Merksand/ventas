@@ -33,7 +33,7 @@ class ProductData
     {
         $sql = "SELECT * FROM tb_productos tp
 INNER JOIN tb_almacen ta ON tp.id_producto = ta.id_producto
-WHERE tp.id_producto = p.id_producto";
+WHERE tp.is_active = 1 and ta.tipo_operacion = 'entrada'";
         $query = Executor::doit($sql);
         return Model::many($query[0], new ProductData());
     }
@@ -51,7 +51,7 @@ WHERE tp.id_producto = p.id_producto";
                 IFNULL(SUM(CASE WHEN a.tipo_operacion = 'salida' THEN a.stock_actual ELSE 0 END), 0)) AS stock_actual
             FROM " . self::$tablename . " p
             LEFT JOIN tb_almacen a ON p.id_producto = a.id_producto
-            WHERE p.id_producto >= $id
+            WHERE p.id_producto >= $id and p.is_active = 1
             GROUP BY p.id_producto
             ORDER BY p.id_producto ASC
             LIMIT $limit
@@ -124,7 +124,7 @@ WHERE tp.id_producto = p.id_producto";
     // Eliminar un producto
     public static function delete($id)
     {
-        $sql = "DELETE FROM " . self::$tablename . " WHERE id_producto=$id";
+        $sql = "UPDATE " . self::$tablename . " SET is_active = 0 WHERE id_producto =$id";
         Executor::doit($sql);
     }
 
@@ -137,7 +137,7 @@ WHERE tp.id_producto = p.id_producto";
         }
         $sql = "SELECT * FROM tb_productos tp
 INNER JOIN tb_almacen ta ON tp.id_producto = ta.id_producto
-WHERE tp.id_producto=$id";
+WHERE  tp.id_producto=$id";
 
         $query = Executor::doit($sql);
         return Model::one($query[0], new ProductData());
@@ -205,7 +205,7 @@ WHERE tp.id_producto=$id";
         $sql = "SELECT p.*, a.stock_minimo, a.stock_actual, a.tipo_operacion
                 FROM " . self::$tablename . " p
                 JOIN tb_almacen a ON p.id_producto = a.id_producto
-                WHERE a.tipo_operacion = 'entrada' 
+                WHERE p.is_active = 1 AND a.tipo_operacion = 'entrada' 
                   AND (p.codigo_producto LIKE '%$p%' 
                        OR p.nombre_producto LIKE '%$p%' 
                        OR p.id_producto LIKE '%$p%')";
@@ -214,6 +214,20 @@ WHERE tp.id_producto=$id";
 
         return Model::many($query[0], new ProductData());
     }
+
+
+    public static function getActiveProducts() {
+        $sql = "SELECT * FROM tb_productos WHERE is_active = 1";
+        $query = Executor::doit($sql);
+        return Model::many($query[0], new ProductData());
+    }
+    
+    public static function getInactiveProducts() {
+        $sql = "SELECT * FROM tb_productos WHERE is_active = 0";
+        $query = Executor::doit($sql);
+        return Model::many($query[0], new ProductData());
+    }
+    
 
 
     public static function setVenta($id_cliente, $id_usuario, $total_venta, $cantidad_total, $efectivo)

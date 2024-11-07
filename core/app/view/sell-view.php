@@ -46,9 +46,9 @@
             </tr>
             <?php foreach ($_SESSION["errors"] as $error):
                 $product = ProductData::getById($error["product_id"]);
-                echo "<pre>";
-                print_r($product);
-                echo "</pre>";
+                // echo "<pre>";
+                // print_r($product);
+                // echo "</pre>";
             ?>
                 <tr class="danger">
                     <td><?php echo $product->codigo_producto; ?></td>

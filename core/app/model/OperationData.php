@@ -18,6 +18,8 @@ class OperationData
 		// $this->operation_type_id = "";
 		// $this->created_at = "NOW()";
 
+		$this->is_active = 1;
+
 
 
 	}
@@ -394,7 +396,7 @@ class OperationData
 	{
 		// Nos aseguramos de obtener los datos desde tb_almacen
 		$sql = "SELECT * FROM tb_almacen WHERE id_producto = $product_id ORDER BY fyh_creacion DESC";
-		$query = Executor::doit($sql);
+		$query = Executor::doit($sql);	
 
 		// Si `OperationData` es la clase que representa datos de `tb_almacen`, la usamos aquí
 		return Model::many($query[0], new OperationData());

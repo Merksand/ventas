@@ -1,7 +1,19 @@
 <div class="row">
     <div class="col-md-12">
-        <div class="btn-group  pull-right">
+        <div class="btn-group pull-right">
             <a href="index.php?view=newproduct" class="btn btn-default">Agregar Producto</a>
+            
+            <!-- Menú desplegable para seleccionar productos activos o inactivos -->
+            <div class="btn-group pull-right">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-filter"></i> Filtrar Productos <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="index.php?view=products&status=active">Mostrar Activos</a></li>
+                    <li><a href="index.php?view=products&status=inactive">Mostrar Inactivos</a></li>
+                </ul>
+            </div>
+
             <div class="btn-group pull-right">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                     <i class="fa fa-download"></i> Descargar <span class="caret"></span>
@@ -11,52 +23,27 @@
                 </ul>
             </div>
         </div>
+
         <h1>Lista de Productos</h1>
         <div class="clearfix"></div>
 
         <?php
-        $page = 1;
-        if (isset($_GET["page"])) {
-            $page = $_GET["page"];
-        }
-        $limit = 10;
-        if (isset($_GET["limit"]) && $_GET["limit"] != "" && $_GET["limit"] != $limit) {
-            $limit = $_GET["limit"];
-        }
+        $page = isset($_GET["page"]) ? $_GET["page"] : 1;
+        $limit = isset($_GET["limit"]) ? $_GET["limit"] : 10;
+        $status = isset($_GET["status"]) ? $_GET["status"] : 'active';
 
-        $products = ProductData::getAllWithStockMin();
+        // Obtener productos en función del filtro de estado
+        $products = ($status === 'inactive') ? ProductData::getInactiveProducts() : ProductData::getActiveProducts();
+
         if (count($products) > 0) {
+            $npaginas = ceil(count($products) / $limit);
+            $offset = ($page - 1) * $limit;
 
-            if ($page == 1) {
-                $curr_products = ProductData::getAllByPage($products[0]->id_producto, $limit);
-            } else {
-                $curr_products = ProductData::getAllByPage($products[($page - 1) * $limit]->id_producto, $limit);
-            }
-            $npaginas = floor(count($products) / $limit);
-            $spaginas = count($products) % $limit;
+            $curr_products = array_slice($products, $offset, $limit);
 
-            if ($spaginas > 0) {
-                $npaginas++;
-            }
-        ?>
-            <h3>Pagina <?php echo $page . " de " . $npaginas; ?></h3>
-            <div class="btn-group pull-right">
-                <?php
-                $px = $page - 1;
-                if ($px > 0):
-                ?>
-                    <a class="btn btn-sm btn-default" href="<?php echo "index.php?view=products&limit=$limit&page=" . ($px); ?>"><i class="glyphicon glyphicon-chevron-left"></i> Atras </a>
-                <?php endif; ?>
-
-                <?php
-                $px = $page + 1;
-                if ($px <= $npaginas):
-                ?>
-                    <a class="btn btn-sm btn-default" href="<?php echo "index.php?view=products&limit=$limit&page=" . ($px); ?>">Adelante <i class="glyphicon glyphicon-chevron-right"></i></a>
-                <?php endif; ?>
-            </div>
-            <div class="clearfix"></div>
-            <br>
+            echo "<h3>Página $page de $npaginas</h3>";
+            ?>
+            
             <table class="table table-bordered table-hover">
                 <thead>
                     <th>Código</th>
@@ -65,36 +52,25 @@
                     <th>Precio Entrada</th>
                     <th>Precio Salida</th>
                     <th>Categoría</th>
-                    <th>Stock Actual</th> <!-- Aquí el stock mínimo -->
+                    <th>Stock Actual</th>
                     <th>Activo</th>
-                    <th></th>
+                    <th>Acciones</th>
                 </thead>
                 <?php foreach ($curr_products as $product): ?>
                     <tr>
                         <td><?php echo $product->codigo_producto; ?></td>
                         <td>
-                            <?php if ($product->imagen != ""): ?>
+                            <?php if ($product->imagen): ?>
                                 <img src="storage/products/<?php echo $product->imagen; ?>" style="width:64px;">
                             <?php endif; ?>
                         </td>
                         <td><?php echo $product->nombre_producto; ?></td>
-                        <td>$ <?php echo number_format($product->precio_compra, 2, '.', ','); ?></td>
-                        <td>$ <?php echo number_format($product->precio_venta, 2, '.', ','); ?></td>
+                        <td>Bs <?php echo number_format($product->precio_compra, 2); ?></td>
+                        <td>Bs <?php echo number_format($product->precio_venta, 2); ?></td>
+                        <td><?php echo $product->getCategory()->name ?? "<center>----</center>"; ?></td>
+                        <td><?php echo $product->stock; ?></td>
+                        <td><?php echo $product->is_active ? '<i class="fa fa-check"></i>' : '<i class="fa fa-times"></i>'; ?></td>
                         <td>
-                            <?php if ($product->id_categoria != null) {
-                                echo $product->getCategory()->name;
-                            } else {
-                                echo "<center>----</center>";
-                            } ?>
-                        </td>
-                        <td><?php echo $product->stock; ?></td> <!-- Mostrando stock mínimo -->
-                        <td>
-                            <?php if ($product->is_active): ?>
-                                <i class="fa fa-check"></i>
-                            <?php endif; ?>
-                        </td>
-
-                        <td style="width:70px;">
                             <a href="index.php?view=editproduct&id=<?php echo $product->id_producto; ?>" class="btn btn-xs btn-warning">
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </a>
@@ -105,29 +81,29 @@
                     </tr>
                 <?php endforeach; ?>
             </table>
+
             <div class="btn-group pull-right">
                 <?php
-
-                for ($i = 0; $i < $npaginas; $i++) {
-                    $activeClass = ($i + 1 == $page) ? 'btn-primary' : 'btn-default';
-                    echo "<a href='index.php?view=products&limit=$limit&page=" . ($i + 1) . "' class='btn btn-sm $activeClass'>" . ($i + 1) . "</a> ";
+                for ($i = 1; $i <= $npaginas; $i++) {
+                    $activeClass = ($i == $page) ? 'btn-primary' : 'btn-default';
+                    echo "<a href='index.php?view=products&status=$status&limit=$limit&page=$i' class='btn btn-sm $activeClass'>$i</a> ";
                 }
-
                 ?>
             </div>
             <form class="form-inline" method="get" action="index.php">
                 <input type="hidden" name="view" value="products">
                 <label for="limit">Límite:</label>
                 <input type="number" value="<?php echo $limit; ?>" name="limit" style="width:60px;" class="form-control" min="1">
+                <input type="hidden" name="status" value="<?php echo $status; ?>">
                 <button type="submit" class="btn btn-default">Actualizar</button>
             </form>
             <div class="clearfix"></div>
         <?php
         } else {
-        ?>
+            ?>
             <div class="jumbotron">
                 <h2>No hay productos</h2>
-                <p>No se han agregado productos a la base de datos, puedes agregar uno dando click en el boton <b>"Agregar Producto"</b>.</p>
+                <p>No se han agregado productos a la base de datos.</p>
             </div>
         <?php
         }

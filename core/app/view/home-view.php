@@ -108,24 +108,27 @@
 	      <?php
         foreach ($products as $product):
           $q = OperationData::getQYesF($product->id_producto);
+		//   echo "<pre>";
+		//   print_r($product);
+		//   echo "</pre>";
         ?>
-	        <?php if ($q <= $product->stock_minimo): ?>
+	        <?php if ($q <= $product->{16}): ?>
 	          <tr class="<?php if ($q == 0) {
                           echo "danger";
-                        } else if ($q <= $product->stock_minimo / 2) {
+                        } else if ($q <= $product->{16} / 2) {
                           echo "danger";
-                        } else if ($q <= $product->stock_minimo) {
+                        } else if ($q <= $product->{16}) {
                           echo "warning";
                         } ?>">
 	            <td><?php echo $product->id_producto; ?></td>
-	            <td><?php echo $product->{9}; ?></td>
+	            <td><?php echo $product->nombre_producto; ?></td>
 	            <td><?php echo $q; ?></td>
 	            <td>
 	              <?php if ($q == 0) {
                   echo "<span class='label label-danger'>No hay existencias.</span>";
-                } else if ($q <= $product->stock_minimo / 2) {
+                } else if ($q <= $product->{16} / 2) {
                   echo "<span class='label label-danger'>Quedan muy pocas existencias.</span>";
-                } else if ($q <= $product->stock_minimo) {
+                } else if ($q <= $product->{16}) {
                   echo "<span class='label label-warning'>Quedan pocas existencias.</span>";
                 } ?>
 	            </td>

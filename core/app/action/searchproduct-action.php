@@ -1,11 +1,11 @@
 <?php if (isset($_GET["product"]) && $_GET["product"] != ""): ?>
     <?php
-    echo "Productazon: " . $_GET["product"];
+    // echo "Productazon: " . $_GET["product"];
     $products = ProductData::getLike($_GET["product"]);
 
-    echo "<pre>";
-    print_r($products);
-    echo "</pre>";
+    // echo "<pre>";
+    // print_r($products);
+    // echo "</pre>";
     if (count($products) > 0) {
     ?>
         <h3>Resultados de la Búsquedssa</h3>
