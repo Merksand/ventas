@@ -91,9 +91,9 @@
             ?>
             <?php foreach ($_SESSION["cart"] as $p):
                 $product = ProductData::getById($p["product_id"]);
-                echo "<pre>";
-                print_r($product);
-                echo "</pre>";
+                // echo "<pre>";
+                // print_r($product);
+                // echo "</pre>";
             ?>
                 <tr>
                     <td><?php echo $product->codigo_producto; ?></td>

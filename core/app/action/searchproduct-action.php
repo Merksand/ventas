@@ -28,7 +28,7 @@
                         <td style="width:80px;"><?php echo $product->codigo_producto; ?></td>
                         <td><?php echo $product->nombre_producto; ?></td>
                         <td><b>Bs<?php echo $product->precio_venta; ?></b></td>
-                        <td><?php echo $product->stock_actual; ?></td>
+                        <td><?php echo $product->stock; ?></td>
                         <td style="width:250px;">
                             <form method="post" action="index.php?view=addtocart">
                                 <input type="hidden" name="product_id" value="<?php echo $product->id_producto; ?>">

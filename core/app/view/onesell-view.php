@@ -39,34 +39,37 @@
 
 	?>
 
-	<?php if (!isset($_COOKIE["selled"])): ?>
+	<?php if (isset($_COOKIE["selled"])): ?>
 		<?php
 		// Obtiene todos los productos relacionados con la venta
 		$products = OperationData::getProductAlmacenVenta($sellId); // Asume que devuelve un array de productos
 
 		$user = $sell; // Asume que esta función obtiene datos del usuario relacionado
 		// echo "hofff";
-		// echo "<pre>";
-		// print_r(OperationData::getProductAlmacenVenta($sellId));
-		// echo "</pre>";
-
+		echo "<pre>";
+		print_r($products);
+		echo "</pre>";
+// 
 
 		foreach ($products as $product) {
 			// echo "Putoss";
-			// echo "<pre>";
-			// print_r($product); // Muestra la información del producto
-			// echo "</pre>";
+			echo "<pre>";
+			print_r($products); // Muestra la información del producto
+			echo "</pre>";
 
 			// Verifica la cantidad disponible en el inventario
-			$stockActual = $product->{20}; // Utiliza el stock actual del producto obtenido de la consulta
+			$stockActual = $product->producto_stock; // Utiliza el stock actual del producto obtenido de la consulta
+			echo "<pre>";
+			print_r($stockActual);
+			echo "</pre>";
 			if ($stockActual == 0) {
-				echo "<p class='alert alert-danger'>El producto <b style='text-transform:uppercase;'> {$product->{'20'}}</b> no tiene existencias en inventario.</p>";
-			} elseif ($stockActual <= $product->{22} / 2) {
-				echo "<p class='alert alert-danger'>El producto <b style='text-transform:uppercase;'> {$product->{'20'}}</b> tiene muy pocas existencias en inventario.</p>";
-			} elseif ($stockActual <= $product->{22}) {
-				echo "<p class='alert alert-warning'>El producto <b style='text-transform:uppercase;'>{$product->{'20'}}</b> tiene pocas existencias en inventario.</p>";
+				echo "<p class='alert alert-danger'>El producto <b style='text-transform:uppercase;'> {$product->{'8'}}</b> no tiene existencias en inventario.</p>";
+			} elseif ($stockActual <= $product->almacen_stock_minimo / 2) {
+				echo "<p class='alert alert-danger'>El producto <b style='text-transform:uppercase;'> {$product->{'8'}}</b> tiene muy pocas existencias en inventario.</p>";
+			} elseif ($stockActual <= $product->almacen_stock_minimo) {
+				echo "<p class='alert alert-warning'>El producto <b style='text-transform:uppercase;'>{$product->{'8'}}</b> tiene pocas existencias en inventario.</p>";
 			} else {
-				echo "<p>El producto <b style='text-transform:uppercase;'> {$product->{'20'}}</b> tiene suficiente stock.</p>";
+				echo "<p>El producto <b style='text-transform:uppercase;'> $product->producto_nombre</b> tiene suficiente stock.</p>";
 			}
 		}
 		setcookie("selled", "", time() - 18600);
@@ -78,7 +81,10 @@
 
 
 	<table class="table table-bordered">
+		<?php 
+			// print_r($sell) ;
 
+		?>
 		<?php if ($sell->id_cliente): ?>
 			<?php
 
@@ -114,7 +120,7 @@
 				<td>Atendido por</td>
 
 
-				<td><?php echo $user->{5} . " " . $user->{6} . " " . $user->{7}; ?></td>
+				<td><?php echo $user->{6} . " " . $user->{7} . " " . $user->{8}; ?></td>
 			</tr>
 		<?php endif; ?>
 	</table>

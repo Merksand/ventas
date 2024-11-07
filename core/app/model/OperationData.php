@@ -173,12 +173,44 @@ class OperationData
 	public static function getProductAlmacenVenta($sellID)
 	{
 		$sql = "SELECT 
-    * FROM tb_detalle_venta dv JOIN tb_productos p ON dv.id_producto = p.id_producto 
-	JOIN tb_almacen a ON p.id_producto = a.id_producto 
-	WHERE dv.id_venta = $sellID";
+                dv.id_detalle_venta AS detalle_venta_id, 
+                dv.id_venta AS venta_id, 
+                dv.id_producto AS detalle_producto_id, 
+                dv.cantidad AS detalle_cantidad, 
+                dv.precio_unitario AS detalle_precio_unitario,
+                
+                p.id_producto AS producto_id, 
+                p.codigo_producto AS producto_codigo, 
+                p.nombre_producto AS producto_nombre, 
+                p.descripcion AS producto_descripcion, 
+                p.precio_compra AS producto_precio_compra, 
+                p.precio_venta AS producto_precio_venta, 
+                p.stock AS producto_stock, 
+                p.imagen AS producto_imagen, 
+                p.id_categoria AS producto_categoria_id, 
+                p.fyh_creacion AS producto_fyh_creacion, 
+                p.fyh_actualizacion AS producto_fyh_actualizacion, 
+                p.is_active AS producto_activo,
+                
+                a.id_almacen AS almacen_id, 
+                a.stock_actual AS almacen_stock_actual, 
+                a.stock_minimo AS almacen_stock_minimo, 
+                a.tipo_operacion AS almacen_tipo_operacion, 
+                a.fyh_creacion AS almacen_fyh_creacion, 
+                a.fyh_actualizacion AS almacen_fyh_actualizacion
+            FROM 
+                tb_detalle_venta dv 
+            JOIN 
+                tb_productos p ON dv.id_producto = p.id_producto 
+            JOIN 
+                tb_almacen a ON p.id_producto = a.id_producto 
+            WHERE 
+                dv.id_venta = $sellID and a.tipo_operacion = 'entrada'";
+
 		$query = Executor::doit($sql);
 		return Model::many($query[0], new OperationData());
 	}
+
 
 	public static function getProduct($id)
 	{

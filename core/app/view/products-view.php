@@ -14,8 +14,6 @@
         <h1>Lista de Productos</h1>
         <div class="clearfix"></div>
 
-
-
         <?php
         $page = 1;
         if (isset($_GET["page"])) {
@@ -26,16 +24,11 @@
             $limit = $_GET["limit"];
         }
 
-
         $products = ProductData::getAllWithStockMin();
-
         if (count($products) > 0) {
 
             if ($page == 1) {
-                // echo "cuentas " . count($products). " ";
-                // echo "limit " . $limit;
                 $curr_products = ProductData::getAllByPage($products[0]->id_producto, $limit);
-                // $curr_products = ProductData::getAllByPage($products[0]->id_producto, $limit);
             } else {
                 $curr_products = ProductData::getAllByPage($products[($page - 1) * $limit]->id_producto, $limit);
             }
@@ -45,9 +38,7 @@
             if ($spaginas > 0) {
                 $npaginas++;
             }
-
         ?>
-
             <h3>Pagina <?php echo $page . " de " . $npaginas; ?></h3>
             <div class="btn-group pull-right">
                 <?php
@@ -96,7 +87,7 @@
                                 echo "<center>----</center>";
                             } ?>
                         </td>
-                        <td><?php echo $product->stock_actual; ?></td> <!-- Mostrando stock mínimo -->
+                        <td><?php echo $product->stock; ?></td> <!-- Mostrando stock mínimo -->
                         <td>
                             <?php if ($product->is_active): ?>
                                 <i class="fa fa-check"></i>
@@ -114,24 +105,23 @@
                     </tr>
                 <?php endforeach; ?>
             </table>
-
-
             <div class="btn-group pull-right">
                 <?php
 
                 for ($i = 0; $i < $npaginas; $i++) {
-                    echo "<a href='index.php?view=products&limit=$limit&page=" . ($i + 1) . "' class='btn btn-default btn-sm'>" . ($i + 1) . "</a> ";
+                    $activeClass = ($i + 1 == $page) ? 'btn-primary' : 'btn-default';
+                    echo "<a href='index.php?view=products&limit=$limit&page=" . ($i + 1) . "' class='btn btn-sm $activeClass'>" . ($i + 1) . "</a> ";
                 }
+
                 ?>
             </div>
-            <form class="form-inline">
-                <label for="limit">Limite</label>
+            <form class="form-inline" method="get" action="index.php">
                 <input type="hidden" name="view" value="products">
-                <input type="number" value=<?php echo $limit ?> name="limit" style="width:60px;" class="form-control">
+                <label for="limit">Límite:</label>
+                <input type="number" value="<?php echo $limit; ?>" name="limit" style="width:60px;" class="form-control" min="1">
+                <button type="submit" class="btn btn-default">Actualizar</button>
             </form>
-
             <div class="clearfix"></div>
-
         <?php
         } else {
         ?>
@@ -141,7 +131,6 @@
             </div>
         <?php
         }
-
         ?>
         <br><br><br><br><br><br><br><br><br><br>
     </div>

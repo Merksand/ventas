@@ -39,19 +39,47 @@ FROM
 
     public static function getAllByPage($id, $limit)
     {
-        // Consulta SQL con JOIN para obtener datos de productos y almacen
-        $sql = "SELECT p.*, a.stock_minimo, a.stock_actual
+        // Consulta SQL que calcula el stock actual como la diferencia entre entradas y salidas
+        $sql = "
+            SELECT p.*, 
+                (IFNULL(SUM(CASE WHEN a.tipo_operacion = 'entrada' THEN a.stock_actual ELSE 0 END), 0) -
+                IFNULL(SUM(CASE WHEN a.tipo_operacion = 'salida' THEN a.stock_actual ELSE 0 END), 0)) AS stock_actual
             FROM " . self::$tablename . " p
-            JOIN tb_almacen a ON p.id_producto = a.id_producto
+            LEFT JOIN tb_almacen a ON p.id_producto = a.id_producto
             WHERE p.id_producto >= $id
+            GROUP BY p.id_producto
             ORDER BY p.id_producto ASC
-            LIMIT $limit";
+            LIMIT $limit
+        ";
 
         $query = Executor::doit($sql);
 
         // Retorna los resultados como objetos de ProductData
         return Model::many($query[0], new ProductData());
     }
+
+    public static function actualizarStockProducto($id_producto)
+    {
+        // Consulta para calcular el stock actual como diferencia entre entradas y salidas
+        $sql = "
+            SELECT 
+                IFNULL(SUM(CASE WHEN tipo_operacion = 'entrada' THEN stock_actual ELSE 0 END), 0) -
+                IFNULL(SUM(CASE WHEN tipo_operacion = 'salida' THEN stock_actual ELSE 0 END), 0) AS stock_total
+            FROM tb_almacen
+            WHERE id_producto = $id_producto
+        ";
+
+        // Ejecutar la consulta y obtener el stock calculado
+        $query = Executor::doit($sql);
+        $result = $query[0]->fetch_assoc();
+        $stock_total = $result["stock_total"];
+
+        // Actualizar el stock en la tabla tb_productos
+        $sql_update = "UPDATE tb_productos SET stock = $stock_total WHERE id_producto = $id_producto";
+        Executor::doit($sql_update);
+    }
+
+
 
     // Obtener categoría asociada al producto
     public function getCategory()

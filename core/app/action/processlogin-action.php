@@ -29,7 +29,7 @@ if (!isset($_SESSION["username_id"])) {
     if ($query && $query->num_rows > 0) {
         $found = true;
         while ($row = $query->fetch_assoc()) {
-            $userid = $row['id_usuario'];
+            $userid = $row['id_persona'];
         }
     } else {
         $found = false;
