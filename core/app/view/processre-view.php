@@ -89,9 +89,11 @@ if (isset($_SESSION["reabastecer"])) {
 
             // Limpiar sesión y redirigir
             unset($_SESSION["reabastecer"]);
-            setcookie("selled", "selled");
+            setcookie("selled", "selled", time() + 3600, "/"); // Ajuste en la cookie con duración y path
+
 
             // echo "<script>window.location='index.php?view=onere&id={$s[0]}';</script>";
+            header("Location: index.php?view=onere&id={$s[0]}");
         }
     }
 }

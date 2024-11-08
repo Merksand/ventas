@@ -151,7 +151,7 @@
             <div class="form-group">
                 <div class="col-lg-offset-2 col-lg-10">
                     <a href="index.php?view=clearcart" class="btn btn-lg btn-danger"><i class="glyphicon glyphicon-remove"></i> Cancelar</a>
-                    <button class="btn btn-lg btn-primary"><i class="glyphicon glyphicon-usd"></i> Finalizar Venta</button>
+                    <button class="btn btn-lg btn-primary"><i class="glyphicon glyphicon-ok"></i> Finalizar Venta</button>
                 </div>
             </div>
         </form>

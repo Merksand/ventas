@@ -6,7 +6,6 @@
 		<li><a href="report/onesell-word.php?id=<?php echo $_GET["id"]; ?>">Word 2007 (.docx)</a></li>
 	</ul>
 </div>
-
 <h1>Resumen de Venta</h1>
 
 <?php if (isset($_GET["id"]) && $_GET["id"] != ""): ?>
@@ -23,16 +22,9 @@
 	if (isset($_GET["id"]) && $_GET["id"] != "") {
 		$sellId = $_GET["id"];
 		// echo "Sell ID: " . $sellId; // Agrega esta línea para ver el ID de la venta
-
-
-
-
 		$operations = OperationData::getAllProductsBySellId($sellId);
 		$stockActual = OperationData::getQYesF(94);
-
 		$product = OperationData::getProduct(94);
-
-
 	} else {
 		echo "Error: ID de venta no proporcionado o es inválido.";
 	}
@@ -45,23 +37,22 @@
 		$products = OperationData::getProductAlmacenVenta($sellId); // Asume que devuelve un array de productos
 
 		$user = $sell; // Asume que esta función obtiene datos del usuario relacionado
-		// echo "hofff";
+		// echo "Este es el sell ID . " . $sellId;
 		// echo "<pre>";
 		// print_r($products);
 		// echo "</pre>";
 // 
 
 		foreach ($products as $product) {
-			// echo "Putoss";
 			// echo "<pre>";
 			// print_r($products); // Muestra la información del producto
 			// echo "</pre>";
 
 			// Verifica la cantidad disponible en el inventario
 			$stockActual = $product->producto_stock; // Utiliza el stock actual del producto obtenido de la consulta
-			echo "<pre>";
-			print_r($stockActual);
-			echo "</pre>";
+			// echo "<pre>";
+			// print_r($stockActual);
+			// echo "</pre>";
 			if ($stockActual == 0) {
 				echo "<p class='alert alert-danger'>El producto <b style='text-transform:uppercase;'> $product->producto_nombre</b> no tiene existencias en inventario.</p>";
 			} elseif ($stockActual <= $product->almacen_stock_minimo / 2) {
@@ -76,13 +67,12 @@
 		?>
 	<?php endif; ?>
 	<?php
-
 	?>
-
-
 	<table class="table table-bordered">
 		<?php 
+			// echo "<pre>";
 			// print_r($sell) ;
+			// echo "</pre>";
 
 		?>
 		<?php if ($sell->id_cliente): ?>
@@ -107,20 +97,16 @@
 			<?php
 
 			// echo "ID del usuario: " . $sell->id_usuario;
-			$user = $sell->getUser($sell->id_usuario); // Asume que esta función obtiene datos del usuario relacionado
+			$user = $sell->getBuyUser($sell->id_usuario);
 
 			// echo "<pre>";
 			// print_r($user);
 			// echo "</pre>";
 
 			?>
-
-
 			<tr>
 				<td>Atendido por</td>
-
-
-				<td><?php echo $user->{6} . " " . $user->{7} . " " . $user->{8}; ?></td>
+				<td><?php echo $user->nombre . " " . $user->apellido_paterno . " " . $user->apellido_materno; ?></td>
 			</tr>
 		<?php endif; ?>
 	</table>
@@ -162,12 +148,6 @@
 			<?php
 			// echo $producto;
 			$product = $producto->getProduct($idProducto);
-			// echo "antes lo";
-			// echo "<pre>";
-			// // echo print_r(OperationData::getProductAlmacenVenta($sellId));
-			// echo "</pre>";
-			// $productVenta = OperationData::getProductAlmacenVenta($sellId);
-			// echo $producto->id_almacen;
 
 
 			// echo "<pre>";
@@ -192,14 +172,6 @@
 	<div class="row">
 		<div class="col-md-4">
 			<table class="table table-bordered">
-				<!-- <tr>
-					<td>
-						<h4>Subtotal:</h4>
-					</td>
-					<td>
-						<h4>Bs <?php echo number_format($total, 2, '.', ','); ?></h4>
-					</td>
-				</tr> -->
 				<tr>
 					<td>
 						<h4>Total:</h4>

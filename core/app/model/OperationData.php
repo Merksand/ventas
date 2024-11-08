@@ -204,7 +204,7 @@ class OperationData
             JOIN 
                 tb_almacen a ON p.id_producto = a.id_producto 
             WHERE 
-                dv.id_venta = $sellID and a.tipo_operacion = 'entrada'";
+                dv.id_venta = $sellID and a.tipo_operacion = 'entrada' limit 1";
 
 		$query = Executor::doit($sql);
 		return Model::many($query[0], new OperationData());
@@ -418,7 +418,7 @@ class OperationData
 	public static function getAllByProductId($product_id)
 	{
 		// Nos aseguramos de obtener los datos desde tb_almacen
-		$sql = "SELECT * FROM tb_almacen WHERE id_producto = $product_id ORDER BY fyh_creacion DESC";
+		$sql = "SELECT * FROM tb_almacen WHERE tipo_operacion = 'entrada' and id_producto = $product_id";
 		$query = Executor::doit($sql);
 
 		// Si `OperationData` es la clase que representa datos de `tb_almacen`, la usamos aquí
@@ -433,6 +433,15 @@ class OperationData
 	public static function getAllProductsBySellId($sell_id)
 	{
 		$sql = "SELECT * FROM tb_detalle_venta WHERE id_venta = $sell_id";
+		$query = Executor::doit($sql);
+		return Model::many($query[0], new OperationData());
+	}
+
+	public static function getAllProductsByBuyId($buy_id)
+	{
+		$sql = "SELECT * FROM tb_detalle_compra  tdc
+INNER JOIN tb_compras tc on tdc.id_compra = tc.id_compra
+WHERE tc.id_compra =  $buy_id";
 		$query = Executor::doit($sql);
 		return Model::many($query[0], new OperationData());
 	}

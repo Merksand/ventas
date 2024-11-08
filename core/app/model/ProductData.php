@@ -142,8 +142,9 @@ WHERE tp.is_active = 1 and ta.tipo_operacion = 'entrada'";
             die("Error: ID proporcionado está vacío.");
         }
         $sql = "SELECT * FROM tb_productos tp
-INNER JOIN tb_almacen ta ON tp.id_producto = ta.id_producto
-WHERE  tp.id_producto=$id";
+            INNER JOIN tb_almacen ta ON tp.id_producto = ta.id_producto
+            WHERE tp.id_producto = $id AND ta.tipo_operacion = 'entrada'
+            LIMIT 1";
 
         $query = Executor::doit($sql);
         return Model::one($query[0], new ProductData());

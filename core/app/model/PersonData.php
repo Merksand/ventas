@@ -305,7 +305,7 @@ class PersonData
 		if (empty($id_persona)) {
 			return null;
 		}
-		echo "id_persona: " . $id_persona;
+		// echo "id_persona: " . $id_persona;
 		// Definir la consulta SQL para obtener el id_cliente con base en el id_persona
 		$sql = "SELECT c.id_cliente 
 				FROM tb_clientes c
@@ -320,7 +320,7 @@ class PersonData
 		if ($r = $query[0]->fetch_array()) {
 			$client_id = $r['id_cliente'];
 		}
-		echo "ID del cliente: " . $client_id;
+		// echo "ID del cliente: " . $client_id;
 		return $client_id; // Retorna el id_cliente si existe, de lo contrario, retorna null
 	}
 
@@ -358,7 +358,7 @@ class PersonData
 		if (empty($id_persona)) {
 			return null;
 		}
-		echo "id_persona: " . $id_persona;
+		// echo "id_persona: " . $id_persona;
 		// Definir la consulta SQL para obtener el id_cliente con base en el id_persona
 		$sql = "SELECT c.id_usuario
 				FROM tb_usuarios c
@@ -373,7 +373,7 @@ class PersonData
 		if ($r = $query[0]->fetch_array()) {
 			$client_id = $r['id_usuario'];
 		}
-		echo "ID del cliente: " . $client_id;
+		// echo "ID del cliente: " . $client_id;
 		return $client_id; // Retorna el id_cliente si existe, de lo contrario, retorna null
 	}
 

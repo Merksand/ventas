@@ -11,31 +11,45 @@
 	
 	<?php
 
-	echo "Este es el id del inicio: " . $_GET["id"];
 	$sell = SellData::getByIdReabastecimiento($_GET["id"]);
-	$operations = OperationData::getAllProductsBySellId($_GET["id"]);
+	$operations = OperationData::getAllProductsByBuyId($_GET["id"]);
 
-	echo "<pre>";
-	print_r($sell);
-	echo "</pre>";
+	// echo "<pre>";
+	// print_r($operations);
+	// echo "</pre>";
 	$total = 0;
+			
 	?>
 	<?php
+	// $comprobar = ($_COOKIE["selled"]) ? $_COOKIE["selled"] : "No existe selled we";
+	// echo "cookie de selled ".$comprobar."<br>";
 	if (isset($_COOKIE["selled"])) {
 		foreach ($operations as $operation) {
-			//		print_r($operation);
-			$qx = OperationData::getQYesF($operation->product_id);
+
+			// echo "<p class='alert alert-info'>El producto <b style='text-transform:uppercase;'> $operation->name</b> tiene pocas existencias en inventario.</p>";
+			// echo "<pre>";
+			// 		print_r($operation);
+			// echo "</pre>";
+			// echo "Id producto de getQYesF: " . $operation->id_producto;
+
+			$qx = OperationData::getQYesF($operation->id_producto);
 			// print "qx=$qx";
-			$p = $operation->getProduct();
+			$p = $operation->getProduct($operation->id_producto);
+
+			// echo "<pre>";
+			// print_r($p);
+			// echo "</pre>";
 			if ($qx == 0) {
 				echo "<p class='alert alert-danger'>El producto <b style='text-transform:uppercase;'> $p->name</b> no tiene existencias en inventario.</p>";
-			} else if ($qx <= $p->inventary_min / 2) {
+			} else if ($qx <= $p->{16} / 2) {
 				echo "<p class='alert alert-danger'>El producto <b style='text-transform:uppercase;'> $p->name</b> tiene muy pocas existencias en inventario.</p>";
-			} else if ($qx <= $p->inventary_min) {
+			} else if ($qx <= $p->{16}) {
 				echo "<p class='alert alert-warning'>El producto <b style='text-transform:uppercase;'> $p->name</b> tiene pocas existencias en inventario.</p>";
 			}
 		}
 		setcookie("selled", "", time() - 18600);
+	}else{
+		echo "Else de selled"."<br>";
 	}
 
 	?>
@@ -45,16 +59,16 @@
 		<?php endif; ?>
 
 		<?php
-		echo "<pre>";
-		print_r($sell);
-		echo "</pre>";
+		// echo "<pre>";
+		// print_r($sell);
+		// echo "</pre>";
 		?>
 		<?php if ($sell->person_id != ""):
 			$client = $sell->getPerson();
 
-			echo "<pre>";
-			print_r($client);
-			echo "</pre>";
+			// echo "<pre>";
+			// print_r($client);
+			// echo "</pre>";
 		?>
 			<tr>
 				<td style="width:150px;">Proveedor</td>
@@ -62,12 +76,21 @@
 			</tr>
 
 		<?php endif; ?>
+
+		<!-- <?php 
+			echo "Usuario id ". $_SESSION['user_id'];
+		?> -->
+		
 		<?php if ($sell->user_id != ""):
-			$user = $sell->getUser();
+			$user = $sell->getUser($_SESSION['user_id']);
+
+			// echo "<pre>";
+			// print_r($user);
+			// echo "</pre>";
 		?>
 			<tr>
 				<td>Atendido por</td>
-				<td><?php echo $user->name . " " . $user->lastname; ?></td>
+				<td><?php echo $user->nombre . " " . $user->apellido_materno. " " . $user->apellido_materno; ?></td>
 			</tr>
 		<?php endif; ?>
 	</table>
@@ -81,24 +104,40 @@
 			<th>Total</th>
 
 		</thead>
+
+		<?php 
+			// echo "culo";
+			// echo "<pre>";
+			// print_r($operations[0]);
+			// echo "</pre>";
+		?>
 		<?php
 		foreach ($operations as $operation) {
-			$product  = $operation->getProduct();
+			// echo "ID que quiero ". $operation->product_id. "<BR>";
+
+			$product  = $operation->getProduct($operation->id_producto);
+
+			// echo "<pre>";
+			// print_r($product);
+			// echo "</pre>";
+			// echo "Pitazo ". $operation->cantidad;
+
+			
 		?>
 			<tr>
-				<td><?php echo $product->id; ?></td>
-				<td><?php echo $operation->q; ?></td>
-				<td><?php echo $product->name; ?></td>
-				<td>$ <?php echo number_format($product->price_in, 2, ".", ","); ?></td>
-				<td><b>$ <?php echo number_format($operation->q * $product->price_in, 2, ".", ",");
-							$total += $operation->q * $product->price_in; ?></b></td>
+				<td><?php echo $product->id_producto; ?></td>
+				<td><?php echo $operation->cantidad; ?></td>
+				<td><?php echo $product->nombre_producto; ?></td>
+				<td>Bs <?php echo number_format($product->precio_compra, 2, ".", ","); ?></td>
+				<td><b>Bs <?php echo number_format($operation->cantidad * $product->precio_compra, 2, ".", ",");
+							$total += $operation->cantidad * $product->precio_compra; ?></b></td>
 			</tr>
 		<?php
 		}
 		?>
 	</table>
 	<br><br>
-	<h1>Total: $ <?php echo number_format($total, 2, '.', ','); ?></h1>
+	<h1>Total: Bs <?php echo number_format($total, 2, '.', ','); ?></h1>
 	<?php
 
 	?>

@@ -112,11 +112,25 @@ class SellData
 
 	public static function getUser($id)
 	{
-		$sql = "SELECT u.*, p.*, r.nombre_rol AS rol_nombre FROM tb_usuarios u
+		$sql = "SELECT  r.nombre_rol AS rol_nombre,p.nombre as nombre,p.apellido_materno, p.apellido_paterno FROM tb_usuarios u
+				INNER JOIN tb_persona p ON u.id_persona = p.id_persona
+				INNER JOIN tb_roles r ON u.id_rol = r.id_rol
+				WHERE p.id_persona = $id";
+
+		// Ejecutar la consulta
+		$query = Executor::doit($sql);
+
+		// Retornar el resultado como un objeto UserData
+		return Model::one($query[0], new UserData());
+	}
+
+
+	public static function getBuyUser($id)
+	{
+		$sql = "SELECT  r.nombre_rol AS rol_nombre,p.nombre as nombre,p.apellido_materno, p.apellido_paterno FROM tb_usuarios u
 				INNER JOIN tb_persona p ON u.id_persona = p.id_persona
 				INNER JOIN tb_roles r ON u.id_rol = r.id_rol
 				WHERE u.id_usuario = $id";
-
 		// Ejecutar la consulta
 		$query = Executor::doit($sql);
 
