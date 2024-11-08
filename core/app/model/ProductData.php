@@ -42,6 +42,7 @@ WHERE tp.is_active = 1 and ta.tipo_operacion = 'entrada'";
 
 
 
+
     public static function getAllByPage($id, $limit)
     {
         // Consulta SQL que calcula el stock actual como la diferencia entre entradas y salidas
@@ -84,6 +85,11 @@ WHERE tp.is_active = 1 and ta.tipo_operacion = 'entrada'";
         Executor::doit($sql_update);
     }
 
+    public function updateStock($product_id, $cantidad)
+    {
+        $sql = "UPDATE tb_productos SET stock = stock + $cantidad WHERE id_producto = $product_id";
+        return Executor::doit($sql);
+    }
 
 
     // Obtener categoría asociada al producto
@@ -216,18 +222,20 @@ WHERE  tp.id_producto=$id";
     }
 
 
-    public static function getActiveProducts() {
+    public static function getActiveProducts()
+    {
         $sql = "SELECT * FROM tb_productos WHERE is_active = 1";
         $query = Executor::doit($sql);
         return Model::many($query[0], new ProductData());
     }
-    
-    public static function getInactiveProducts() {
+
+    public static function getInactiveProducts()
+    {
         $sql = "SELECT * FROM tb_productos WHERE is_active = 0";
         $query = Executor::doit($sql);
         return Model::many($query[0], new ProductData());
     }
-    
+
 
 
     public static function setVenta($id_cliente, $id_usuario, $total_venta, $cantidad_total, $efectivo)

@@ -19,9 +19,6 @@ class OperationData
 		// $this->created_at = "NOW()";
 
 		$this->is_active = 1;
-
-
-
 	}
 
 	private function updateInventory()
@@ -301,6 +298,13 @@ class OperationData
 		return $q;
 	}
 
+	public function addToAlmacen($product_id, $cantidad, $tipo_operacion = 'entrada')
+	{
+		$sql = "INSERT INTO tb_almacen (id_producto, stock_actual, tipo_operacion, fyh_creacion) 
+                VALUES ($product_id, $cantidad, '$tipo_operacion', NOW())";
+		return Executor::doit($sql);
+	}
+
 	public static function getOutputQYesF($product_id)
 	{
 		$q = 0;
@@ -415,7 +419,7 @@ class OperationData
 	{
 		// Nos aseguramos de obtener los datos desde tb_almacen
 		$sql = "SELECT * FROM tb_almacen WHERE id_producto = $product_id ORDER BY fyh_creacion DESC";
-		$query = Executor::doit($sql);	
+		$query = Executor::doit($sql);
 
 		// Si `OperationData` es la clase que representa datos de `tb_almacen`, la usamos aquí
 		return Model::many($query[0], new OperationData());
@@ -423,7 +427,7 @@ class OperationData
 
 
 
-	
+
 
 
 	public static function getAllProductsBySellId($sell_id)

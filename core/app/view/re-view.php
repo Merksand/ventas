@@ -34,9 +34,9 @@ if(count($products)>0){
 	<?php
 $products_in_cero=0;
 	 foreach($products as $product):
-	echo "<pre>";
-	print_r($product);
-	echo "</pre>";
+	// echo "<pre>";
+	// print_r($product);
+	// echo "</pre>";
 $q= OperationData::getQYesF($product->id_producto);
 	?>
 		<form method="post" action="index.php?view=addtore">
@@ -111,9 +111,9 @@ $total = 0;
 </thead>
 <?php foreach($_SESSION["reabastecer"] as $p):
 $product = ProductData::getById($p["product_id"]);
-echo "<pre>";
-print_r($product);
-echo "</pre>";
+// echo "<pre>";
+// print_r($product);
+// echo "</pre>";
 ?>
 <tr >
 	<td><?php echo $product->id_producto; ?></td>
