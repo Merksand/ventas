@@ -1,13 +1,12 @@
 <?php
 
-$category = Categorydata::getById($_GET["id"]);
-$products = ProductData::getAllByCategoryId($category->id);
-foreach ($products as $product) {
-	$product->del_category();
+if (isset($_GET["id"])) {
+    $category = CategoryData::getById($_GET["id"]);
+
+    $nuevo_estado = ($category->is_active == 1) ? 0 : 1;
+
+    $category->updateActive($nuevo_estado);
+
 }
 
-$category->del();
 Core::redir("./index.php?view=categories");
-
-
-?>
