@@ -87,7 +87,7 @@ class CategoryData
 
 	public static function getAll()
 	{
-		$sql = "select * from " . self::$tablename;
+		$sql = "select * from " . self::$tablename. " where is_active = 1 order by created_at desc";
 		$query = Executor::doit($sql);
 		$array = array();
 		$cnt = 0;
