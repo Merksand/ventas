@@ -85,6 +85,7 @@
                   <!-- Menu Footer-->
                   <li class="user-footer">
                     <div class="pull-right">
+                      <?php echo UserData::getById($_SESSION["user_id"])->persona_email?>
                       <a href="./logout.php" class="btn btn-default btn-flat">Salir</a>
                     </div>
                   </li>

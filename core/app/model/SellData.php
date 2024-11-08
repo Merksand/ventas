@@ -10,13 +10,20 @@ class SellData
 		$this->person_id = 0;
 		$this->user_id = 0;
 		$this->id = 0;
+
+		$this->id_usuario = 0;
+		$this->id_cliente = 0;
+		$this->id_venta = 0;
+		$this->apellido = null;
+		$this->nombre = null;
+		$this->id_proveedor = 0;
 	}
 
 	public function add_re()
 	{
-		// Inserción directa en tb_compras
-		$query = "INSERT INTO tb_compras (id_usuario, id_proveedor, total_compra, fecha_compra) 
-              VALUES ('" . $this->user_id . "', 0, 0, NOW())";
+		// Inserción en tb_compras con NULL en id_proveedor cuando no hay proveedor
+		$query = "INSERT INTO tb_compras (id_usuario, id_proveedor, total_compra) 
+				  VALUES ('" . $this->user_id . "', NULL, 0)";
 
 		// Ejecutar la consulta
 		$result = Executor::doit($query);
@@ -28,6 +35,7 @@ class SellData
 			return [null, "Error al registrar la compra sin proveedor"];
 		}
 	}
+
 
 
 	public function add_re_with_client()
@@ -116,6 +124,23 @@ class SellData
 		return Model::one($query[0], new UserData());
 	}
 
+	public function getPerson()
+	{
+		// Verifica si hay un proveedor asociado a la venta
+		if ($this->person_id != null) {
+			// Consulta para obtener los datos del proveedor/persona
+			// $sql = "SELECT * FROM tb_proveedores WHERE id_proveedor = $this->person_id";
+			$sql = "select * from tb_persona tp inner join tb_proveedores tpo ON  tp.id_persona = tpo.id_persona WHERE tpo.id_proveedor = $this->person_id";
+			$query = Executor::doit($sql);
+
+			return Model::one($query[0], new PersonData());
+		}
+
+		// Retorna null si no hay proveedor asociado
+		return null;
+	}
+
+
 	public function add_with_client()
 	{
 		$sql = "insert into " . self::$tablename . " (total,discount,person_id,user_id,created_at) ";
@@ -157,14 +182,14 @@ class SellData
 
 	public static function getByIdReabastecimiento($id)
 	{
-		$sql = "SELECT * FROM tb_ventas WHERE id_venta = $id";
+		$sql = "SELECT * FROM tb_compras WHERE id_compra = $id";
 		$query = Executor::doit($sql);
 		$found = null;
 
 		if ($r = $query[0]->fetch_array()) {
 			$found = new SellData();
-			$found->id = $r['id_venta'];
-			$found->person_id = $r['id_cliente'];
+			$found->id = $r['id_compra'];
+			$found->person_id = $r['id_proveedor'];
 			$found->user_id = $r['id_usuario'];
 			// Asigna otras propiedades según tus columnas
 		}

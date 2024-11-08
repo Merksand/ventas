@@ -205,21 +205,23 @@ WHERE  tp.id_producto=$id";
     }
 
 
-    // TODO Agregado tipo de entrada, aviso por error futuro
+    // FIXME Agregado tipo de entrada, aviso por error futuro
     public static function getLike($p)
     {
         $sql = "SELECT p.*, a.stock_minimo, a.stock_actual, a.tipo_operacion
-                FROM " . self::$tablename . " p
-                JOIN tb_almacen a ON p.id_producto = a.id_producto
-                WHERE p.is_active = 1 AND a.tipo_operacion = 'entrada' 
-                  AND (p.codigo_producto LIKE '%$p%' 
-                       OR p.nombre_producto LIKE '%$p%' 
-                       OR p.id_producto LIKE '%$p%')";
+            FROM " . self::$tablename . " p
+            JOIN tb_almacen a ON p.id_producto = a.id_producto
+            WHERE p.is_active = 1 AND a.tipo_operacion = 'entrada'
+              AND (p.codigo_producto LIKE '%$p%' 
+                   OR p.nombre_producto LIKE '%$p%' 
+                   OR p.id_producto LIKE '%$p%')
+            GROUP BY p.id_producto";  // Agrupar por id_producto para evitar duplicados
 
         $query = Executor::doit($sql);
 
         return Model::many($query[0], new ProductData());
     }
+
 
 
     public static function getActiveProducts()

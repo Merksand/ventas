@@ -19,7 +19,14 @@ if (isset($_SESSION["reabastecer"])) {
 
         if ($process) {
             $sell = new SellData();
-            $sell->user_id = $_SESSION["user_id"];
+
+            $idUsuario= PersonData::getUsuarioIdByPersonId($_SESSION["user_id"]);
+            $sell->user_id = $idUsuario;
+
+            echo "User ID: " . $_SESSION["user_id"]. "<br>";
+            echo "Client ID: " . $_POST["client_id"]. "<br>";
+
+            echo "Cliente id obtenido: " . $idUsuario;
 
             // Si hay un proveedor (cliente) seleccionado
             if (!empty($_POST["client_id"])) {
@@ -88,4 +95,3 @@ if (isset($_SESSION["reabastecer"])) {
         }
     }
 }
-?>

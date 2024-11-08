@@ -45,14 +45,20 @@
 		<?php endif; ?>
 
 		<?php
+		echo "<pre>";
 		print_r($sell);
+		echo "</pre>";
 		?>
 		<?php if ($sell->person_id != ""):
 			$client = $sell->getPerson();
+
+			echo "<pre>";
+			print_r($client);
+			echo "</pre>";
 		?>
 			<tr>
 				<td style="width:150px;">Proveedor</td>
-				<td><?php echo $client->name . " " . $client->lastname; ?></td>
+				<td><?php echo $client->nombre . " " . $client->apellido_paterno. " " . $client->apellido_materno; ?></td>
 			</tr>
 
 		<?php endif; ?>
