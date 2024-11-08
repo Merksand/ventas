@@ -19,6 +19,9 @@ class OperationData
 		// $this->created_at = "NOW()";
 
 		$this->is_active = 1;
+
+		$this->tipo_operacion = 0;
+		$this->cantidad = 0;
 	}
 
 	private function updateInventory()
@@ -355,6 +358,25 @@ class OperationData
 		return $q;
 	}
 
+	public static function getAvasQYesF($product_id)
+	{
+		$q = 0;
+		$operations = self::getAllByOperationProductId($product_id); // Recupera todas las operaciones para el producto
+		$input_type = "entrada";
+		$output_type = "salida";
+
+		foreach ($operations as $operation) {
+			if ($operation->tipo_operacion === $input_type) {
+				$q += $operation->cantidad;  // Suma la cantidad en entradas
+			} elseif ($operation->tipo_operacion === $output_type) {
+				$q -= $operation->cantidad;  // Resta la cantidad en salidas
+			}
+		}
+
+		return $q; // Retorna el stock total disponible
+	}
+
+
 
 
 	public static function getOutputByProductIdCutId($product_id, $cut_id)
@@ -422,6 +444,16 @@ class OperationData
 		$query = Executor::doit($sql);
 
 		// Si `OperationData` es la clase que representa datos de `tb_almacen`, la usamos aquí
+		return Model::many($query[0], new OperationData());
+	}
+
+	public static function getAllByOperationProductId($product_id)
+	{
+		// Modificamos la consulta para obtener tanto entradas como salidas
+		$sql = "SELECT * FROM tb_almacen WHERE id_producto = $product_id";
+		$query = Executor::doit($sql);
+
+		// Aseguramos que `OperationData` pueda manejar las propiedades de `tb_almacen`
 		return Model::many($query[0], new OperationData());
 	}
 

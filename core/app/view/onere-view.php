@@ -32,24 +32,26 @@
 			// echo "</pre>";
 			// echo "Id producto de getQYesF: " . $operation->id_producto;
 
-			$qx = OperationData::getQYesF($operation->id_producto);
+			$qx = OperationData::getAvasQYesF($operation->id_producto);
 			// print "qx=$qx";
 			$p = $operation->getProduct($operation->id_producto);
 
 			// echo "<pre>";
+			// echo "<>";
 			// print_r($p);
+			// echo "<br>";
 			// echo "</pre>";
-			if ($qx == 0) {
-				echo "<p class='alert alert-danger'>El producto <b style='text-transform:uppercase;'> $p->name</b> no tiene existencias en inventario.</p>";
-			} else if ($qx <= $p->{16} / 2) {
-				echo "<p class='alert alert-danger'>El producto <b style='text-transform:uppercase;'> $p->name</b> tiene muy pocas existencias en inventario.</p>";
-			} else if ($qx <= $p->{16}) {
-				echo "<p class='alert alert-warning'>El producto <b style='text-transform:uppercase;'> $p->name</b> tiene pocas existencias en inventario.</p>";
+			// print_r($p->{16});
+			// echo "</pre>";
+			if ($p->{16} == 0) {
+				echo "<p class='alert alert-danger'>El producto <b style='text-transform:uppercase;'> $p->nombre_producto</b> no tiene existencias en inventario.</p>";
+			} else if ($p->stock <= $p->{16}  / 2) {
+				echo "<p class='alert alert-danger'>El producto <b style='text-transform:uppercase;'> $p->nombre_producto</b> tiene muy pocas existencias en inventario.</p>";
+			} else if ($p->stock <= $p->{16}) {
+				echo "<p class='alert alert-warning'>El producto <b style='text-transform:uppercase;'> $p->nombre_producto</b> tiene pocas existencias en inventario.</p>";
 			}
 		}
 		setcookie("selled", "", time() - 18600);
-	}else{
-		echo "Else de selled"."<br>";
 	}
 
 	?>
@@ -90,7 +92,7 @@
 		?>
 			<tr>
 				<td>Atendido por</td>
-				<td><?php echo $user->nombre . " " . $user->apellido_materno. " " . $user->apellido_materno; ?></td>
+				<td><?php echo $user->nombre . " " . $user->apellido_paterno. " " . $user->apellido_materno; ?></td>
 			</tr>
 		<?php endif; ?>
 	</table>

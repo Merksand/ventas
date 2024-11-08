@@ -46,7 +46,7 @@ $q= OperationData::getQYesF($product->id_producto);
 		<!-- <td><?php echo $product->stock_actual; ?></td> -->
 		<td><b>Bs <?php echo $product->precio_compra; ?></b></td>
 		<td>
-			<?php echo $q; ?>
+			<?php echo $product->stock; ?>
 		</td>
 		<td>
 		<input type="hidden" name="product_id" value="<?php echo $product->id_producto; ?>">
