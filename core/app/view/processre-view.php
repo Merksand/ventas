@@ -21,6 +21,7 @@ if (isset($_SESSION["reabastecer"])) {
             $sell = new SellData();
             $sell->user_id = $_SESSION["user_id"];
 
+            // Si hay un proveedor (cliente) seleccionado
             if (!empty($_POST["client_id"])) {
                 $sell->person_id = $_POST["client_id"];
                 $s = $sell->add_re_with_client();
@@ -34,7 +35,7 @@ if (isset($_SESSION["reabastecer"])) {
                 echo "<p><b>Error al agregar el reabastecimiento:</b> " . htmlspecialchars($s[1]) . "</p>";
             }
 
-            // Inicializa la variable de total
+            // Inicializa el total de la compra
             $total = 0;
 
             foreach ($cart as $c) {
@@ -59,9 +60,16 @@ if (isset($_SESSION["reabastecer"])) {
                 // Obtiene el precio de compra del producto
                 $product = ProductData::getById($product_id);
                 $subtotal = $product->precio_compra * $quantity;
-                $total += $subtotal; // Acumula el total
+                $total += $subtotal;
 
+                // Agrega la operación a `tb_detalle_compra`
                 $op->add($product_id, $sell_id, $quantity);
+
+                // Agrega la operación en `tb_almacen` para mantener un registro
+                OperationData::addToAlmacen($product_id, $quantity, 'entrada');
+
+                // Actualiza el stock del producto en `tb_productos`
+                ProductData::updateStock($product_id, $quantity);
 
                 echo "<p><b>Subtotal para el Producto ID {$product_id}:</b> $ " . number_format($subtotal, 2) . "</p>";
             }
@@ -80,3 +88,4 @@ if (isset($_SESSION["reabastecer"])) {
         }
     }
 }
+?>

@@ -298,7 +298,7 @@ class OperationData
 		return $q;
 	}
 
-	public function addToAlmacen($product_id, $cantidad, $tipo_operacion = 'entrada')
+	public static function addToAlmacen($product_id, $cantidad, $tipo_operacion = 'entrada')
 	{
 		$sql = "INSERT INTO tb_almacen (id_producto, stock_actual, tipo_operacion, fyh_creacion) 
                 VALUES ($product_id, $cantidad, '$tipo_operacion', NOW())";

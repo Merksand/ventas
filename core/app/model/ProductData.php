@@ -85,7 +85,7 @@ WHERE tp.is_active = 1 and ta.tipo_operacion = 'entrada'";
         Executor::doit($sql_update);
     }
 
-    public function updateStock($product_id, $cantidad)
+    public static function updateStock($product_id, $cantidad)
     {
         $sql = "UPDATE tb_productos SET stock = stock + $cantidad WHERE id_producto = $product_id";
         return Executor::doit($sql);
