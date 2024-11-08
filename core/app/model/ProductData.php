@@ -46,7 +46,7 @@ WHERE tp.is_active = 1 and ta.tipo_operacion = 'entrada'";
     {
         // Consulta SQL que calcula el stock actual como la diferencia entre entradas y salidas
         $sql = "
-            SELECT p.*, 
+            SELECT p.*,stock_minimo, 
                 (IFNULL(SUM(CASE WHEN a.tipo_operacion = 'entrada' THEN a.stock_actual ELSE 0 END), 0) -
                 IFNULL(SUM(CASE WHEN a.tipo_operacion = 'salida' THEN a.stock_actual ELSE 0 END), 0)) AS stock_actual
             FROM " . self::$tablename . " p

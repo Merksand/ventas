@@ -67,6 +67,10 @@ if($px<=$npaginas):
 		<th></th>
 	</thead>
 	<?php foreach($curr_products as $product):
+
+	// echo "<pre>";
+	// print_r($product);
+	// echo "</pre>";
 	$q=OperationData::getQYesF($product->id_producto);
 	?>
 	<tr class="<?php if($q<=$product->stock_minimo/2){ echo "danger";}else if($q<=$product->stock_minimo){ echo "warning";}?>">

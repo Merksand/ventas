@@ -333,6 +333,25 @@ class OperationData
 	}
 
 
+	public static function getQYesF($product_id)
+	{
+		$q = 0;
+		$operations = self::getAllByProductId($product_id); // Asegúrate de que esta función devuelve todas las operaciones para el producto
+		$input_type = "entrada";
+		$output_type = "salida";
+		// 
+		foreach ($operations as $operation) {
+			if ($operation->tipo_operacion === $input_type) {
+				$q += $operation->stock_actual;  // Sumar stock para entradas
+			} elseif ($operation->tipo_operacion === $output_type) {
+				$q -= $operation->stock_actual;  // Restar stock para salidas
+			}
+		}
+
+		return $q;
+	}
+
+
 
 	public static function getOutputByProductIdCutId($product_id, $cut_id)
 	{
@@ -404,23 +423,7 @@ class OperationData
 
 
 
-	public static function getQYesF($product_id)
-	{
-		$q = 0;
-		$operations = self::getAllByProductId($product_id); // Asegúrate de que esta función devuelve todas las operaciones para el producto
-		$input_type = "entrada";
-		$output_type = "salida";
-		// 
-		foreach ($operations as $operation) {
-			if ($operation->tipo_operacion === $input_type) {
-				$q += $operation->stock_actual;  // Sumar stock para entradas
-			} elseif ($operation->tipo_operacion === $output_type) {
-				$q -= $operation->stock_actual;  // Restar stock para salidas
-			}
-		}
-
-		return $q;
-	}
+	
 
 
 	public static function getAllProductsBySellId($sell_id)

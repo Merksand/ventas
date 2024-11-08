@@ -22,14 +22,9 @@ if (isset($_GET["product_id"])):
 	</div>
 
 	<div class="row">
-
-
 		<div class="col-md-4">
-
-
 			<?php
 			$itotal = OperationData::GetInputQYesF($product->id_producto);
-
 			?>
 			<div class="jumbotron">
 				<center>
@@ -37,18 +32,13 @@ if (isset($_GET["product_id"])):
 					<h1><?php echo $itotal; ?></h1>
 				</center>
 			</div>
-
 			<br>
 			<?php
 			?>
-
 		</div>
-
 		<div class="col-md-4">
 			<?php
 			$total = OperationData::GetQYesF($product->id_producto);
-
-
 			?>
 			<div class="jumbotron">
 				<center>
@@ -60,15 +50,10 @@ if (isset($_GET["product_id"])):
 			<br>
 			<?php
 			?>
-
 		</div>
-
 		<div class="col-md-4">
-
-
 			<?php
 			$ototal = -1 * OperationData::GetOutputQYesF($product->id_producto);
-
 			?>
 			<div class="jumbotron">
 				<center>
@@ -76,20 +61,11 @@ if (isset($_GET["product_id"])):
 					<h1><?php echo $ototal; ?></h1>
 				</center>
 			</div>
-
-
 			<div class="clearfix"></div>
 			<br>
 			<?php
 			?>
-
 		</div>
-
-
-
-
-
-
 	</div>
 	<div class="row">
 		<div class="col-md-12">
@@ -128,5 +104,4 @@ if (isset($_GET["product_id"])):
 			<?php endif; ?>
 		</div>
 	</div>
-
 <?php endif; ?>
