@@ -34,9 +34,9 @@ if(count($products)>0){
 	<?php
 $products_in_cero=0;
 	 foreach($products as $product):
-	// echo "<pre>";
-	// print_r($product);
-	// echo "</pre>";
+	echo "<pre>";
+	print_r($product);
+	echo "</pre>";
 $q= OperationData::getQYesF($product->id_producto);
 	?>
 		<form method="post" action="index.php?view=addtore">
@@ -44,7 +44,7 @@ $q= OperationData::getQYesF($product->id_producto);
 		<td style="width:80px;"><?php echo $product->id_producto; ?></td>
 		<td><?php echo $product->nombre_producto; ?></td>
 		<!-- <td><?php echo $product->stock_actual; ?></td> -->
-		<td><b>$<?php echo $product->precio_compra; ?></b></td>
+		<td><b>Bs <?php echo $product->precio_compra; ?></b></td>
 		<td>
 			<?php echo $q; ?>
 		</td>
@@ -120,8 +120,8 @@ echo "</pre>";
 	<td ><?php echo $p["q"]; ?></td>
 	<!-- <td><?php echo $product->unit; ?></td> -->
 	<td><?php echo $product->nombre_producto; ?></td>
-	<td><b>$ <?php echo number_format($product->precio_compra); ?></b></td>
-	<td><b>$ <?php  $pt = $product->precio_compra*$p["q"]; $total +=$pt; echo number_format($pt); ?></b></td>
+	<td><b>Bs <?php echo number_format($product->precio_compra); ?></b></td>
+	<td><b>Bs <?php  $pt = $product->precio_compra*$p["q"]; $total +=$pt; echo number_format($pt); ?></b></td>
 	<td style="width:30px;"><a href="index.php?view=clearre&product_id=<?php echo $product->id_producto; ?>" class="btn btn-danger"><i class="glyphicon glyphicon-remove"></i> Cancelar</a></td>
 </tr>
 
@@ -154,15 +154,15 @@ $clients = PersonData::getProviders();
 <table class="table table-bordered">
 <tr>
 	<td><p>Subtotal</p></td>
-	<td><p><b>$ <?php echo number_format($total*.84); ?></b></p></td>
+	<td><p><b>Bs <?php echo number_format($total*.84); ?></b></p></td>
 </tr>
 <tr>
 	<td><p>IVA</p></td>
-	<td><p><b>$ <?php echo number_format($total*.16); ?></b></p></td>
+	<td><p><b>Bs <?php echo number_format($total*.16); ?></b></p></td>
 </tr>
 <tr>
 	<td><p>Total</p></td>
-	<td><p><b>$ <?php echo number_format($total); ?></b></p></td>
+	<td><p><b>Bs <?php echo number_format($total); ?></b></p></td>
 </tr>
 
 </table>

@@ -9,6 +9,7 @@ class SellData
 		$this->created_at = "NOW()";
 		$this->person_id = 0;
 		$this->user_id = 0;
+		$this->id = 0;
 	}
 
 	public function add_re()
@@ -152,6 +153,23 @@ class SellData
 		$sql = "SELECT * FROM tb_ventas WHERE id_venta = $id";
 		$query = Executor::doit($sql);
 		return Model::one($query[0], new SellData());
+	}
+
+	public static function getByIdReabastecimiento($id)
+	{
+		$sql = "SELECT * FROM tb_ventas WHERE id_venta = $id";
+		$query = Executor::doit($sql);
+		$found = null;
+
+		if ($r = $query[0]->fetch_array()) {
+			$found = new SellData();
+			$found->id = $r['id_venta'];
+			$found->person_id = $r['id_cliente'];
+			$found->user_id = $r['id_usuario'];
+			// Asigna otras propiedades según tus columnas
+		}
+
+		return $found;
 	}
 
 

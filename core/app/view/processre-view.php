@@ -4,7 +4,7 @@ if (isset($_SESSION["reabastecer"])) {
     // Verificar si la solicitud es POST
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Mostrar datos enviados por el formulario para depuración
-        echo "<pre><b>POST Data:</b>\n"; 
+        echo "<pre><b>POST Data:</b>\n";
         foreach ($_POST as $key => $value) {
             echo htmlspecialchars("$key: $value\n");
         }
@@ -91,4 +91,3 @@ if (isset($_SESSION["reabastecer"])) {
         }
     }
 }
-?>
