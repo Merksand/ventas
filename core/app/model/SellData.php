@@ -239,10 +239,20 @@ class SellData
 
 	public static function getRes()
 	{
-		$sql = "select * from " . self::$tablename . " where operation_type_id=1 order by created_at desc";
+		$sql = "SELECT DISTINCT c.id_compra AS id, c.id_usuario, c.id_proveedor, c.total_compra, c.fecha_compra AS created_at 
+            FROM tb_compras AS c
+            JOIN tb_detalle_compra AS dc ON c.id_compra = dc.id_compra
+            JOIN tb_almacen AS a ON dc.id_producto = a.id_producto
+            WHERE a.tipo_operacion = 'entrada'
+            ORDER BY c.fecha_compra DESC";
+
+		// Ejecuta la consulta y devuelve los resultados como un arreglo de objetos SellData
 		$query = Executor::doit($sql);
 		return Model::many($query[0], new SellData());
 	}
+
+
+
 
 	public static function getAllByPage($start_from, $limit)
 	{
