@@ -57,6 +57,8 @@ class OperationData
 	}
 
 
+	// En la clase ProductData
+
 
 
 	public static function delById($id_detalle_venta)
@@ -65,11 +67,13 @@ class OperationData
 		Executor::doit($sql);
 	}
 
-	public function del()
+	// En la clase OperationData
+	public static function del($id)
 	{
-		$sql = "delete from tb_detalle_venta where id_detalle_venta=$this->id";
-		Executor::doit($sql);
+		$sql = "DELETE FROM tb_almacen WHERE id_almacen = $id";
+		return Executor::doit($sql);
 	}
+
 
 	// partiendo de que ya tenemos creado un objecto OperationData previamente utilizamos el contexto
 	public function update()
@@ -80,10 +84,11 @@ class OperationData
 
 	public static function getById($id)
 	{
-		$sql = "select * from " . self::$tablename . " where id=$id";
+		$sql = "SELECT * FROM tb_almacen WHERE id_almacen = $id";
 		$query = Executor::doit($sql);
 		return Model::one($query[0], new OperationData());
 	}
+
 
 
 
@@ -329,19 +334,56 @@ class OperationData
 		return $q;
 	}
 
-	public static function getInputQYesF($product_id)
+	public static function getAllOperationByProductId($product_id, $tipo_operacion = null)
 	{
-		$q = 0;
-		$operations = self::getInputByProductId($product_id);
-		$input_id = OperationTypeData::getByName("entrada")->id;
+		// Si se especifica un tipo de operación, lo agregamos al filtro SQL
+		$sql = "SELECT tipo_operacion, stock_actual FROM tb_almacen WHERE id_producto = $product_id";
+
+		if ($tipo_operacion) {
+			$sql .= " AND tipo_operacion = '$tipo_operacion'";
+		}
+
+		$query = Executor::doit($sql);
+
+		// Retornamos un array de objetos `OperationData` que representan los registros en `tb_almacen`
+		return Model::many($query[0], new OperationData());
+	}
+
+
+	public static function GetInputQProduct($product_id)
+	{
+		// Este método calculará la cantidad total de entradas para un producto específico
+		$totalEntrada = 0;
+		$operations = self::getAllOperationByProductId($product_id, 'entrada'); // Método que obtiene todas las operaciones del producto
+
+
 		foreach ($operations as $operation) {
-			if ($operation->operation_type_id == $input_id) {
-				$q += $operation->q;
+			if ($operation->tipo_operacion === 'entrada') {
+				$totalEntrada += $operation->stock_actual;  // Acumula la cantidad para entradas
+				// echo "<pre><b>Entradas:</b> $totalEntrada</pre>";
 			}
 		}
-		// print_r($data);
-		return $q;
+		return $totalEntrada;
 	}
+
+	public static function GetOutputQProduct($product_id)
+	{
+		// Este método calculará la cantidad total de salidas para un producto específico
+		$totalSalida = 0;
+		$operations = self::getAllOperationByProductId($product_id, 'salida'); // Método que obtiene todas las operaciones del producto
+		// echo "<pre>";
+		// print_r( $operations );
+		// echo "</pre>";
+		foreach ($operations as $operation) {
+			if ($operation->tipo_operacion === 'salida') {
+				$totalSalida += $operation->stock_actual;  // Acumula la cantidad para salidas
+			}
+		}
+
+		// echo "<pre><b>Salidass:</b> $totalSalida</pre>";
+		return $totalSalida;
+	}
+
 
 
 	public static function getQYesF($product_id)
@@ -361,6 +403,7 @@ class OperationData
 
 		return $q;
 	}
+
 
 	public static function getAvasQYesF($product_id)
 	{
@@ -445,6 +488,16 @@ class OperationData
 	{
 		// Nos aseguramos de obtener los datos desde tb_almacen
 		$sql = "SELECT * FROM tb_almacen WHERE tipo_operacion = 'entrada' and id_producto = $product_id";
+		$query = Executor::doit($sql);
+
+		// Si `OperationData` es la clase que representa datos de `tb_almacen`, la usamos aquí
+		return Model::many($query[0], new OperationData());
+	}
+
+	public static function getAllInventaryByProductId($product_id)
+	{
+		// Nos aseguramos de obtener los datos desde tb_almacen
+		$sql = "SELECT * FROM tb_almacen WHERE  id_producto = $product_id order by fyh_creacion desc";
 		$query = Executor::doit($sql);
 
 		// Si `OperationData` es la clase que representa datos de `tb_almacen`, la usamos aquí

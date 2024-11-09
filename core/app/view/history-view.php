@@ -5,7 +5,7 @@ if (isset($_GET["product_id"])):
 	// echo "<pre>";
 	// print_r($product);
 	// echo "</pre>";
-	$operations = OperationData::getAllByProductId($product->id_producto);
+	$operations = OperationData::getAllInventaryByProductId($product->id_producto);
 ?>
 	<div class="row">
 		<div class="col-md-12">
@@ -24,7 +24,7 @@ if (isset($_GET["product_id"])):
 	<div class="row">
 		<div class="col-md-4">
 			<?php
-			$itotal = OperationData::GetInputQYesF($product->id_producto);
+			$itotal = OperationData::GetInputQProduct($product->id_producto);
 			?>
 			<div class="jumbotron">
 				<center>
@@ -38,12 +38,17 @@ if (isset($_GET["product_id"])):
 		</div>
 		<div class="col-md-4">
 			<?php
-			$total = OperationData::GetQYesF($product->id_producto);
+			// $total = OperationData::GetQYesF($product->id_producto);
+			$total = ProductData::getAllProductById($product->id_producto);
+
+			// echo "<pre>";
+			// print_r($total);
+			// echo "</pre>";
 			?>
 			<div class="jumbotron">
 				<center>
 					<h2>Disponibles</h2>
-					<h1><?php echo $total; ?></h1>
+					<h1><?php echo $total->stock; ?></h1>
 				</center>
 			</div>
 			<div class="clearfix"></div>
@@ -53,7 +58,7 @@ if (isset($_GET["product_id"])):
 		</div>
 		<div class="col-md-4">
 			<?php
-			$ototal = -1 * OperationData::GetOutputQYesF($product->id_producto);
+			$ototal =  OperationData::GetOutputQProduct($product->id_producto);
 			?>
 			<div class="jumbotron">
 				<center>
@@ -80,24 +85,29 @@ if (isset($_GET["product_id"])):
 					</thead>
 					<?php foreach ($operations as $operation): ?>
 						<?php
-							// echo "<pre>";
-							// print_r($operation);
-							// echo "</pre>";
+						// echo "<pre>";
+						// print_r($operation);
+						// echo "</pre>";
 						?>
 						<tr>
 							<td></td>
 							<td><?php echo $operation->stock_actual; ?></td>
 							<td><?php echo $operation->tipo_operacion; ?></td>
 							<td><?php echo $operation->fyh_creacion; ?></td>
-							<td style="width:40px;"><a href="#" id="oper-<?php echo $operation->id_almacen; ?>" class="btn tip btn-xs btn-danger" title="Eliminar"><i class="glyphicon glyphicon-trash"></i></a> </td>
+							<td style="width:40px;">
+								<a href="#" id="oper-<?php echo $operation->id_almacen; ?>" class="btn tip btn-xs btn-danger" title="Eliminar">
+									<i class="glyphicon glyphicon-trash"></i>
+								</a>
+							</td>
 							<script>
-								$("#oper-" + <?php echo $operation->id; ?>).click(function() {
-									x = confirm("Estas seguro que quieres eliminar esto ??");
-									if (x == true) {
-										window.location = "index.php?view=deleteoperation&ref=history&pid=<?php echo $operation->product_id; ?>&opid=<?php echo $operation->id; ?>";
+								$("#oper-<?php echo $operation->id_almacen; ?>").click(function() {
+									const confirmDelete = confirm("¿Estás seguro de que quieres eliminar esto?");
+									if (confirmDelete) {
+										window.location = "index.php?view=deleteoperation&ref=history&pid=<?php echo $operation->id_producto; ?>&opid=<?php echo $operation->id_almacen; ?>";
 									}
 								});
 							</script>
+
 						</tr>
 					<?php endforeach; ?>
 				</table>

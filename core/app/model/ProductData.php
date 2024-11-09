@@ -33,9 +33,11 @@ class ProductData
     // Obtener todos los productos
     public static function getAll()
     {
-        $sql = "SELECT * FROM tb_productos tp
-INNER JOIN tb_almacen ta ON tp.id_producto = ta.id_producto
-WHERE tp.is_active = 1 and ta.tipo_operacion = 'entrada'";
+        $sql = "SELECT tp.*, MAX(ta.stock_actual) as stock_actual, MAX(ta.stock_minimo) as stock_minimo
+            FROM tb_productos tp
+            INNER JOIN tb_almacen ta ON tp.id_producto = ta.id_producto
+            WHERE tp.is_active = 1 AND ta.tipo_operacion = 'entrada'
+            GROUP BY tp.id_producto";
         $query = Executor::doit($sql);
         return Model::many($query[0], new ProductData());
     }
@@ -93,6 +95,12 @@ WHERE tp.is_active = 1 and ta.tipo_operacion = 'entrada'";
         return Executor::doit($sql);
     }
 
+    public static function updateStockInventary($product_id, $new_stock)
+{
+    $sql = "UPDATE tb_productos SET stock = $new_stock WHERE id_producto = $product_id";
+    Executor::doit($sql);
+}
+
     // En la clase ProductData
     public static function updateStockRevert($product_id, $new_stock)
     {
@@ -144,6 +152,13 @@ WHERE tp.is_active = 1 and ta.tipo_operacion = 'entrada'";
     {
         $sql = "UPDATE " . self::$tablename . " SET is_active = 0 WHERE id_producto =$id";
         Executor::doit($sql);
+    }
+
+    public static function getAllProductById($id)
+    {
+        $sql = "SELECT * FROM tb_productos WHERE id_producto = $id";
+        $query = Executor::doit($sql);
+        return Model::one($query[0], new ProductData());
     }
 
     // Obtener un producto por ID
