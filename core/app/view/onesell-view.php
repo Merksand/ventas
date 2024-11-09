@@ -89,7 +89,7 @@
 			?>
 			<tr>
 				<td style="width:150px;">Cliente</td>
-				<td><?php echo $client->name . " " . $client->lastname . " " . $client->lastname2; ?></td>
+				<td><?php echo $client->nombre . " " . $client->apellido_paterno . " " . $client->apellido_materno; ?></td>
 			</tr>
 		<?php endif; ?>
 

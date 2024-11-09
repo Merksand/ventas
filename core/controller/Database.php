@@ -33,4 +33,11 @@ class Database
         $con = Database::getCon(); // Obtener la conexión a la base de datos
         return $con->insert_id; // Retorna el último ID insertado
     }
+
+
+	public static function query($query)
+	{
+		$con = SELF::getCon();
+		return $con->query($query);
+	}
 }

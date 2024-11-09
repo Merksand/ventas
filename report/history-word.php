@@ -3,30 +3,35 @@ include "../core/autoload.php";
 include "../core/app/model/ProductData.php";
 include "../core/app/model/CategoryData.php";
 include "../core/app/model/OperationData.php";
-include "../core/app/model/OperationTypeData.php";
 
-require_once '../PhpWord/Autoloader.php';
-use PhpOffice\PhpWord\Autoloader;
-use PhpOffice\PhpWord\Settings;
+require_once '../PhpWord2/vendor/autoload.php';
+use PhpOffice\PhpWord\PhpWord;
 
-Autoloader::register();
+// Crear una instancia de PhpWord
+$word = new PhpWord();
 
-$word = new  PhpOffice\PhpWord\PhpWord();
+// Obtener el producto usando el ID proporcionado
 $product = ProductData::getById($_GET["id"]);
-$operations = OperationData::getAllByProductId($product->id);
-$entradas = OperationData::GetInputQYesF($product->id);
-$disponibles = OperationData::GetQYesF($product->id);
-$salidas = -1*OperationData::GetOutputQYesF($product->id);
+if (!$product) {
+    echo "Producto no encontrado con ID: " . $_GET["id"];
+    exit;
+}
 
+// Obtener las cantidades de entradas, salidas y el stock actual
+$entradas = OperationData::GetInputQProduct($product->id_producto);
+$salidas = OperationData::GetOutputQProduct($product->id_producto);
+$disponibles = ProductData::getAllProductById($product->id_producto)->stock;
 
-$section1 = $word->AddSection();
-$section1->addText($product->name,array("size"=>22,"bold"=>true,"align"=>"right"));
-$section1->addText("Historial del Producto",array("size"=>14,"bold"=>true,"align"=>"right"));
+// Crear la sección del documento
+$section1 = $word->addSection();
+$section1->addText($product->nombre_producto, array("size" => 22, "bold" => true));
+$section1->addText("Historial del Producto", array("size" => 14, "bold" => true));
 
-
+// Estilos de tabla
 $styleTable = array('borderSize' => 6, 'borderColor' => '888888', 'cellMargin' => 40);
 $styleFirstRow = array('borderBottomColor' => '0000FF', 'bgColor' => 'AAAAAA');
 
+// Tabla resumen de cantidades
 $table0 = $section1->addTable("table0");
 $table0->addRow();
 $table0->addCell()->addText("Entradas");
@@ -37,32 +42,30 @@ $table0->addCell(4000)->addText($entradas);
 $table0->addCell(4000)->addText($disponibles);
 $table0->addCell(4000)->addText($salidas);
 
-$word->addTableStyle('table0', $styleTable,$styleFirstRow);
+$word->addTableStyle('table0', $styleTable, $styleFirstRow);
 $section1->addText("");
 
+// Tabla de historial de operaciones
+$operations = OperationData::getAllInventaryByProductId($product->id_producto);
 $table1 = $section1->addTable("table1");
 $table1->addRow();
 $table1->addCell()->addText("Cantidad");
 $table1->addCell()->addText("Tipo");
 $table1->addCell()->addText("Fecha");
-foreach($operations as $operation){
-$table1->addRow();
-$table1->addCell(4000)->addText($operation->q);
-$table1->addCell(4000)->addText($operation->getOperationType()->name);
-$table1->addCell(4000)->addText($operation->created_at);
+
+foreach ($operations as $operation) {
+    $table1->addRow();
+    $table1->addCell(4000)->addText($operation->stock_actual);
+    $table1->addCell(4000)->addText($operation->tipo_operacion);
+    $table1->addCell(4000)->addText($operation->fyh_creacion);
 }
 
-$word->addTableStyle('table1', $styleTable,$styleFirstRow);
-/// datos bancarios
+$word->addTableStyle('table1', $styleTable, $styleFirstRow);
 
-$filename = "history-".time().".docx";
-#$word->setReadDataOnly(true);
-$word->save($filename,"Word2007");
-//chmod($filename,0444);
-header("Content-Disposition: attachment; filename='$filename'");
-readfile($filename); // or echo file_get_contents($filename);
-unlink($filename);  // remove temp file
-
-
-
+// Guardar y descargar el archivo
+$filename = "history-" . time() . ".docx";
+$word->save($filename, "Word2007");
+header("Content-Disposition: attachment; filename=$filename");
+readfile($filename);
+unlink($filename);
 ?>

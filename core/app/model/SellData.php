@@ -301,9 +301,9 @@ class SellData
 		$sql = "SELECT 
                 c.id_cliente AS client_id, 
                 p.id_persona AS person_id, 
-                p.nombre AS name, 
-                p.apellido_paterno AS lastname, 
-                p.apellido_materno AS lastname2, 
+                p.nombre AS nombre, 
+                p.apellido_paterno AS apellido_paterno, 
+                p.apellido_materno AS apellido_materno, 
                 p.direccion AS address, 
                 p.celular AS phone, 
                 p.email AS email, 

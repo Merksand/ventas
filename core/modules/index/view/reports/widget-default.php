@@ -4,7 +4,7 @@ $products = ProductData::getAll();
 <section class="content">
 <div class="row">
 	<div class="col-md-12">
-	<h1>Reportes</h1>
+	<h1></h1>
 
 						<form>
 						<input type="hidden" name="view" value="reports">

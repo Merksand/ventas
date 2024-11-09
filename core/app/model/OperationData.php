@@ -106,6 +106,7 @@ class OperationData
 	{
 		// Consulta para obtener productos con su cantidad, tipo operación y fecha
 		if ($start == $end) {
+			echo "puttoooo";
 			$sql = "SELECT p.nombre_producto AS producto, 
                        dv.cantidad, 
                        v.fecha_venta, 
@@ -120,9 +121,11 @@ class OperationData
                 WHERE DATE(v.fecha_venta) = \"$start\"
                 ORDER BY v.fecha_venta DESC";
 		} else {
-			$sql = "SELECT p.nombre_producto AS producto, 
-                       dv.cantidad, 
-                       v.fecha_venta, 
+			echo "cacaaa";
+			$sql = "SELECT *, 
+					   dv.cantidad, 
+					   v.fecha_venta,
+					   stock_actual,
                        CASE 
                            WHEN a.tipo_operacion = 'entrada' THEN 'Entrada'
                            WHEN a.tipo_operacion = 'salida' THEN 'Salida'
@@ -133,6 +136,8 @@ class OperationData
                 JOIN tb_almacen a ON dv.id_producto = a.id_producto
                 WHERE DATE(v.fecha_venta) BETWEEN \"$start\" AND \"$end\"
                 ORDER BY v.fecha_venta DESC";
+
+			echo $sql;
 		}
 
 		// Ejecutar la consulta y devolver los resultados

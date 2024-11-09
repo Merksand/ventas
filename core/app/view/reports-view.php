@@ -8,7 +8,7 @@ echo "</pre>";
 <section class="content">
 	<div class="row">
 		<div class="col-md-12">
-			<h1>Reportes</h1>
+			<h1>Reportesz</h1>
 
 			<form method="GET">
 				<input type="hidden" name="view" value="reports">
@@ -51,9 +51,12 @@ echo "</pre>";
 					$operations = array();
 
 					if ($_GET["product_id"] == "") {
-						$operations = OperationData::getAllByDateOfficial($_GET["sd"], $_GET["ed"]);
+						// $operations = OperationData::getAllByDateOfficial($_GET["sd"], $_GET["ed"]);
+						$operations = OperationData::getProductsByDateAndOperation($_GET["sd"], $_GET["ed"]);
+						echo "En el if";
 					} else {
 						$operations = OperationData::getAllByDateOfficialBP($_GET["product_id"], $_GET["sd"], $_GET["ed"]);
+						echo "En el else";
 					}
 					?>
 
@@ -66,9 +69,17 @@ echo "</pre>";
 								<th>Fecha</th>
 							</thead>
 							<?php foreach ($operations as $operation): ?>
+
+								<?php
+									// echo "<pre>";
+									// print_r($operation);
+									// echo "</pre>";
+								?>
+
+
 								<tr>
-									<td><?php echo $operation->getProduct()->nombre_producto; ?></td>
-									<td><?php echo $operation->cantidad; ?></td>
+									<td><?php echo $operation->nombre_producto; ?></td>
+									<td><?php echo $operation->stock_actual; ?></td>
 									<td><?php echo ($operation->tipo_operacion == 'entrada') ? 'Compra' : 'Venta'; ?></td>
 									<td><?php echo $operation->created_at; ?></td>
 								</tr>

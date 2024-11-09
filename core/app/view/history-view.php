@@ -5,6 +5,7 @@ if (isset($_GET["product_id"])):
 	// echo "<pre>";
 	// print_r($product);
 	// echo "</pre>";
+
 	$operations = OperationData::getAllInventaryByProductId($product->id_producto);
 ?>
 	<div class="row">
@@ -14,7 +15,8 @@ if (isset($_GET["product_id"])):
 					<i class="fa fa-download"></i> Descargar <span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu" role="menu">
-					<li><a href="report/history-word.php?id=<?php echo $product->id; ?>">Word 2007 (.docx)</a></li>
+					<li><a href="report/history-word.php?id=<?php echo $product->id_producto; ?>">Word 2007 (.docx)</a></li>
+
 				</ul>
 			</div>
 			<h1><?php echo $product->nombre_producto; ?> <small>Historial</small></h1>
