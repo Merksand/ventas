@@ -5,25 +5,27 @@ class ProductData
 
     public function __construct()
     {
-        $this->id_producto = "";
-        $this->codigo_producto = "";
+        $this->id_producto = 0;
+        $this->codigo_producto = 0;
         $this->nombre_producto = "";
         $this->descripcion = "";
         $this->precio_compra = 0;
         $this->precio_venta = 0;
         $this->stock = 0;
-        $this->stock_minimo = "";
+        $this->stock_minimo = 0;
         $this->imagen = "";
 
         $this->id_categoria = null;
         $this->is_active = 1;
-        $this->unidad = "";
+        $this->unidad = 0;
         $this->presentacion = "";
         $this->fyh_creacion = null;
         $this->fyh_actualizacion = null;
         $this->user_id = null;
 
         $this->cantidad = 0;
+        $this->id_detalle_venta = 0;
+        $this->id = 0;
         // $this->fyh_actualizacion = "NOW()";
         // $this->fyh_creacion = "NOW()";
     }
@@ -90,6 +92,16 @@ WHERE tp.is_active = 1 and ta.tipo_operacion = 'entrada'";
         $sql = "UPDATE tb_productos SET stock = stock + $cantidad WHERE id_producto = $product_id";
         return Executor::doit($sql);
     }
+
+    // En la clase ProductData
+    public static function updateStockRevert($product_id, $new_stock)
+    {
+        $sql = "UPDATE tb_productos SET stock = $new_stock WHERE id_producto = $product_id";
+        Executor::doit($sql);
+    }
+
+
+
 
 
     // Obtener categoría asociada al producto
@@ -238,6 +250,21 @@ WHERE tp.is_active = 1 and ta.tipo_operacion = 'entrada'";
         $query = Executor::doit($sql);
         return Model::many($query[0], new ProductData());
     }
+
+
+    // En la clase OperationData
+    // En la clase OperationData
+    public function del()
+    {
+        // Usamos `id_detalle_venta` en lugar de `id`
+        if (!empty($this->id_detalle_venta)) {
+            $sql = "DELETE FROM tb_detalle_venta WHERE id_detalle_venta = $this->id_detalle_venta";
+            Executor::doit($sql);
+        } else {
+            die("Error: No se puede eliminar porque el `id_detalle_venta` no está definido.");
+        }
+    }
+
 
 
 

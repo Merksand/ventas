@@ -162,17 +162,19 @@ class SellData
 		return Executor::doit($sql);
 	}
 
-	public static function delById($id)
+	public static function delById($id_venta)
 	{
-		$sql = "delete from " . self::$tablename . " where id=$id";
+		$sql = "DELETE FROM tb_ventas WHERE id_venta = $id_venta";
 		Executor::doit($sql);
 	}
 
+
 	public function del()
 	{
-		$sql = "delete from " . self::$tablename . " where id=$this->id";
+		$sql = "DELETE FROM tb_ventas WHERE id_venta = $this->id_venta";
 		Executor::doit($sql);
 	}
+
 
 	public function update_box()
 	{
@@ -218,10 +220,17 @@ class SellData
 
 	public static function getSells()
 	{
-		$sql = "select * from " . self::$tablename . " where operation_type_id=2 order by created_at desc";
+		$sql = "SELECT v.*, 
+                   SUM(dv.cantidad * dv.precio_unitario) AS total_venta
+            FROM tb_ventas v
+            JOIN tb_detalle_venta dv ON v.id_venta = dv.id_venta
+            GROUP BY v.id_venta
+            ORDER BY v.fecha_venta DESC";
+
 		$query = Executor::doit($sql);
 		return Model::many($query[0], new SellData());
 	}
+
 
 	public static function getSellsUnBoxed()
 	{

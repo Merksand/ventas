@@ -22,6 +22,9 @@ class OperationData
 
 		$this->tipo_operacion = 0;
 		$this->cantidad = 0;
+		$this->stock = 0;
+		$this->id_detalle_venta = 0;
+		$this->id = 0;
 	}
 
 	private function updateInventory()
@@ -56,14 +59,15 @@ class OperationData
 
 
 
-	public static function delById($id)
+	public static function delById($id_detalle_venta)
 	{
-		$sql = "delete from " . self::$tablename . " where id=$id";
+		$sql = "DELETE FROM tb_detalle_venta WHERE id_detalle_venta = $id_detalle_venta";
 		Executor::doit($sql);
 	}
+
 	public function del()
 	{
-		$sql = "delete from " . self::$tablename . " where id=$this->id";
+		$sql = "delete from tb_detalle_venta where id_detalle_venta=$this->id";
 		Executor::doit($sql);
 	}
 
