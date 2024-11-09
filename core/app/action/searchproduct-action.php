@@ -15,7 +15,7 @@
                 <th>Nombre</th>
                 <th>Precio unitarioz</th>
                 <th>En inventario</th>
-                <th>CantidadP</th>
+                <th>Cantidad</th>
             </thead>
             <?php
             $products_in_cero = 0;

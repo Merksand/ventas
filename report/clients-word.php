@@ -1,56 +1,49 @@
 <?php
-$debug= true;
-if($debug){
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+$debug = true;
+if ($debug) {
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
 }
+
 include "../core/autoload.php";
 include "../core/app/model/PersonData.php";
 
-require_once '../PhpWord/Autoloader.php';
-use PhpOffice\PhpWord\Autoloader;
-use PhpOffice\PhpWord\Settings;
+require_once '../phpWord2/vendor/autoload.php';
+use PhpOffice\PhpWord\PhpWord;
 
-Autoloader::register();
-
-$word = new  PhpOffice\PhpWord\PhpWord();
+$word = new PhpWord();
 $clients = PersonData::getClients();
 
+$section1 = $word->addSection();
+$section1->addText("Lista de Clientes", array("size" => 22, "bold" => true, "align" => "center"));
+$section1->addText("Fecha: " . date("d/m/Y"), array("size" => 12), "center");
+$section1->addTextBreak(1);
 
-$section1 = $word->AddSection();
-$section1->addText("CLIENTES",array("size"=>22,"bold"=>true,"align"=>"right"));
+$styleTable = array('borderSize' => 6, 'borderColor' => '666666', 'cellMargin' => 80);
+$styleFirstRow = array('bgColor' => 'CCCCCC');
+$word->addTableStyle('clientTable', $styleTable, $styleFirstRow);
 
-
-$styleTable = array('borderSize' => 6, 'borderColor' => '888888', 'cellMargin' => 40);
-$styleFirstRow = array('borderBottomColor' => '0000FF', 'bgColor' => 'AAAAAA');
-
-$table1 = $section1->addTable("table1");
+$table1 = $section1->addTable('clientTable');
 $table1->addRow();
-$table1->addCell()->addText("Nombre");
-$table1->addCell()->addText("Direccion");
-$table1->addCell()->addText("Email");
-$table1->addCell()->addText("Telefono");
-foreach($clients as $client){
-$table1->addRow();
-$table1->addCell(5000)->addText($client->name." ".$client->lastname);
-$table1->addCell(2500)->addText($client->address1);
-$table1->addCell(2000)->addText($client->email1);
-$table1->addCell(2000)->addText($client->phone1);
+$table1->addCell(5000)->addText("Nombre Completo", array("bold" => true));
+$table1->addCell(3000)->addText("Dirección", array("bold" => true));
+$table1->addCell(3000)->addText("Email", array("bold" => true));
+$table1->addCell(2000)->addText("Teléfono", array("bold" => true));
+$table1->addCell(2000)->addText("C.I.", array("bold" => true));
 
+foreach ($clients as $client) {
+    $table1->addRow();
+    $table1->addCell(5000)->addText($client->name . " " . $client->lastname. " ". $client->lastname2);
+    $table1->addCell(3000)->addText($client->address);
+    $table1->addCell(3000)->addText($client->email);
+    $table1->addCell(2000)->addText($client->phone);
+    $table1->addCell(2000)->addText($client->CI);
 }
 
-$word->addTableStyle('table1', $styleTable,$styleFirstRow);
-/// datos bancarios
-
-$filename = "clients-".time().".docx";
-#$word->setReadDataOnly(true);
-$word->save($filename,"Word2007");
-//chmod($filename,0444);
-header("Content-Disposition: attachment; filename='$filename'");
-readfile($filename); // or echo file_get_contents($filename);
-unlink($filename);  // remove temp file
-
-
-
+$filename = "clientes-" . time() . ".docx";
+$word->save($filename, "Word2007");
+header("Content-Disposition: attachment; filename=$filename");
+readfile($filename);
+unlink($filename);
 ?>

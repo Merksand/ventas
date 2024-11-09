@@ -1,14 +1,23 @@
 <?php
 $products = ProductData::getAll();
 
-echo "<pre>";
-print_r($products[0]);
-echo "</pre>";
+// echo "<pre>";
+// print_r($products[0]);
+// echo "</pre>";
 ?>
 <section class="content">
 	<div class="row">
 		<div class="col-md-12">
-			<h1>Reportesz</h1>
+			<form method="GET" action="report/inventaryTime-word.php">
+				<input type="hidden" name="product_id" value="<?php echo isset($_GET['product_id']) ? $_GET['product_id'] : ''; ?>">
+				<input type="hidden" name="sd" value="<?php echo isset($_GET['sd']) ? $_GET['sd'] : ''; ?>">
+				<input type="hidden" name="ed" value="<?php echo isset($_GET['ed']) ? $_GET['ed'] : ''; ?>">
+				<button type="submit" class="btn btn-primary pull-right">
+					<i class="fa fa-download"></i> Descargar Reporte en Word
+				</button>
+			</form>
+			<h1>Reportes</h1>
+
 
 			<form method="GET">
 				<input type="hidden" name="view" value="reports">
@@ -40,8 +49,8 @@ echo "</pre>";
 		<div class="col-md-12">
 			<?php
 			if (isset($_GET["sd"]) && isset($_GET["ed"])) {
-				echo $_GET["sd"] . "<br>";
-				echo $_GET["ed"] . "<br>";
+				// echo $_GET["sd"] . "<br>";
+				// echo $_GET["ed"] . "<br>";
 			}
 			?>
 
@@ -53,10 +62,8 @@ echo "</pre>";
 					if ($_GET["product_id"] == "") {
 						// $operations = OperationData::getAllByDateOfficial($_GET["sd"], $_GET["ed"]);
 						$operations = OperationData::getProductsByDateAndOperation($_GET["sd"], $_GET["ed"]);
-						echo "En el if";
 					} else {
 						$operations = OperationData::getAllByDateOfficialBP($_GET["product_id"], $_GET["sd"], $_GET["ed"]);
-						echo "En el else";
 					}
 					?>
 
@@ -71,9 +78,9 @@ echo "</pre>";
 							<?php foreach ($operations as $operation): ?>
 
 								<?php
-									// echo "<pre>";
-									// print_r($operation);
-									// echo "</pre>";
+								// echo "<pre>";
+								// print_r($operation);
+								// echo "</pre>";
 								?>
 
 
@@ -81,7 +88,7 @@ echo "</pre>";
 									<td><?php echo $operation->nombre_producto; ?></td>
 									<td><?php echo $operation->stock_actual; ?></td>
 									<td><?php echo ($operation->tipo_operacion == 'entrada') ? 'Compra' : 'Venta'; ?></td>
-									<td><?php echo $operation->created_at; ?></td>
+									<td><?php echo $operation->fyh_creacion; ?></td>
 								</tr>
 							<?php endforeach; ?>
 						</table>

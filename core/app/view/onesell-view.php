@@ -10,10 +10,10 @@
 
 <?php if (isset($_GET["id"]) && $_GET["id"] != ""): ?>
 	<?php
-	// Obtiene la venta y los detalles de la venta
+	
 	$sellId = $_GET["id"];
-	$sell = SellData::getById($sellId); // Asume que esta función obtiene datos de `tb_ventas`
-	$operations = OperationData::getAllProductsBySellId($sellId); // Asume que esta función obtiene datos de `tb_detalle_venta`
+	$sell = SellData::getById($sellId); 
+	$operations = OperationData::getAllProductsBySellId($sellId); 
 	$total = 0;
 
 	?>
@@ -33,10 +33,9 @@
 
 	<?php if (isset($_COOKIE["selled"])): ?>
 		<?php
-		// Obtiene todos los productos relacionados con la venta
-		$products = OperationData::getProductAlmacenVenta($sellId); // Asume que devuelve un array de productos
+		$products = OperationData::getProductAlmacenVenta($sellId);  
 
-		$user = $sell; // Asume que esta función obtiene datos del usuario relacionado
+		$user = $sell;  
 		// echo "Este es el sell ID . " . $sellId;
 		// echo "<pre>";
 		// print_r($products);
@@ -48,8 +47,7 @@
 			// print_r($products); // Muestra la información del producto
 			// echo "</pre>";
 
-			// Verifica la cantidad disponible en el inventario
-			$stockActual = $product->producto_stock; // Utiliza el stock actual del producto obtenido de la consulta
+			$stockActual = $product->producto_stock;
 			// echo "<pre>";
 			// print_r($stockActual);
 			// echo "</pre>";
@@ -153,8 +151,8 @@
 			// echo "<pre>";
 			// print_r($producto->getProduct($producto->id_producto));
 			// echo "</pre>";
-			$precioUnitario = $producto->precio_unitario; // Precio unitario guardado en `tb_detalle_venta`
-			$cantidad = $producto->cantidad; // Cantidad de producto en el detalle de la venta
+			$precioUnitario = $producto->precio_unitario; 
+			$cantidad = $producto->cantidad; 
 			$subtotal = $cantidad * $precioUnitario;
 			$total += $subtotal;
 			?>

@@ -124,6 +124,13 @@ class SellData
 		return Model::one($query[0], new UserData());
 	}
 
+	public static function getPersonClientById($id)
+	{
+		$sql = "select tpo.id_cliente from tb_persona tp inner join tb_clientes tpo ON  tp.id_persona = tpo.id_persona WHERE tp.id_persona = $id";
+		$query = Executor::doit($sql);
+		return Model::one($query[0], new PersonData());
+	}
+
 
 	public static function getBuyUser($id)
 	{
@@ -276,21 +283,21 @@ class SellData
 		$query = Executor::doit($sql);
 		return Model::many($query[0], new SellData());
 	}
-	public static function getAllByDateBCOp($clientid, $start, $end, $op)
+	public static function getAllByDateBCOp($clientid, $start, $end)
 	{
-		// Realizamos el JOIN entre tb_ventas y tb_clientes, también se usa el filtro de la operación.
-		$sql = "SELECT v.*, c.*, v.created_at, v.operation_type_id
-            FROM " . self::$tablename . " v
+		// Realizamos el JOIN entre tb_ventas y tb_clientes, y aplicamos el filtro por cliente y rango de fechas.
+		$sql = "SELECT v.*, c.*, v.fecha_venta
+            FROM tb_ventas v
             JOIN tb_clientes c ON v.id_cliente = c.id_cliente
-            WHERE date(v.created_at) >= \"$start\" 
-              AND date(v.created_at) <= \"$end\" 
+            WHERE date(v.fecha_venta) >= \"$start\" 
+              AND date(v.fecha_venta) <= \"$end\" 
               AND c.id_cliente = $clientid
-              AND v.operation_type_id = $op
-            ORDER BY v.created_at DESC";
+            ORDER BY v.fecha_venta DESC";
 
 		$query = Executor::doit($sql);
 		return Model::many($query[0], new SellData());
 	}
+
 
 
 
@@ -317,6 +324,7 @@ class SellData
 		$query = Executor::doit($sql);
 
 		// Retornar el resultado como un objeto UserData (ajustar según la clase que uses para manejar los datos)
-		return Model::one($query[0], new UserData());
+		return Model::one($query[0], new SellData());
 	}
 }
+
