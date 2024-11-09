@@ -1,120 +1,90 @@
 <div class="row">
-	<div class="col-md-12">
-<!-- Single button -->
-<div class="btn-group pull-right">
-  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-    <i class="fa fa-download"></i> Descargar <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu" role="menu">
-    <li><a href="report/inventary-word.php">Word 2007 (.docx)</a></li>
-  </ul>
-</div>
-		<h1><i class="glyphicon glyphicon-stats"></i> Inventario de Productos</h1>
-		<div class="clearfix"></div>
+    <div class="col-md-12">
+        <!-- Botón de descarga -->
+        <div class="btn-group pull-right">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-download"></i> Descargar <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="report/inventary-word.php">Word 2007 (.docx)</a></li>
+            </ul>
+        </div>
 
+        <h1><i class="glyphicon glyphicon-stats"></i> Inventario de Productos</h1>
+        <div class="clearfix"></div>
 
-<?php
-$page = 1;
-if(isset($_GET["page"])){
-	$page=$_GET["page"];
-}
-$limit=10;
-if(isset($_GET["limit"]) && $_GET["limit"]!="" && $_GET["limit"]!=$limit){
-	$limit=$_GET["limit"];
-}
-$products = ProductData::getAll();
+        <?php
+        $page = isset($_GET["page"]) ? (int)$_GET["page"] : 1;
+        $limit = isset($_GET["limit"]) && $_GET["limit"] != "" ? (int)$_GET["limit"] : 10;
+        $products = ProductData::getAll();
 
-// echo "<pre>";
-// print_r($products);
-// echo "</pre>";
-if(count($products)>0){
+        if (count($products) > 0) {
+            $npaginas = ceil(count($products) / $limit);
+            $start_index = ($page - 1) * $limit;
+            $curr_products = array_slice($products, $start_index, $limit);
+        ?>
 
-if($page==1){
-$curr_products = ProductData::getAllByPage($products[0]->id_producto,$limit);
-}else{
-$curr_products = ProductData::getAllByPage($products[($page-1)*$limit]->id_producto,$limit);
+            <h3>Página <?php echo $page . " de " . $npaginas; ?></h3>
+            <div class="btn-group pull-right">
+                <?php if ($page > 1): ?>
+                    <a class="btn btn-sm btn-default" href="<?php echo "index.php?view=inventary&limit=$limit&page=" . ($page - 1); ?>"><i class="glyphicon glyphicon-chevron-left"></i> Atrás</a>
+                <?php endif; ?>
 
-}
-$npaginas = floor(count($products)/$limit);
- $spaginas = count($products)%$limit;
+                <?php if ($page < $npaginas): ?>
+                    <a class="btn btn-sm btn-default" href="<?php echo "index.php?view=inventary&limit=$limit&page=" . ($page + 1); ?>">Adelante <i class="glyphicon glyphicon-chevron-right"></i></a>
+                <?php endif; ?>
+            </div>
 
-if($spaginas>0){ $npaginas++;}
+            <div class="clearfix"></div>
+            <br>
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Disponible</th>
+                    <th></th>
+                </thead>
+                <?php foreach ($curr_products as $product): 
+                    $q = OperationData::getQYesF($product->id_producto);
+                ?>
+                    <tr class="<?php echo ($q <= $product->stock_minimo / 2) ? 'danger' : (($q <= $product->stock_minimo) ? 'warning' : ''); ?>">
+                        <td><?php echo $product->id_producto; ?></td>
+                        <td><?php echo $product->nombre_producto; ?></td>
+                        <td><?php echo $q; ?></td>
+                        <td style="width:93px;">
+                            <a href="index.php?view=history&product_id=<?php echo $product->id_producto; ?>" class="btn btn-xs btn-success"><i class="glyphicon glyphicon-time"></i> Historial</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
 
-	?>
+            <!-- Botones de paginación -->
+            <div class="btn-group pull-right">
+                <?php for ($i = 1; $i <= $npaginas; $i++): ?>
+                    <a href="index.php?view=inventary&limit=<?php echo $limit; ?>&page=<?php echo $i; ?>" class="btn btn-default btn-sm"><?php echo $i; ?></a>
+                <?php endfor; ?>
+            </div>
 
-	<h3>Pagina <?php echo $page." de ".$npaginas; ?></h3>
-<div class="btn-group pull-right">
-<?php
-$px=$page-1;
-if($px>0):
-?>
-<a class="btn btn-sm btn-default" href="<?php echo "index.php?view=inventary&limit=$limit&page=".($px); ?>"><i class="glyphicon glyphicon-chevron-left"></i> Atras </a>
-<?php endif; ?>
+            <!-- Formulario de selección de límite de productos por página -->
+            <form class="form-inline" method="get" action="index.php">
+                <input type="hidden" name="view" value="inventary">
+                <label for="limit">Límite</label>
+                <input type="number" value="<?php echo $limit; ?>" name="limit" style="width:60px;" class="form-control">
+                <button type="submit" class="btn btn-primary">Aplicar</button>
+            </form>
 
-<?php 
-$px=$page+1;
-if($px<=$npaginas):
-?>
-<a class="btn btn-sm btn-default" href="<?php echo "index.php?view=inventary&limit=$limit&page=".($px); ?>">Adelante <i class="glyphicon glyphicon-chevron-right"></i></a>
-<?php endif; ?>
-</div>
-<div class="clearfix"></div>
-<br><table class="table table-bordered table-hover">
-	<thead>
-		<th>Codigo</th>
-		<th>Nombre</th>
-		<th>Disponible</th>
-		<th></th>
-	</thead>
-	<?php foreach($curr_products as $product):
+            <div class="clearfix"></div>
 
-	// echo "<pre>";
-	// print_r($product);
-	// echo "</pre>";
-	$q=OperationData::getQYesF($product->id_producto);
-	?>
-	<tr class="<?php if($q<=$product->stock_minimo/2){ echo "danger";}else if($q<=$product->stock_minimo){ echo "warning";}?>">
-		<td><?php echo $product->id_producto; ?></td>
-		<td><?php echo $product->nombre_producto; ?></td>
-		<td>
-			
-			<?php echo $q; ?>
-
-		</td>
-		<td style="width:93px;">
-<!--		<a href="index.php?view=input&product_id=<?php echo $product->id_producto; ?>" class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-circle-arrow-up"></i> Alta</a>-->
-		<a href="index.php?view=history&product_id=<?php echo $product->id_producto; ?>" class="btn btn-xs btn-success"><i class="glyphicon glyphicon-time"></i> Historial</a>
-		</td>
-	</tr>
-	<?php endforeach;?>
-</table>
-<div class="btn-group pull-right">
-<?php
-
-for($i=0;$i<$npaginas;$i++){
-	echo "<a href='index.php?view=inventary&limit=$limit&page=".($i+1)."' class='btn btn-default btn-sm'>".($i+1)."</a> ";
-}
-?>
-</div>
-<form class="form-inline">
-	<label for="limit">Limite</label>
-	<input type="hidden" name="view" value="inventary">
-	<input type="number" value=<?php echo $limit?> name="limit" style="width:60px;" class="form-control">
-</form>
-
-<div class="clearfix"></div>
-
-	<?php
-}else{
-	?>
-	<div class="jumbotron">
-		<h2>No hay productos</h2>
-		<p>No se han agregado productos a la base de datos, puedes agregar uno dando click en el boton <b>"Agregar Producto"</b>.</p>
-	</div>
-	<?php
-}
-
-?>
-<br><br><br><br><br><br><br><br><br><br>
-	</div>
+        <?php
+        } else {
+        ?>
+            <div class="jumbotron">
+                <h2>No hay productos</h2>
+                <p>No se han agregado productos a la base de datos, puedes agregar uno dando click en el botón <b>"Agregar Producto"</b>.</p>
+            </div>
+        <?php
+        }
+        ?>
+        <br><br><br><br><br><br><br><br><br><br>
+    </div>
 </div>

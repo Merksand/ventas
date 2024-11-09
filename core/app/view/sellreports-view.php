@@ -95,9 +95,9 @@ $clients = PersonData::getClients();
 <?php foreach($operations as $operation):?>
 	<tr>
 		<td><?php echo $operation->id; ?></td>
-		<td>$ <?php echo number_format($operation->total,2,'.',','); ?></td>
+		<td>Bs <?php echo number_format($operation->total,2,'.',','); ?></td>
 		<!-- <td>$ <?php echo number_format($operation->discount,2,'.',','); ?></td> -->
-		<td>$ <?php echo number_format($operation->total-$operation->discount,2,'.',','); ?></td>
+		<td>Bs <?php echo number_format($operation->total-$operation->discount,2,'.',','); ?></td>
 		<td><?php echo $operation->created_at; ?></td>
 	</tr>
 <?php
@@ -105,7 +105,7 @@ $supertotal+= ($operation->total-$operation->discount);
  endforeach; ?>
 
 </table>
-<h1>Total de ventas: $ <?php echo number_format($supertotal,2,'.',','); ?></h1>
+<h1>Total de ventas: Bs <?php echo number_format($supertotal,2,'.',','); ?></h1>
 
 			 <?php else:
 			 // si no hay operaciones
