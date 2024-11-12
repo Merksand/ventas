@@ -1,14 +1,12 @@
 <?php
+// Incluir archivos necesarios
 include "../core/autoload.php";
 include "../core/app/model/ProductData.php";
 include "../core/app/model/CategoryData.php";
 include "../core/app/model/OperationData.php";
 
-require_once '../PhpWord2/vendor/autoload.php';
-use PhpOffice\PhpWord\PhpWord;
-
-// Crear una instancia de PhpWord
-$word = new PhpWord();
+require_once '../tcpdf/vendor/autoload.php';
+use TCPDF;
 
 // Obtener el producto usando el ID proporcionado
 $product = ProductData::getById($_GET["id"]);
@@ -22,50 +20,58 @@ $entradas = OperationData::GetInputQProduct($product->id_producto);
 $salidas = OperationData::GetOutputQProduct($product->id_producto);
 $disponibles = ProductData::getAllProductById($product->id_producto)->stock;
 
-// Crear la sección del documento
-$section1 = $word->addSection();
-$section1->addText($product->nombre_producto, array("size" => 22, "bold" => true));
-$section1->addText("Historial del Producto", array("size" => 14, "bold" => true));
+// Crear una nueva instancia de TCPDF
+$pdf = new TCPDF();
+$pdf->SetCreator(PDF_CREATOR);
+$pdf->SetAuthor('Tu Sistema');
+$pdf->SetTitle('Historial del Producto');
+$pdf->SetSubject('Historial de Producto');
+$pdf->SetKeywords('Producto, Historial, Reporte, PDF');
 
-// Estilos de tabla
-$styleTable = array('borderSize' => 6, 'borderColor' => '888888', 'cellMargin' => 40);
-$styleFirstRow = array('borderBottomColor' => '0000FF', 'bgColor' => 'AAAAAA');
+// Configuración de la página
+$pdf->setPrintHeader(false);
+$pdf->setPrintFooter(false);
+$pdf->AddPage();
+
+// Título del reporte
+$pdf->SetFont('helvetica', 'B', 16);
+$pdf->Cell(0, 10, $product->nombre_producto, 0, 1, 'C');
+$pdf->SetFont('helvetica', 'B', 12);
+$pdf->Cell(0, 10, 'Historial del Producto', 0, 1, 'C');
+$pdf->Ln(5); // Espacio adicional
 
 // Tabla resumen de cantidades
-$table0 = $section1->addTable("table0");
-$table0->addRow();
-$table0->addCell()->addText("Entradas");
-$table0->addCell()->addText("Disponibles");
-$table0->addCell()->addText("Salidas");
-$table0->addRow();
-$table0->addCell(4000)->addText($entradas);
-$table0->addCell(4000)->addText($disponibles);
-$table0->addCell(4000)->addText($salidas);
+$pdf->SetFont('helvetica', 'B', 10);
+$pdf->SetFillColor(170, 170, 170); // Fondo gris claro para encabezados
+$pdf->Cell(60, 8, 'Entradas', 1, 0, 'C', 1);
+$pdf->Cell(60, 8, 'Disponibles', 1, 0, 'C', 1);
+$pdf->Cell(60, 8, 'Salidas', 1, 1, 'C', 1);
 
-$word->addTableStyle('table0', $styleTable, $styleFirstRow);
-$section1->addText("");
+// Valores de la tabla resumen
+$pdf->SetFont('helvetica', '', 10);
+$pdf->Cell(60, 8, $entradas, 1, 0, 'C');
+$pdf->Cell(60, 8, $disponibles, 1, 0, 'C');
+$pdf->Cell(60, 8, $salidas, 1, 1, 'C');
+$pdf->Ln(10); // Espacio adicional
 
 // Tabla de historial de operaciones
-$operations = OperationData::getAllInventaryByProductId($product->id_producto);
-$table1 = $section1->addTable("table1");
-$table1->addRow();
-$table1->addCell()->addText("Cantidad");
-$table1->addCell()->addText("Tipo");
-$table1->addCell()->addText("Fecha");
+$pdf->SetFont('helvetica', 'B', 10);
+$pdf->Cell(60, 8, 'Cantidad', 1, 0, 'C', 1);
+$pdf->Cell(60, 8, 'Tipo', 1, 0, 'C', 1);
+$pdf->Cell(60, 8, 'Fecha', 1, 1, 'C', 1);
 
+// Fuente para el contenido de la tabla de historial
+$pdf->SetFont('helvetica', '', 10);
+
+// Obtener el historial de operaciones para el producto
+$operations = OperationData::getAllInventaryByProductId($product->id_producto);
 foreach ($operations as $operation) {
-    $table1->addRow();
-    $table1->addCell(4000)->addText($operation->stock_actual);
-    $table1->addCell(4000)->addText($operation->tipo_operacion);
-    $table1->addCell(4000)->addText($operation->fyh_creacion);
+    $pdf->Cell(60, 8, $operation->stock_actual, 1, 0, 'C');
+    $pdf->Cell(60, 8, $operation->tipo_operacion, 1, 0, 'C');
+    $pdf->Cell(60, 8, date("d/m/Y", strtotime($operation->fyh_creacion)), 1, 1, 'C');
 }
 
-$word->addTableStyle('table1', $styleTable, $styleFirstRow);
-
-// Guardar y descargar el archivo
-$filename = "history-" . time() . ".docx";
-$word->save($filename, "Word2007");
-header("Content-Disposition: attachment; filename=$filename");
-readfile($filename);
-unlink($filename);
+// Guardar el documento y enviarlo al navegador para su descarga
+$filename = "history-" . time() . ".pdf";
+$pdf->Output($filename, 'D');
 ?>

@@ -145,6 +145,14 @@ class SellData
 		return Model::one($query[0], new UserData());
 	}
 
+	public static function getPersonProviderById($id)
+	{
+		$sql = "select * from tb_persona tp inner join tb_proveedores tpo ON  tp.id_persona = tpo.id_persona WHERE tpo.id_proveedor = $id";
+		$query = Executor::doit($sql);
+
+		return Model::one($query[0], new PersonData());
+	}
+
 	public function getPerson()
 	{
 		// Verifica si hay un proveedor asociado a la venta
@@ -277,9 +285,14 @@ class SellData
 		return Model::many($query[0], new SellData());
 	}
 
-	public static function getAllByDateOp($start, $end, $op)
+	public static function getAllByDateOp($start, $end)
 	{
-		$sql = "select * from " . self::$tablename . " where date(created_at) >= \"$start\" and date(created_at) <= \"$end\" and operation_type_id=$op order by created_at desc";
+		$sql = "SELECT v.*, c.*, v.fecha_venta
+            FROM tb_ventas v
+            JOIN tb_clientes c ON v.id_cliente = c.id_cliente
+            WHERE date(v.fecha_venta) >= \"$start\" 
+              AND date(v.fecha_venta) <= \"$end\" 
+            ORDER BY v.fecha_venta DESC";
 		$query = Executor::doit($sql);
 		return Model::many($query[0], new SellData());
 	}
@@ -327,4 +340,3 @@ class SellData
 		return Model::one($query[0], new SellData());
 	}
 }
-

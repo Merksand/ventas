@@ -3,56 +3,60 @@ include "../core/autoload.php";
 include "../core/app/model/ProductData.php";
 include "../core/app/model/CategoryData.php";
 
-require_once '../phpWord2/vendor/autoload.php';
+require_once '../tcpdf/vendor/autoload.php';
 
-use PhpOffice\PhpWord\PhpWord;
+use TCPDF;
 
-$word = new PhpWord();
 
+// Crear una nueva instancia de TCPDF
+$pdf = new TCPDF();
+$pdf->SetCreator(PDF_CREATOR);
+$pdf->SetAuthor('Tu Sistema');
+$pdf->SetTitle('Reporte de Productos');
+$pdf->SetSubject('Reporte de Productos');
+$pdf->SetKeywords('Productos, Reporte, PDF');
+
+// Configuración de la página
+$pdf->setPrintHeader(false);
+$pdf->setPrintFooter(false);
+$pdf->AddPage();
+
+// Título del reporte
+$pdf->SetFont('helvetica', 'B', 14);  // Tamaño de fuente del título reducido
+$pdf->Cell(0, 10, 'Reporte de Productos', 0, 1, 'C');
+$pdf->Ln(5);
+
+// Configuración de la tabla: Encabezados
+$pdf->SetFont('helvetica', 'B', 10);  // Reducido a 10 puntos para los encabezados
+$pdf->SetFillColor(221, 221, 221);  // Fondo gris claro para encabezado
+$pdf->Cell(49, 8, 'Nombre', 1, 0, 'C', 1);
+$pdf->Cell(26, 8, 'Precio Entrada', 1, 0, 'C', 1);
+$pdf->Cell(25, 8, 'Precio Salida', 1, 0, 'C', 1);
+$pdf->Cell(17, 8, 'Stock', 1, 0, 'C', 1);
+$pdf->Cell(49, 8, 'Categoría', 1, 0, 'C', 1);
+$pdf->Cell(20, 8, 'Mín. Inv.', 1, 1, 'C', 1);
+
+// Fuente para el contenido de la tabla
+$pdf->SetFont('helvetica', '', 9);  // Reducido a 9 puntos para el contenido
+
+// Obtener productos de la base de datos
 $products = ProductData::getAll();
 
-$section1 = $word->addSection();
-$section1->addText("PRODUCTOS", array("size" => 22, "bold" => true, "align" => "right"));
-
-$styleTable = array('borderSize' => 6, 'borderColor' => '888888', 'cellMargin' => 40);
-$styleFirstRow = array('borderBottomColor' => '0000FF', 'bgColor' => 'AAAAAA');
-
-$word->addTableStyle('table1', $styleTable, $styleFirstRow);
-
-$table1 = $section1->addTable("table1");
-$table1->addRow();
-$table1->addCell()->addText("Id");
-$table1->addCell()->addText("Nombre");
-$table1->addCell()->addText("Precio Entrada");
-$table1->addCell()->addText("Precio Salida");
-$table1->addCell()->addText("Unidad");
-$table1->addCell()->addText("Categoría");
-$table1->addCell()->addText("Mínima en Inv.");
-$table1->addCell()->addText("Activo");
-
+// Rellenar filas de productos
 foreach ($products as $product) {
-	$table1->addRow();
-	$table1->addCell(500)->addText($product->id_producto);
-	$table1->addCell(5000)->addText($product->nombre_producto);
-	$table1->addCell(2000)->addText($product->precio_compra);
-	$table1->addCell(2000)->addText($product->precio_venta);
-	$table1->addCell(2000)->addText($product->stock);
+    $pdf->Cell(49, 8, $product->nombre_producto, 1, 0, 'L');
+    $pdf->Cell(26, 8, "Bs " . number_format($product->precio_compra, 2), 1, 0, 'R');
+    $pdf->Cell(25, 8, "Bs " . number_format($product->precio_venta, 2), 1, 0, 'R');
+    $pdf->Cell(17, 8, $product->stock, 1, 0, 'C');
 
-	if ($product->id_categoria != null) {
-		$table1->addCell(2000)->addText($product->getCategory()->name);
-	} else {
-		$table1->addCell(2000)->addText("---");
-	}
+    // Verificar si el producto tiene una categoría
+    $categoryName = $product->id_categoria ? $product->getCategory()->name : "---";
+    $pdf->Cell(49, 8, $categoryName, 1, 0, 'L');
 
-	$table1->addCell(2000)->addText($product->stock_minimo);
-	$table1->addCell(100)->addText($product->is_active ? "Si" : "No");
+    $pdf->Cell(20, 8, $product->stock_minimo, 1, 1, 'C');
 }
 
-$filename = "productos-" . time() . ".docx";
-$word->save($filename, "Word2007");
-
-header("Content-Disposition: attachment; filename=\"{$filename}\"");
-
-readfile($filename);
-unlink($filename);
+// Guardar el documento y enviarlo al navegador
+$filename = "productos_" . time() . ".pdf";
+$pdf->Output($filename, 'D');
 ?>

@@ -3,9 +3,10 @@ include "../core/autoload.php";
 include "../core/app/model/ProductData.php";
 include "../core/app/model/OperationData.php";
 
-require_once '../phpWord2/vendor/autoload.php';
-use PhpOffice\PhpWord\PhpWord;
+require_once '../tcpdf/vendor/autoload.php';
+use TCPDF;
 
+// Obtener parámetros de fecha y producto
 $startDate = isset($_GET['sd']) ? $_GET['sd'] : '';
 $endDate = isset($_GET['ed']) ? $_GET['ed'] : '';
 $product_id = isset($_GET['product_id']) ? $_GET['product_id'] : '';
@@ -16,36 +17,51 @@ if ($product_id == "") {
     $operations = OperationData::getAllByDateOfficialBP($product_id, $startDate, $endDate);
 }
 
-$word = new PhpWord();
-$section = $word->addSection();
+// Crear una nueva instancia de TCPDF
+$pdf = new TCPDF();
+$pdf->SetCreator(PDF_CREATOR);
+$pdf->SetAuthor('Sistema');
+$pdf->SetTitle('Reporte de Inventario');
+$pdf->SetSubject('Inventario');
+$pdf->SetKeywords('Inventario, PDF');
 
-$section->addText("Reporte de Inventario", array("size" => 22, "bold" => true, "color" => "4F81BD"), array("alignment" => "center"));
-$section->addText("Desde: $startDate Hasta: $endDate", array("size" => 12, "italic" => true, "color" => "7F7F7F"), array("alignment" => "center"));
-$section->addTextBreak(2);
+// Configuración de la página
+$pdf->setPrintHeader(false);
+$pdf->setPrintFooter(false);
+$pdf->AddPage();
 
-$styleTable = array('borderSize' => 6, 'borderColor' => '4F81BD', 'cellMargin' => 80);
-$styleFirstRow = array('bgColor' => 'D9E1F2');
-$word->addTableStyle('inventoryTable', $styleTable, $styleFirstRow);
+// Título del reporte
+$pdf->SetFont('helvetica', 'B', 16);
+$pdf->SetTextColor(79, 129, 189);
+$pdf->Cell(0, 10, 'Reporte de Inventario', 0, 1, 'C');
+$pdf->SetFont('helvetica', '', 12);
+$pdf->SetTextColor(127, 127, 127);
+$pdf->Cell(0, 10, "Desde: $startDate Hasta: $endDate", 0, 1, 'C');
+$pdf->Ln(5); // Espacio adicional
 
-$table = $section->addTable('inventoryTable');
+// Configuración de la tabla
+$pdf->SetFillColor(79, 129, 189);
+$pdf->SetTextColor(255, 255, 255);
+$pdf->SetFont('helvetica', 'B', 10);
 
-$table->addRow();
-$table->addCell(3000, array('bgColor' => '4F81BD'))->addText("Producto", array("bold" => true, "color" => "FFFFFF"), array("alignment" => "center"));
-$table->addCell(2000, array('bgColor' => '4F81BD'))->addText("Cantidad", array("bold" => true, "color" => "FFFFFF"), array("alignment" => "center"));
-$table->addCell(2000, array('bgColor' => '4F81BD'))->addText("Operación", array("bold" => true, "color" => "FFFFFF"), array("alignment" => "center"));
-$table->addCell(3000, array('bgColor' => '4F81BD'))->addText("Fecha", array("bold" => true, "color" => "FFFFFF"), array("alignment" => "center"));
+// Encabezado de la tabla
+$pdf->Cell(60, 8, 'Producto', 1, 0, 'C', 1);
+$pdf->Cell(30, 8, 'Cantidad', 1, 0, 'C', 1);
+$pdf->Cell(40, 8, 'Operación', 1, 0, 'C', 1);
+$pdf->Cell(50, 8, 'Fecha', 1, 1, 'C', 1);
+
+// Contenido de la tabla
+$pdf->SetFont('helvetica', '', 10);
+$pdf->SetTextColor(0, 0, 0);
 
 foreach ($operations as $operation) {
-    $table->addRow();
-    $table->addCell(3000)->addText($operation->nombre_producto, array("size" => 12), array("alignment" => "left"));
-    $table->addCell(2000)->addText($operation->stock_actual, array("size" => 12), array("alignment" => "center"));
-    $table->addCell(2000)->addText($operation->tipo_operacion == 'entrada' ? 'Compra' : 'Venta', array("size" => 12), array("alignment" => "center"));
-    $table->addCell(3000)->addText($operation->fyh_creacion, array("size" => 12), array("alignment" => "center"));
+    $pdf->Cell(60, 8, $operation->nombre_producto, 1, 0, 'L');
+    $pdf->Cell(30, 8, $operation->stock_actual, 1, 0, 'C');
+    $pdf->Cell(40, 8, $operation->tipo_operacion == 'entrada' ? 'Compra' : 'Venta', 1, 0, 'C');
+    $pdf->Cell(50, 8, $operation->fyh_creacion, 1, 1, 'C');
 }
 
-$filename = "inventario_" . time() . ".docx";
-$word->save($filename, "Word2007");
-header("Content-Disposition: attachment; filename=$filename");
-readfile($filename);
-unlink($filename);
+// Guardar el documento y enviarlo al navegador para su descarga
+$filename = "inventario_" . time() . ".pdf";
+$pdf->Output($filename, 'D');
 ?>

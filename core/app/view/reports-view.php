@@ -13,7 +13,7 @@ $products = ProductData::getAll();
 				<input type="hidden" name="sd" value="<?php echo isset($_GET['sd']) ? $_GET['sd'] : ''; ?>">
 				<input type="hidden" name="ed" value="<?php echo isset($_GET['ed']) ? $_GET['ed'] : ''; ?>">
 				<button type="submit" class="btn btn-primary pull-right">
-					<i class="fa fa-download"></i> Descargar Reporte en Word
+					<i class="fa fa-download"></i> Descargar Reporte en Pdf
 				</button>
 			</form>
 			<h1>Reportes</h1>

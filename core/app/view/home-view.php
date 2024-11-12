@@ -82,7 +82,7 @@
 	<!-- /.row -->
 
 	<div class="row">
-	  <div class="col-md-12">
+	  <!-- <div class="col-md-12">
 	    <?php if ($found): ?>
 	      <div class="btn-group pull-right">
 	        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -94,7 +94,7 @@
 	      </div>
 	    <?php endif; ?>
 
-	  </div>
+	  </div> -->
 	  <div class="clearfix"></div>
 	  <?php if (count($products) > 0) { ?>
 	    <br>

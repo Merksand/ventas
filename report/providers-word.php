@@ -1,50 +1,55 @@
 <?php
+// Incluir archivos necesarios
 include "../core/autoload.php";
 include "../core/app/model/PersonData.php";
 
-require_once '../PhpWord/Autoloader.php';
-use PhpOffice\PhpWord\Autoloader;
-use PhpOffice\PhpWord\Settings;
+require_once '../tcpdf/vendor/autoload.php';
+use TCPDF;
 
-Autoloader::register();
+// Crear una nueva instancia de TCPDF
+$pdf = new TCPDF();
+$pdf->SetCreator(PDF_CREATOR);
+$pdf->SetAuthor('Tu Sistema');
+$pdf->SetTitle('Reporte de Proveedores');
+$pdf->SetSubject('Lista de Proveedores');
+$pdf->SetKeywords('Proveedores, Reporte, PDF');
 
-$word = new  PhpOffice\PhpWord\PhpWord();
+// Configuración de la página
+$pdf->setPrintHeader(false);
+$pdf->setPrintFooter(false);
+$pdf->AddPage();
+
+// Título del reporte
+$pdf->SetFont('helvetica', 'B', 16);
+$pdf->Cell(0, 10, 'PROVEEDORES', 0, 1, 'C');
+$pdf->Ln(5); // Espacio adicional
+
+// Obtener datos de proveedores
 $clients = PersonData::getProviders();
 
+// Estilos de encabezado de la tabla
+$pdf->SetFont('helvetica', 'B', 10);
+$pdf->SetFillColor(170, 170, 170); // Fondo gris claro para encabezados
 
-$section1 = $word->AddSection();
-$section1->addText("PROVEEDORES",array("size"=>22,"bold"=>true,"align"=>"right"));
+// Crear encabezado de la tabla
+$pdf->Cell(50, 8, 'Nombre', 1, 0, 'C', 1);
+$pdf->Cell(60, 8, 'Direccion', 1, 0, 'C', 1);
+$pdf->Cell(50, 8, 'Email', 1, 0, 'C', 1);
+$pdf->Cell(30, 8, 'Telefono', 1, 1, 'C', 1);
 
+// Fuente para el contenido de la tabla
+$pdf->SetFont('helvetica', '', 9);
 
-$styleTable = array('borderSize' => 6, 'borderColor' => '888888', 'cellMargin' => 40);
-$styleFirstRow = array('borderBottomColor' => '0000FF', 'bgColor' => 'AAAAAA');
-
-$table1 = $section1->addTable("table1");
-$table1->addRow();
-$table1->addCell()->addText("Nombre");
-$table1->addCell()->addText("Direccion");
-$table1->addCell()->addText("Email");
-$table1->addCell()->addText("Telefono");
-foreach($clients as $client){
-$table1->addRow();
-$table1->addCell(5000)->addText($client->name." ".$client->lastname);
-$table1->addCell(2500)->addText($client->address1);
-$table1->addCell(2000)->addText($client->email1);
-$table1->addCell(2000)->addText($client->phone1);
-
+// Agregar filas de datos para cada proveedor
+foreach ($clients as $client) {
+    $nombreCompleto = $client->name . " " . $client->lastname;
+    $pdf->Cell(50, 8, $nombreCompleto, 1);
+    $pdf->Cell(60, 8, $client->address1, 1);
+    $pdf->Cell(50, 8, $client->email1, 1);
+    $pdf->Cell(30, 8, $client->phone1, 1, 1);
 }
 
-$word->addTableStyle('table1', $styleTable,$styleFirstRow);
-/// datos bancarios
-
-$filename = "providers-".time().".docx";
-#$word->setReadDataOnly(true);
-$word->save($filename,"Word2007");
-//chmod($filename,0444);
-header("Content-Disposition: attachment; filename='$filename'");
-readfile($filename); // or echo file_get_contents($filename);
-unlink($filename);  // remove temp file
-
-
-
+// Guardar el documento y enviarlo al navegador para su descarga
+$filename = "providers-" . time() . ".pdf";
+$pdf->Output($filename, 'D');
 ?>

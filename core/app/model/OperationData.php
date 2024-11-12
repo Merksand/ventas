@@ -488,11 +488,36 @@ class OperationData
 		return Model::many($query[0], new OperationData());
 	}
 
+
 	public static function getAllProductsByBuyId($buy_id)
 	{
 		$sql = "SELECT * FROM tb_detalle_compra  tdc
 INNER JOIN tb_compras tc on tdc.id_compra = tc.id_compra
 WHERE tc.id_compra =  $buy_id";
+		$query = Executor::doit($sql);
+		return Model::many($query[0], new OperationData());
+	}
+	public static function getAllProductsByBuyId2($buy_id)
+	{
+		$sql = "SELECT 
+                tdc.id_detalle_compra,
+                tdc.id_compra,
+                tdc.id_producto,
+                tdc.cantidad,
+                tdc.precio_unitario,
+                (tdc.cantidad * tdc.precio_unitario) AS total_producto,
+                tp.codigo_producto,
+                tp.nombre_producto,
+                tp.descripcion
+            FROM 
+                tb_detalle_compra tdc
+            INNER JOIN 
+                tb_compras tc ON tdc.id_compra = tc.id_compra
+            INNER JOIN 
+                tb_productos tp ON tdc.id_producto = tp.id_producto
+            WHERE 
+                tc.id_compra = $buy_id";
+
 		$query = Executor::doit($sql);
 		return Model::many($query[0], new OperationData());
 	}

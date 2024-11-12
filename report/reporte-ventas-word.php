@@ -1,70 +1,87 @@
 <?php
+// Incluir archivos necesarios
 include "../core/autoload.php";
 include "../core/app/model/PersonData.php";
 include "../core/app/model/SellData.php";
-require_once '../phpWord2/vendor/autoload.php';
 
-use PhpOffice\PhpWord\PhpWord;
+require_once '../tcpdf/vendor/autoload.php';
+use TCPDF;
 
+// Obtener parámetros de cliente y fechas
 $client_id = $_GET["client_id"] ?? "";
 $sd = $_GET["sd"] ?? "";
 $ed = $_GET["ed"] ?? "";
 
-$word = new PhpWord();
-$section = $word->addSection();
+// Crear una nueva instancia de TCPDF
+$pdf = new TCPDF();
+$pdf->SetCreator(PDF_CREATOR);
+$pdf->SetAuthor('Tu Sistema');
+$pdf->SetTitle('Reporte de Ventas');
+$pdf->SetSubject('Reporte de Ventas');
+$pdf->SetKeywords('Ventas, Reporte, PDF');
+
+// Configuración de la página
+$pdf->setPrintHeader(false);
+$pdf->setPrintFooter(false);
+$pdf->AddPage();
 
 // Título del reporte
-$section->addText("Reporte de Ventas", array("size" => 22, "bold" => true, "align" => "center"));
-$section->addText("Fecha: " . date("d/m/Y"), array("size" => 12), "center");
+$pdf->SetFont('helvetica', 'B', 16);
+$pdf->Cell(0, 10, 'Reporte de Ventas', 0, 1, 'C');
+$pdf->SetFont('helvetica', '', 12);
+$pdf->Cell(0, 10, 'Fecha: ' . date("d/m/Y"), 0, 1, 'C');
+$pdf->Ln(5); // Espacio adicional
 
+// Mostrar información del cliente
+$pdf->SetFont('helvetica', 'B', 12);
 if ($client_id) {
     $client = SellData::getClient($client_id);
-    $section->addText("Cliente: " . $client->nombre . " " . $client->apellido_paterno . " " . $client->apellido_materno, array("size" => 14, "bold" => true));
+    $pdf->Cell(0, 10, "Cliente: " . $client->nombre . " " . $client->apellido_paterno . " " . $client->apellido_materno, 0, 1);
 } else {
-    $section->addText("Cliente: Todos", array("size" => 14, "bold" => true));
-}
-$section->addText("Rango de fechas: $sd a $ed", array("size" => 12));
-$section->addTextBreak(2); // Espacio adicional
-
-// Obtener datos según el cliente y las fechas proporcionadas
-if ($client_id == "") {
-    $operations = SellData::getAllByDateOp($sd, $ed);
-} else {
-    $operations = SellData::getAllByDateBCOp($client_id, $sd, $ed);
+    $pdf->Cell(0, 10, "Cliente: Todos", 0, 1);
 }
 
+// Rango de fechas
+$pdf->SetFont('helvetica', '', 12);
+$pdf->Cell(0, 10, "Rango de fechas: $sd a $ed", 0, 1);
+$pdf->Ln(5); // Espacio adicional
+
+// Obtener operaciones según el cliente y las fechas
+$operations = ($client_id == "") 
+    ? SellData::getAllByDateOp($sd, $ed) 
+    : SellData::getAllByDateBCOp($client_id, $sd, $ed);
+
+// Verificar si hay operaciones
 if (count($operations) > 0) {
-    // Estilos para la tabla
-    $tableStyle = array('borderSize' => 6, 'borderColor' => '666666', 'cellMargin' => 80);
-    $firstRowStyle = array('bgColor' => 'CCCCCC');
-    $word->addTableStyle('table', $tableStyle, $firstRowStyle);
+    // Encabezado de la tabla
+    $pdf->SetFont('helvetica', 'B', 10);
+    $pdf->SetFillColor(221, 221, 221);
+    $pdf->Cell(30, 8, 'ID Venta', 1, 0, 'C', 1);
+    $pdf->Cell(50, 8, 'Total (Bs)', 1, 0, 'C', 1);
+    $pdf->Cell(40, 8, 'Fecha', 1, 1, 'C', 1);
 
-    $table = $section->addTable('table');
-    $table->addRow();
-    $table->addCell(1500)->addText("ID Venta", array("bold" => true));
-    $table->addCell(3000)->addText("Total (Bs)", array("bold" => true));
-    $table->addCell(2000)->addText("Fecha", array("bold" => true));
-
+    // Contenido de la tabla
+    $pdf->SetFont('helvetica', '', 10);
     $supertotal = 0;
     foreach ($operations as $operation) {
-        $table->addRow();
-        $table->addCell(1500)->addText($operation->id_venta);
-        $table->addCell(3000)->addText(number_format($operation->total_venta, 2, '.', ','));
-        $table->addCell(2000)->addText(date("d/m/Y", strtotime($operation->fecha_venta)));
+        $pdf->Cell(30, 8, $operation->id_venta, 1, 0, 'C');
+        $pdf->Cell(50, 8, number_format($operation->total_venta, 2, '.', ','), 1, 0, 'R');
+        $pdf->Cell(40, 8, date("d/m/Y", strtotime($operation->fecha_venta)), 1, 1, 'C');
         $supertotal += $operation->total_venta;
     }
 
-    // Total final
-    $section->addTextBreak(1);
-    $section->addText("Total de ventas: Bs " . number_format($supertotal, 2, '.', ','), array("size" => 16, "bold" => true));
+    // Total final de ventas
+    $pdf->Ln(5);
+    $pdf->SetFont('helvetica', 'B', 12);
+    $pdf->Cell(0, 10, "Total de ventas: Bs " . number_format($supertotal, 2, '.', ','), 0, 1, 'R');
 } else {
-    $section->addText("No hay operaciones para el rango seleccionado.", array("size" => 12, "italic" => true));
+    // Mensaje si no hay operaciones
+    $pdf->Ln(10);
+    $pdf->SetFont('helvetica', 'I', 12);
+    $pdf->Cell(0, 10, "No hay operaciones para el rango seleccionado.", 0, 1, 'C');
 }
 
-// Guardar y descargar el archivo
-$filename = "reporte-ventas-" . time() . ".docx";
-$word->save($filename, "Word2007");
-header("Content-Disposition: attachment; filename=$filename");
-readfile($filename);
-unlink($filename);
+// Guardar el documento y enviarlo al navegador
+$filename = "reporte-ventas-" . time() . ".pdf";
+$pdf->Output($filename, 'D');
 ?>

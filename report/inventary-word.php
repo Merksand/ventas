@@ -1,46 +1,54 @@
 <?php
+// Incluir archivos necesarios
 include "../core/autoload.php";
 include "../core/app/model/ProductData.php";
 include "../core/app/model/OperationData.php";
 
-require_once '../PhpWord2/vendor/autoload.php';
-use PhpOffice\PhpWord\PhpWord;
+require_once '../tcpdf/vendor/autoload.php';
+use TCPDF;
 
-// Crear una instancia de PhpWord
-$word = new PhpWord();
+// Crear una nueva instancia de TCPDF
+$pdf = new TCPDF();
+$pdf->SetCreator(PDF_CREATOR);
+$pdf->SetAuthor('Tu Sistema');
+$pdf->SetTitle('Reporte de Inventario');
+$pdf->SetSubject('Inventario');
+$pdf->SetKeywords('Inventario, Reporte, PDF');
+
+// Configuración de la página
+$pdf->setPrintHeader(false);
+$pdf->setPrintFooter(false);
+$pdf->AddPage();
+
+// Título del reporte
+$pdf->SetFont('helvetica', 'B', 16);
+$pdf->Cell(0, 10, 'INVENTARIO', 0, 1, 'C');
+$pdf->Ln(5); // Espacio adicional
 
 // Obtener todos los productos
 $products = ProductData::getAll();
 
-// Crear la sección del documento
-$section1 = $word->addSection();
-$section1->addText("INVENTARIO", array("size" => 22, "bold" => true));
+// Estilos de encabezado de la tabla
+$pdf->SetFont('helvetica', 'B', 10);
+$pdf->SetFillColor(170, 170, 170); // Fondo gris claro para encabezados
 
-// Estilos de tabla
-$styleTable = array('borderSize' => 6, 'borderColor' => '888888', 'cellMargin' => 40);
-$styleFirstRow = array('borderBottomColor' => '0000FF', 'bgColor' => 'AAAAAA');
+// Crear encabezado de la tabla
+$pdf->Cell(20, 8, 'Id', 1, 0, 'C', 1);
+$pdf->Cell(100, 8, 'Nombre', 1, 0, 'C', 1);
+$pdf->Cell(30, 8, 'Disponible', 1, 1, 'C', 1);
 
-// Crear la tabla para el inventario
-$table1 = $section1->addTable("table1");
-$table1->addRow();
-$table1->addCell()->addText("Id");
-$table1->addCell()->addText("Nombre");
-$table1->addCell()->addText("Disponible");
+// Fuente para el contenido de la tabla
+$pdf->SetFont('helvetica', '', 9);
 
+// Agregar filas de datos para cada producto
 foreach ($products as $product) {
     $disponible = OperationData::GetQYesF($product->id_producto);
-    $table1->addRow();
-    $table1->addCell(300)->addText($product->id_producto);
-    $table1->addCell(11000)->addText($product->nombre_producto);
-    $table1->addCell(500)->addText($disponible);
+    $pdf->Cell(20, 8, $product->id_producto, 1, 0, 'C');
+    $pdf->Cell(100, 8, $product->nombre_producto, 1, 0, 'L');
+    $pdf->Cell(30, 8, $disponible, 1, 1, 'C');
 }
 
-$word->addTableStyle('table1', $styleTable, $styleFirstRow);
-
-// Guardar y descargar el archivo
-$filename = "inventario-" . time() . ".docx";
-$word->save($filename, "Word2007");
-header("Content-Disposition: attachment; filename=$filename");
-readfile($filename);
-unlink($filename);  // Eliminar el archivo temporal después de la descarga
+// Guardar el documento y enviarlo al navegador para su descarga
+$filename = "inventario-" . time() . ".pdf";
+$pdf->Output($filename, 'D');
 ?>

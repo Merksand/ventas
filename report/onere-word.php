@@ -4,83 +4,84 @@ include "../core/app/model/PersonData.php";
 include "../core/app/model/UserData.php";
 include "../core/app/model/SellData.php";
 include "../core/app/model/OperationData.php";
-include "../core/app/model/OperationTypeData.php";
 include "../core/app/model/ProductData.php";
 
-require_once '../PhpWord/Autoloader.php';
-use PhpOffice\PhpWord\Autoloader;
-use PhpOffice\PhpWord\Settings;
+require_once '../tcpdf/vendor/autoload.php';
+use TCPDF;
 
-Autoloader::register();
+// Crear una instancia de TCPDF
+$pdf = new TCPDF();
+$pdf->SetCreator(PDF_CREATOR);
+$pdf->SetAuthor('Sistema');
+$pdf->SetTitle('Resumen de Reabastecimiento');
+$pdf->SetSubject('Reabastecimiento');
+$pdf->SetKeywords('Reabastecimiento, PDF');
 
-$word = new  PhpOffice\PhpWord\PhpWord();
+// Configuración de la página
+$pdf->setPrintHeader(false);
+$pdf->setPrintFooter(false);
+$pdf->AddPage();
 
-$sell = SellData::getById($_GET["id"]);
-$operations = OperationData::getAllProductsBySellId($_GET["id"]);
-$client = null;
-if($sell->person_id){
-$client = $sell->getPerson();
-}
-$user = $sell->getUser();
+// Título del reporte
+$pdf->SetFont('helvetica', 'B', 16);
+$pdf->Cell(0, 10, 'RESUMEN DE REABASTECIMIENTO', 0, 1, 'C');
+$pdf->Ln(5); // Espacio adicional
 
+// Obtener el reabastecimiento (compra) y sus detalles
+$sell = SellData::getByIdReabastecimiento($_GET["id"]);
+$operations = OperationData::getAllProductsByBuyId($_GET["id"]);
 
-$section1 = $word->AddSection();
-$section1->addText("RESUMEN DE REABASTECIMIENTO",array("size"=>22,"bold"=>true,"align"=>"right"));
+// Obtener datos del proveedor y usuario
+$client = $sell->getPersonProviderById($sell->person_id); // Obtener proveedor si `person_id` está presente
+$user = $sell->getBuyUser($sell->user_id); // Obtener usuario que realizó la compra
 
+// Información del usuario que atendió
+$pdf->SetFont('helvetica', 'B', 12);
+$pdf->Cell(40, 8, 'Atendido por:', 0, 0);
+$pdf->SetFont('helvetica', '', 12);
+$pdf->Cell(60, 8, $user->nombre . " " . $user->apellido_paterno . " " . $user->apellido_materno, 0, 1);
 
-$styleTable = array('borderSize' => 6, 'borderColor' => '888888', 'cellMargin' => 40);
-$styleFirstRow = array('borderBottomColor' => '0000FF', 'bgColor' => 'AAAAAA');
-
-$total=0;
-
-$table1 = $section1->addTable("table1");
-$table1->addRow();
-$table1->addCell(3000)->addText("Atendido por");
-$table1->addCell(9000)->addText($user->name." ".$user->lastname);
-
-if($sell->person_id!=null){
-	$table1->addRow();
-$table1->addCell()->addText("Proveedor");
-$table1->addCell()->addText($client->name." ".$client->lastname);
-}
-$section1->addText("");
-
-$table2 = $section1->addTable("table2");
-$table2->addRow();
-$table2->addCell(1000)->addText("Codigo");
-$table2->addCell(1000)->addText("Cantidad");
-$table2->addCell(6000)->addText("Nombre del producto");
-$table2->addCell(1000)->addText("P.U");
-$table2->addCell(2000)->addText("Total");
-
-foreach($operations as $operation){
-	$product = $operation->getProduct();
-	$table2->addRow();
-$table2->addCell()->addText($product->id);
-$table2->addCell()->addText($operation->q);
-$table2->addCell()->addText($product->name);
-$table2->addCell()->addText("$".number_format($product->price_in,2,".",","));
-$table2->addCell()->addText("$".number_format($operation->q*$product->price_in,2,".",","));
-$total+=$operation->q*$product->price_in;
+if ($client) {
+    $pdf->SetFont('helvetica', 'B', 12);
+    $pdf->Cell(40, 8, 'Proveedor:', 0, 0);
+    $pdf->SetFont('helvetica', '', 12);
+    $pdf->Cell(60, 8, $client->nombre . " " . $client->apellido_paterno . " " . $client->apellido_materno, 0, 1);
 }
 
-$section1->addText("");
-$section1->addText("Total: $".number_format($total,2,".",","),array("size"=>20));
+$pdf->Ln(10); // Espacio adicional
 
-$word->addTableStyle('table1', $styleTable);
-$word->addTableStyle('table2', $styleTable,$styleFirstRow);
+// Encabezado de la tabla de productos
+$pdf->SetFont('helvetica', 'B', 10);
+$pdf->SetFillColor(170, 170, 170);
+$pdf->Cell(30, 8, 'Codigo', 1, 0, 'C', 1);
+$pdf->Cell(30, 8, 'Cantidad', 1, 0, 'C', 1);
+$pdf->Cell(60, 8, 'Nombre del producto', 1, 0, 'C', 1);
+$pdf->Cell(30, 8, 'P.U', 1, 0, 'C', 1);
+$pdf->Cell(40, 8, 'Total', 1, 1, 'C', 1);
 
+$pdf->SetFont('helvetica', '', 10);
+$total = 0;
 
-/// datos bancarios
+foreach ($operations as $operation) {
+    // Obtener el producto asociado a la operación
+    $product = $operation->getProduct($operation->id_producto);
 
-$filename = "onere-".time().".docx";
-#$word->setReadDataOnly(true);
-$word->save($filename,"Word2007");
-//chmod($filename,0444);
-header("Content-Disposition: attachment; filename='$filename'");
-readfile($filename); // or echo file_get_contents($filename);
-unlink($filename);  // remove temp file
+    // Llenado de la tabla
+    $pdf->Cell(30, 8, $product->id_producto, 1, 0, 'C');
+    $pdf->Cell(30, 8, $operation->cantidad, 1, 0, 'C');
+    $pdf->Cell(60, 8, $product->nombre_producto, 1, 0, 'L');
+    $pdf->Cell(30, 8, "Bs " . number_format($product->precio_compra, 2, ".", ","), 1, 0, 'R');
+    $pdf->Cell(40, 8, "Bs " . number_format($operation->cantidad * $product->precio_compra, 2, ".", ","), 1, 1, 'R');
+    $total += $operation->cantidad * $product->precio_compra;
+}
 
+// Total de la compra
+$pdf->Ln(5);
+$pdf->SetFont('helvetica', 'B', 12);
+$pdf->Cell(150, 8, 'Total:', 1, 0, 'R');
+$pdf->Cell(40, 8, "Bs " . number_format($total, 2, ".", ","), 1, 1, 'R');
 
-
+// Guardar el documento y enviarlo al navegador para su descarga
+$filename = "reabastecimiento-" . time() . ".pdf";
+$pdf->Output($filename, 'D');
 ?>

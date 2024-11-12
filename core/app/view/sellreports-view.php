@@ -7,7 +7,7 @@ $clients = PersonData::getClients();
 		<div class="row">
 			<div class="col-md-12">
 				<a href="report/reporte-ventas-word.php?client_id=<?php echo $_GET["client_id"] ?? ''; ?>&sd=<?php echo $_GET["sd"] ?? ''; ?>&ed=<?php echo $_GET["ed"] ?? ''; ?>" class="btn btn-primary">
-					<i class="fa fa-download"></i> Descargar en Word
+					<i class="fa fa-download"></i> Descargar en Pdf
 				</a>
 			</div>
 		</div>

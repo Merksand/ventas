@@ -1,4 +1,5 @@
 <?php
+// Habilitar modo de depuración si está activo
 $debug = true;
 if ($debug) {
     ini_set('display_errors', 1);
@@ -6,44 +7,60 @@ if ($debug) {
     error_reporting(E_ALL);
 }
 
+// Incluir archivos necesarios
 include "../core/autoload.php";
 include "../core/app/model/PersonData.php";
 
-require_once '../phpWord2/vendor/autoload.php';
-use PhpOffice\PhpWord\PhpWord;
+// Cargar la biblioteca TCPDF
+require_once '../tcpdf/vendor/autoload.php';
+use TCPDF;
 
-$word = new PhpWord();
+// Crear una nueva instancia de TCPDF
+$pdf = new TCPDF();
+$pdf->SetCreator(PDF_CREATOR);
+$pdf->SetAuthor('Tu Sistema');
+$pdf->SetTitle('Lista de Clientes');
+$pdf->SetSubject('Reporte de Clientes');
+$pdf->SetKeywords('Clientes, Reporte, PDF');
+
+// Configuración de la página
+$pdf->setPrintHeader(false);
+$pdf->setPrintFooter(false);
+$pdf->AddPage();
+
+// Título del reporte
+$pdf->SetFont('helvetica', 'B', 16);
+$pdf->Cell(0, 10, 'Lista de Clientes', 0, 1, 'C');
+$pdf->SetFont('helvetica', '', 12);
+$pdf->Cell(0, 10, 'Fecha: ' . date("d/m/Y"), 0, 1, 'C');
+$pdf->Ln(5); // Espacio adicional
+
+// Configuración de la tabla: Encabezados
+$pdf->SetFont('helvetica', 'B', 10);
+$pdf->SetFillColor(221, 221, 221); // Fondo gris claro para encabezados
+$pdf->Cell(50, 8, 'Nombre Completo', 1, 0, 'C', 1);
+$pdf->Cell(50, 8, 'Dirección', 1, 0, 'C', 1);
+$pdf->Cell(50, 8, 'Email', 1, 0, 'C', 1);
+$pdf->Cell(21, 8, 'Teléfono', 1, 0, 'C', 1);
+$pdf->Cell(20, 8, 'C.I.', 1, 1, 'C', 1);
+
+// Fuente para el contenido de la tabla
+$pdf->SetFont('helvetica', '', 9); // Reducido para que todo el contenido quepa
+
+// Obtener clientes de la base de datos
 $clients = PersonData::getClients();
 
-$section1 = $word->addSection();
-$section1->addText("Lista de Clientes", array("size" => 22, "bold" => true, "align" => "center"));
-$section1->addText("Fecha: " . date("d/m/Y"), array("size" => 12), "center");
-$section1->addTextBreak(1);
-
-$styleTable = array('borderSize' => 6, 'borderColor' => '666666', 'cellMargin' => 80);
-$styleFirstRow = array('bgColor' => 'CCCCCC');
-$word->addTableStyle('clientTable', $styleTable, $styleFirstRow);
-
-$table1 = $section1->addTable('clientTable');
-$table1->addRow();
-$table1->addCell(5000)->addText("Nombre Completo", array("bold" => true));
-$table1->addCell(3000)->addText("Dirección", array("bold" => true));
-$table1->addCell(3000)->addText("Email", array("bold" => true));
-$table1->addCell(2000)->addText("Teléfono", array("bold" => true));
-$table1->addCell(2000)->addText("C.I.", array("bold" => true));
-
+// Rellenar filas de clientes
 foreach ($clients as $client) {
-    $table1->addRow();
-    $table1->addCell(5000)->addText($client->name . " " . $client->lastname. " ". $client->lastname2);
-    $table1->addCell(3000)->addText($client->address);
-    $table1->addCell(3000)->addText($client->email);
-    $table1->addCell(2000)->addText($client->phone);
-    $table1->addCell(2000)->addText($client->CI);
+    $nombreCompleto = $client->name . " " . $client->lastname . " " . $client->lastname2;
+    $pdf->Cell(50, 8, $nombreCompleto, 1, 0, 'L');
+    $pdf->Cell(50, 8, $client->address, 1, 0, 'L');
+    $pdf->Cell(50, 8, $client->email, 1, 0, 'L');
+    $pdf->Cell(21, 8, $client->phone, 1, 0, 'L');
+    $pdf->Cell(20, 8, $client->CI, 1, 1, 'L');
 }
 
-$filename = "clientes-" . time() . ".docx";
-$word->save($filename, "Word2007");
-header("Content-Disposition: attachment; filename=$filename");
-readfile($filename);
-unlink($filename);
+// Guardar el documento y enviarlo al navegador para su descarga
+$filename = "clientes_" . time() . ".pdf";
+$pdf->Output($filename, 'D');
 ?>
