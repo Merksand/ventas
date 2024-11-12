@@ -15,7 +15,7 @@ if (isset($_GET["product_id"])):
 					<i class="fa fa-download"></i> Descargar <span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu" role="menu">
-					<li><a href="report/history-word.php?id=<?php echo $product->id_producto; ?>">Word 2007 (.docx)</a></li>
+					<li><a href="report/history-word.php?id=<?php echo $product->id_producto; ?>">Pdf</a></li>
 
 				</ul>
 			</div>

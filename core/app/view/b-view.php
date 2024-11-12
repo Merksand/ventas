@@ -9,7 +9,7 @@
     <i class="fa fa-download"></i> Descargar <span class="caret"></span>
   </button>
   <ul class="dropdown-menu pull-right" role="menu">
-    <li><a href="report/box-word.php?id=<?php echo $_GET["id"];?>">Word 2007 (.docx)</a></li>
+    <li><a href="report/box-word.php?id=<?php echo $_GET["id"];?>">Pdf</a></li>
   </ul>
 </div>
 </div>
