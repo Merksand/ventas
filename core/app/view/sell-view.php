@@ -128,7 +128,7 @@
             <div class="form-group">
                 <label for="money" class="col-lg-2 control-label">Efectivo</label>
                 <div class="col-lg-10">
-                    <input type="text" name="money" class="form-control" id="money" placeholder="Efectivo">
+                    <input type="text" name="money" class="form-control" id="money" placeholder="Efectivo" required>
                 </div>
             </div>
             <input type="hidden" name="total" value="<?php echo $total; ?>">
