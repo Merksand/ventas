@@ -33,7 +33,7 @@
                             <form method="post" action="index.php?view=addtocart">
                                 <input type="hidden" name="product_id" value="<?php echo $product->id_producto; ?>">
                                 <div class="input-group">
-                                    <input type="number" class="form-control" required name="q" placeholder="Cantidad ...">
+                                    <input type="number" class="form-control" required name="q" placeholder="Cantidad ..." min="1">
                                     <span class="input-group-btn">
                                         <button type="submit" class="btn btn-primary">
                                             <i class="glyphicon glyphicon-plus-sign"></i> Agregar

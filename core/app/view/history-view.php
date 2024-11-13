@@ -87,9 +87,9 @@ if (isset($_GET["product_id"])):
 					</thead>
 					<?php foreach ($operations as $operation): ?>
 						<?php
-						// echo "<pre>";
-						// print_r($operation);
-						// echo "</pre>";
+						echo "<pre>";
+						print_r($operation);
+						echo "</pre>";
 						?>
 						<tr>
 							<td></td>

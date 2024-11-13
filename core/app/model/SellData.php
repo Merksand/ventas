@@ -183,6 +183,12 @@ class SellData
 		Executor::doit($sql);
 	}
 
+	public static function delBuyById($id_venta)
+	{
+		$sql = "DELETE FROM tb_compras WHERE id_compra = $id_venta";
+		Executor::doit($sql);
+	}
+
 
 	public function del()
 	{

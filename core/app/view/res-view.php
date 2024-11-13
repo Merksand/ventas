@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="col-md-12">
-		<h1><i class='glyphicon glyphicon-shopping-cart'></i> Reabastecimientos</h1>
+		<h1><i class='glyphicon glyphicon-shopping-cart'></i> Reabastecimientosz</h1>
 		<div class="clearfix"></div>
 
 

@@ -23,6 +23,8 @@ foreach ($operations as $operation) {
     
     $id_almacen = OperationData::getAlmacenIdByCompraId($operation->id_compra);
 
+    // echo $id_almacen;
+
     
     if ($id_almacen) {
         OperationData::deleteAlmacenById($id_almacen);
@@ -33,7 +35,8 @@ foreach ($operations as $operation) {
 }
 
 
-SellData::delById($_GET["id"]);
+
+SellData::delBuyById($_GET["id"]);
 
 
 Core::redir("./index.php?view=res");
