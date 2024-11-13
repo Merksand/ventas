@@ -6,7 +6,6 @@ include "../core/app/model/CategoryData.php";
 include "../core/app/model/OperationData.php";
 
 require_once '../tcpdf/vendor/autoload.php';
-use TCPDF;
 
 // Obtener el producto usando el ID proporcionado
 $product = ProductData::getById($_GET["id"]);

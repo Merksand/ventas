@@ -2,15 +2,6 @@
 
 if (count($_POST) > 0) {
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Mostrar todos los datos del formulario
-        echo "<pre>"; // Para formatear mejor la salida
-        foreach ($_POST as $key => $value) {
-            echo "$key: $value\n"; // Imprime la clave y el valor
-        }
-        echo "</pre>";
-    }
-
     $product = new ProductData();
 
     // Asignar los valores del formulario a las propiedades del objeto ProductData
@@ -62,5 +53,5 @@ if (count($_POST) > 0) {
 
 
 
-    // print "<script>window.location='index.php?view=products';</script>";
+    print "<script>window.location='index.php?view=products';</script>";
 }

@@ -161,7 +161,7 @@
 				<td><?php echo $cantidad; ?></td>
 				<td><?php echo $product->nombre_producto; ?></td>
 				<td>Bs <?php echo number_format($product->precio_venta, 2, ".", ","); ?></td>
-				<td><b>$ <?php echo number_format($subtotal, 2, ".", ","); ?></b></td>
+				<td><b>Bs <?php echo number_format($subtotal, 2, ".", ","); ?></b></td>
 			</tr>
 		<?php endforeach; ?>
 	</table>

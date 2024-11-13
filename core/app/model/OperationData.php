@@ -25,6 +25,7 @@ class OperationData
 		$this->stock = 0;
 		$this->id_detalle_venta = 0;
 		$this->id = 0;
+		
 	}
 
 	private function updateInventory()
@@ -526,6 +527,8 @@ WHERE tc.id_compra =  $buy_id";
 		Executor::doit($sql);
 	}
 
+	
+
 
 	public static function getAllProductsByBuyId2($buy_id)
 	{
@@ -564,4 +567,16 @@ WHERE tc.id_compra =  $buy_id";
 		$query = Executor::doit($sql);
 		return Model::many($query[0], new OperationData());
 	}
+
+
+	public static function getAlmacenIdByProductoAndTipo($id_producto)
+	{
+		$sql = "SELECT id_almacen FROM tb_almacen 
+            WHERE id_producto = $id_producto AND tipo_operacion = 'salida' 
+            ORDER BY id_almacen DESC LIMIT 1";
+		$query = Executor::doit($sql);
+
+		return Model::many($query[0], new OperationData());
+	}
+
 }

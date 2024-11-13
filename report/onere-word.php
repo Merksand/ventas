@@ -7,7 +7,6 @@ include "../core/app/model/OperationData.php";
 include "../core/app/model/ProductData.php";
 
 require_once '../tcpdf/vendor/autoload.php';
-use TCPDF;
 
 // Crear una instancia de TCPDF
 $pdf = new TCPDF();
