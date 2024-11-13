@@ -67,6 +67,12 @@ class OperationData
 		Executor::doit($sql);
 	}
 
+	public static function delBuyById($id_detalle_compra)
+	{
+		$sql = "DELETE FROM tb_detalle_compra WHERE id_detalle_compra = $id_detalle_compra";
+		Executor::doit($sql);
+	}
+
 	// En la clase OperationData
 	public static function del($id)
 	{
@@ -497,6 +503,30 @@ WHERE tc.id_compra =  $buy_id";
 		$query = Executor::doit($sql);
 		return Model::many($query[0], new OperationData());
 	}
+
+	public static function getAlmacenIdByCompraId($buy_id)
+	{
+		$sql = "SELECT ta.id_almacen
+            FROM tb_detalle_compra tdc
+            INNER JOIN tb_compras tc ON tdc.id_compra = tc.id_compra
+            LEFT JOIN tb_almacen ta ON ta.id_producto = tdc.id_producto  
+            WHERE ta.tipo_operacion = 'entrada' AND tc.id_compra = $buy_id
+            ORDER BY ta.id_almacen DESC LIMIT 1";
+
+		$query = Executor::doit($sql);
+		$result = Model::one($query[0], new OperationData());
+
+		return $result ? $result->id_almacen : null;
+	}
+
+
+	public static function deleteAlmacenById($id_almacen)
+	{
+		$sql = "DELETE FROM tb_almacen WHERE id_almacen = $id_almacen";
+		Executor::doit($sql);
+	}
+
+
 	public static function getAllProductsByBuyId2($buy_id)
 	{
 		$sql = "SELECT 
@@ -518,6 +548,19 @@ WHERE tc.id_compra =  $buy_id";
             WHERE 
                 tc.id_compra = $buy_id";
 
+		$query = Executor::doit($sql);
+		return Model::many($query[0], new OperationData());
+	}
+
+
+
+	public static function getAllProductsByBuyId3($buy_id)
+	{
+		$sql = "SELECT tdc.*, tc.*, ta.id_almacen 
+            FROM tb_detalle_compra tdc
+            INNER JOIN tb_compras tc ON tdc.id_compra = tc.id_compra
+            INNER JOIN tb_almacen ta ON ta.id_compra = tc.id_compra 
+            WHERE tc.id_compra = $buy_id";
 		$query = Executor::doit($sql);
 		return Model::many($query[0], new OperationData());
 	}

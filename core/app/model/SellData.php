@@ -211,6 +211,7 @@ class SellData
 		return Model::one($query[0], new SellData());
 	}
 
+
 	public static function getByIdReabastecimiento($id)
 	{
 		$sql = "SELECT * FROM tb_compras WHERE id_compra = $id";
