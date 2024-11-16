@@ -2,6 +2,8 @@
 // session_start(); // Asegúrate de que la sesión esté activa // Modificado
 
 if (!isset($_SESSION["cart"])) {
+
+
 	// Crear el carrito con el primer producto
 	$product = array("product_id" => $_POST["product_id"], "q" => $_POST["q"]); // Modificado
 	$_SESSION["cart"] = array($product); // Modificado
@@ -15,10 +17,14 @@ if (!isset($_SESSION["cart"])) {
 	$errors = array();
 	foreach ($cart as $c) {
 		$q = OperationData::getQYesF($c["product_id"]);
+
+		echo "<pre>";
+		print_r($q);
+		echo "</pre>";
 		if ($c["q"] <= $q) {
 			$num_succ++;
 		} else {
-			$error = array("product_id" => $c["product_id"], "message" => "No hay suficiente cantidad de producto en inventario.");
+			$error = array("product_id" => $c["product_id"], "message" => "No hay suficiente cantidad de producto en inventario.". $q);
 			$errors[count($errors)] = $error;
 		}
 	}
@@ -47,13 +53,13 @@ if (!isset($_SESSION["cart"])) {
 	$errors = array();
 	if ($_POST["q"] <= $q) {
 	} else {
-		$error = array("product_id" => $_POST["product_id"], "message" => "No hay suficiente cantidad de producto en inventario."); // Modificado
-		$errors[count($errors)] = $error; // Modificado
+		$error = array("product_id" => $_POST["product_id"], "message" => "No hay suficiente cantidad de producto en inventario.");  
+		$errors[count($errors)] = $error; 
 		$can = false;
 	}
 
 	if ($can == false) {
-		$_SESSION["errors"] = $errors; // Modificado
+		$_SESSION["errors"] = $errors; 
 	?>
 		<script>
 			window.location = "index.php?view=sell";
@@ -73,17 +79,17 @@ if (!isset($_SESSION["cart"])) {
 		}
 
 		if ($found == true) {
-			$q1 = $cart[$index]["q"]; // Modificado
-			$q2 = $_POST["q"]; // Modificado
-			$cart[$index]["q"] = $q1 + $q2; // Modificado
-			$_SESSION["cart"] = $cart; // Modificado
+			$q1 = $cart[$index]["q"]; 
+			$q2 = $_POST["q"]; 
+			$cart[$index]["q"] = $q1 + $q2; 
+			$_SESSION["cart"] = $cart; 
 		}
 
 		if ($found == false) {
-			$nc = count($cart); // Modificado
-			$product = array("product_id" => $_POST["product_id"], "q" => $_POST["q"]); // Modificado
-			$cart[$nc] = $product; // Modificado
-			$_SESSION["cart"] = $cart; // Modificado
+			$nc = count($cart); 
+			$product = array("product_id" => $_POST["product_id"], "q" => $_POST["q"]); 
+			$cart[$nc] = $product; 
+			$_SESSION["cart"] = $cart; 
 		}
 	}
 }

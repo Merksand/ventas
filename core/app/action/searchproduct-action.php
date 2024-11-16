@@ -20,11 +20,15 @@
             <?php
             $products_in_cero = 0;
             foreach ($products as $product):
-                $q = OperationData::getQYesF($product->id_producto);
-              
+                // $q = OperationData::getQYesF($product->id_producto);
+
+                // echo "<pre>";
+                // print_r($products);
+                // echo "</pre>";
+
             ?>
-                <?php if ($q > 0): ?>
-                    <tr class="<?php echo ($q <= $product->stock_minimo) ? "danger" : ""; ?>">
+                <?php if ($product->stock > 0): ?>
+                    <tr class="<?php echo ($product->stock <= $product->stock_minimo) ? "danger" : ""; ?>">
                         <td style="width:80px;"><?php echo $product->codigo_producto; ?></td>
                         <td><?php echo $product->nombre_producto; ?></td>
                         <td><b>Bs<?php echo $product->precio_venta; ?></b></td>

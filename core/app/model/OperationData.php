@@ -25,7 +25,6 @@ class OperationData
 		$this->stock = 0;
 		$this->id_detalle_venta = 0;
 		$this->id = 0;
-		
 	}
 
 	private function updateInventory()
@@ -393,6 +392,47 @@ class OperationData
 	}
 
 
+	public static function getAvasQYesF2($product_id)
+	{
+		$q = 0;
+		$operations = self::getAllByOperationProductId($product_id); // Recupera todas las operaciones para el producto
+		$input_type = "entrada";
+		$output_type = "salida";
+
+		foreach ($operations as $operation) {
+			if ($operation->tipo_operacion === $input_type) {
+				$q += $operation->cantidad;  // Suma la cantidad en entradas
+			} elseif ($operation->tipo_operacion === $output_type) {
+				$q -= $operation->cantidad;  // Resta la cantidad en salidas
+			}
+		}
+
+		return $q; // Retorna el stock total disponible
+	}
+
+	public static function getStock($product_id)
+	{
+		// Asegurar que el ID del producto sea un entero
+		$product_id = intval($product_id);
+
+		// Consulta SQL para obtener el stock directamente desde `tb_productos`
+		$sql = "SELECT stock FROM tb_productos WHERE id_producto = $product_id";
+
+		// Ejecutar la consulta con `Executor::doit`
+		$query = Executor::doit($sql);
+
+		// Verificar si la consulta fue exitosa
+		if ($query[0] !== false) {
+			$result = $query[0]->fetch_assoc();
+			return intval($result['stock'] ?? 0); // Retornar el stock o 0 si no existe
+		} else {
+			// En caso de error, registrar un mensaje o retornar 0
+			error_log("Error al obtener el stock del producto ID: $product_id");
+			return 0;
+		}
+	}
+
+
 
 
 	public static function getOutputByProductIdCutId($product_id, $cut_id)
@@ -527,7 +567,7 @@ WHERE tc.id_compra =  $buy_id";
 		Executor::doit($sql);
 	}
 
-	
+
 
 
 	public static function getAllProductsByBuyId2($buy_id)
@@ -578,5 +618,4 @@ WHERE tc.id_compra =  $buy_id";
 
 		return Model::many($query[0], new OperationData());
 	}
-
 }
