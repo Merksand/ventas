@@ -27,10 +27,10 @@ if (isset($_SESSION["cart"]) && count($_SESSION["cart"]) > 0) {
         }
 
         // 3. Si hay errores, redirige de regreso a la vista de ventas
-        if (!$process) {
-            $_SESSION["errors"] = $errors;
-            exit;
-        }
+        // if (!$process) {
+        //     $_SESSION["errors"] = $errors;
+        //     exit;
+        // }
 
         $con = new Database();
         $con = $con->connect();
@@ -79,7 +79,8 @@ if (isset($_SESSION["cart"]) && count($_SESSION["cart"]) > 0) {
         // 6. Limpia el carrito de la sesión y redirige a la página de confirmación
         unset($_SESSION["cart"]);
         setcookie("selled", "selled", time() + 3600, "/");
-        echo "<script>window.location = 'index.php?view=onesell&id=$idVenta';</script>";
+        // echo "<script>window.location = 'index.php?view=onesell&id=$idVenta';</script>";
+        echo "ladkfjasdlkfjasdfjasdf";
     } else {
         echo "<script>alert('El carrito está vacío o faltan datos.'); window.location = 'index.php?view=sell';</script>";
     }

@@ -7,7 +7,7 @@ class Database
 	function __construct()
 	{
 		$this->user = "root";
-		$this->pass = "";
+		$this->pass = "Miguelangelomy1";
 		$this->host = "localhost";
 		// $this->ddbb = "inventiolite2";
 		$this->ddbb = "db_sanabria";
