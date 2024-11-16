@@ -1,24 +1,20 @@
-<?php
-$products = ProductData::getAll();
-
-// echo "<pre>";
-// print_r($products[0]);
-// echo "</pre>";
-?>
 <section class="content">
 	<div class="row">
 		<div class="col-md-12">
+			<!-- Formulario para descargar el reporte en PDF -->
 			<form method="GET" action="report/inventaryTime-word.php">
 				<input type="hidden" name="product_id" value="<?php echo isset($_GET['product_id']) ? $_GET['product_id'] : ''; ?>">
 				<input type="hidden" name="sd" value="<?php echo isset($_GET['sd']) ? $_GET['sd'] : ''; ?>">
 				<input type="hidden" name="ed" value="<?php echo isset($_GET['ed']) ? $_GET['ed'] : ''; ?>">
-				<button type="submit" class="btn btn-primary pull-right">
+				<button type="submit" class="btn btn-primary pull-right" 
+				        <?php echo (isset($_GET['sd']) && isset($_GET['ed']) && $_GET['sd'] != "" && $_GET['ed'] != "") ? '' : 'disabled'; ?>>
 					<i class="fa fa-download"></i> Descargar Reporte en Pdf
 				</button>
 			</form>
+
 			<h1>Reportes</h1>
 
-
+			<!-- Formulario para procesar el rango de fechas -->
 			<form method="GET">
 				<input type="hidden" name="view" value="reports">
 				<div class="row">
@@ -26,7 +22,10 @@ $products = ProductData::getAll();
 						<select name="product_id" class="form-control">
 							<option value="">-- TODOS --</option>
 							<?php foreach ($products as $p): ?>
-								<option value="<?php echo $p->id_producto; ?>" <?php echo (isset($_GET["product_id"]) && $_GET["product_id"] == $p->id_producto) ? "selected" : ""; ?>><?php echo $p->nombre_producto; ?></option>
+								<option value="<?php echo $p->id_producto; ?>" 
+								        <?php echo (isset($_GET["product_id"]) && $_GET["product_id"] == $p->id_producto) ? "selected" : ""; ?>>
+									<?php echo $p->nombre_producto; ?>
+								</option>
 							<?php endforeach; ?>
 						</select>
 					</div>
@@ -45,22 +44,15 @@ $products = ProductData::getAll();
 	</div>
 	<br>
 
+	<!-- Mostrar operaciones si existen -->
 	<div class="row">
 		<div class="col-md-12">
-			<?php
-			if (isset($_GET["sd"]) && isset($_GET["ed"])) {
-				// echo $_GET["sd"] . "<br>";
-				// echo $_GET["ed"] . "<br>";
-			}
-			?>
-
 			<?php if (isset($_GET["sd"]) && isset($_GET["ed"])): ?>
 				<?php if ($_GET["sd"] != "" && $_GET["ed"] != ""): ?>
 					<?php
 					$operations = array();
 
 					if ($_GET["product_id"] == "") {
-						// $operations = OperationData::getAllByDateOfficial($_GET["sd"], $_GET["ed"]);
 						$operations = OperationData::getProductsByDateAndOperation($_GET["sd"], $_GET["ed"]);
 					} else {
 						$operations = OperationData::getAllByDateOfficialBP($_GET["product_id"], $_GET["sd"], $_GET["ed"]);
@@ -76,14 +68,6 @@ $products = ProductData::getAll();
 								<th>Fecha</th>
 							</thead>
 							<?php foreach ($operations as $operation): ?>
-
-								<?php
-								// echo "<pre>";
-								// print_r($operation);
-								// echo "</pre>";
-								?>
-
-
 								<tr>
 									<td><?php echo $operation->nombre_producto; ?></td>
 									<td><?php echo $operation->stock_actual; ?></td>
@@ -92,21 +76,13 @@ $products = ProductData::getAll();
 								</tr>
 							<?php endforeach; ?>
 						</table>
-
 					<?php else: ?>
-						<script>
-							$("#wellcome").hide();
-						</script>
 						<div class="jumbotron">
 							<h2>No hay operaciones</h2>
 							<p>El rango de fechas seleccionado no proporcionó ningún resultado de operaciones.</p>
 						</div>
-
 					<?php endif; ?>
 				<?php else: ?>
-					<script>
-						$("#wellcome").hide();
-					</script>
 					<div class="jumbotron">
 						<h2>Fecha Incorrecta</h2>
 						<p>Puede ser que no seleccionó un rango de fechas, o el rango seleccionado es incorrecto.</p>
@@ -115,6 +91,5 @@ $products = ProductData::getAll();
 			<?php endif; ?>
 		</div>
 	</div>
-
 	<br><br><br><br>
 </section>

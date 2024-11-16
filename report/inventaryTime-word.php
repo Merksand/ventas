@@ -6,6 +6,7 @@ include "../core/app/model/OperationData.php";
 require_once '../tcpdf/vendor/autoload.php';
 
 // Obtener parámetros de fecha y producto
+
 $startDate = isset($_GET['sd']) ? $_GET['sd'] : '';
 $endDate = isset($_GET['ed']) ? $_GET['ed'] : '';
 $product_id = isset($_GET['product_id']) ? $_GET['product_id'] : '';
