@@ -131,6 +131,7 @@
                 </ul>
               </li>
 
+              <?php if ($_SESSION["rol_id"] == 1) { ?>
               <li class="treeview">
                 <a href="#"><i class='fa fa-area-chart'></i> <span>Inventario</span> <i class="fa fa-angle-left pull-right"></i></a>
                 <ul class="treeview-menu">
@@ -139,7 +140,6 @@
                   <li><a href="./?view=res">Abastecimientos</a></li>
                 </ul>
               </li>
-              <?php if ($_SESSION["rol_id"] == 1) { ?>
               <li class="treeview">
                 <a href="#"><i class='fa fa-file-text-o'></i> <span>Reportes</span> <i class="fa fa-angle-left pull-right"></i></a>
                 <ul class="treeview-menu">
