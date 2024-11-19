@@ -13,7 +13,7 @@ class ProductData
         $this->precio_venta = 0;
         $this->stock = 0;
         $this->stock_minimo = 0;
-        $this->imagen = "";
+        $this->imagen = null;
 
         $this->id_categoria = null;
         $this->is_active = 1;
@@ -96,10 +96,10 @@ class ProductData
     }
 
     public static function updateStockInventary($product_id, $new_stock)
-{
-    $sql = "UPDATE tb_productos SET stock = $new_stock WHERE id_producto = $product_id";
-    Executor::doit($sql);
-}
+    {
+        $sql = "UPDATE tb_productos SET stock = $new_stock WHERE id_producto = $product_id";
+        Executor::doit($sql);
+    }
 
     // En la clase ProductData
     public static function updateStockRevert($product_id, $new_stock)
@@ -145,6 +145,14 @@ class ProductData
         Executor::doit($sql);
     }
 
+    public function update_image()
+    {
+        $sql = "UPDATE " . self::$tablename . " SET 
+                imagen = \"$this->imagen\"
+            WHERE id_producto = $this->id_producto";
+
+        Executor::doit($sql);
+    }
 
 
     // Eliminar un producto

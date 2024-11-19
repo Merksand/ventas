@@ -85,7 +85,7 @@
                   <!-- Menu Footer-->
                   <li class="user-footer">
                     <div class="pull-right">
-                      <?php echo UserData::getById($_SESSION["user_id"])->persona_email?>
+                      <?php echo UserData::getById($_SESSION["user_id"])->persona_email ?>
                       <a href="./logout.php" class="btn btn-default btn-flat">Salir</a>
                     </div>
                   </li>
@@ -139,6 +139,7 @@
                   <li><a href="./?view=res">Abastecimientos</a></li>
                 </ul>
               </li>
+              <?php if ($_SESSION["rol_id"] == 1) { ?>
               <li class="treeview">
                 <a href="#"><i class='fa fa-file-text-o'></i> <span>Reportes</span> <i class="fa fa-angle-left pull-right"></i></a>
                 <ul class="treeview-menu">
@@ -149,15 +150,17 @@
                 </ul>
               </li>
 
-
               <li class="treeview">
                 <a href="#"><i class='fa fa-cog'></i> <span>Administracion</span> <i class="fa fa-angle-left pull-right"></i></a>
                 <ul class="treeview-menu">
-                  <li><a href="./?view=users">Usuarios</a></li> 
-                  <li><a href="./?view=addrol">Rol</a></li> 
+                  <li><a href="./?view=users">Usuarios</a></li>
+                  <li><a href="./?view=addrol">Rol</a></li>
                   <!-- <li><a href="./?view=settings">Configuracion</a></li> -->
                 </ul>
               </li>
+              <?php }; ?>
+              
+            
             <?php endif; ?>
 
           </ul><!-- /.sidebar-menu -->

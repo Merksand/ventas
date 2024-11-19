@@ -12,16 +12,22 @@
 				</button>
 			</form>
 
-			<h1>Reportes</h1>
+			<h1>Reportesz</h1>
 
 			<!-- Formulario para procesar el rango de fechas -->
+
+			<?php 
+			$productos = ProductData::getAll();
+			?>
 			<form method="GET">
 				<input type="hidden" name="view" value="reports">
 				<div class="row">
 					<div class="col-md-3">
 						<select name="product_id" class="form-control">
 							<option value="">-- TODOS --</option>
-							<?php foreach ($products as $p): ?>
+							<?php foreach ($productos as $p): ?>
+
+								
 								<option value="<?php echo $p->id_producto; ?>" 
 								        <?php echo (isset($_GET["product_id"]) && $_GET["product_id"] == $p->id_producto) ? "selected" : ""; ?>>
 									<?php echo $p->nombre_producto; ?>

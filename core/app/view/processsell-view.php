@@ -79,8 +79,9 @@ if (isset($_SESSION["cart"]) && count($_SESSION["cart"]) > 0) {
         // 6. Limpia el carrito de la sesión y redirige a la página de confirmación
         unset($_SESSION["cart"]);
         setcookie("selled", "selled", time() + 3600, "/");
-        // echo "<script>window.location = 'index.php?view=onesell&id=$idVenta';</script>";
-        echo "ladkfjasdlkfjasdfjasdf";
+        echo "<script>window.location = 'index.php?view=onesell&id=$idVenta';</script>";
+        // echo "ladkfjasdlkfjasdfjasdf";s
+        
     } else {
         echo "<script>alert('El carrito está vacío o faltan datos.'); window.location = 'index.php?view=sell';</script>";
     }

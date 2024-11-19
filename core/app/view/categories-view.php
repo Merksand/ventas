@@ -2,7 +2,7 @@
     <div class="col-md-12">
         <div class="btn-group pull-right">
             <a href="index.php?view=newcategory" class="btn btn-default"><i class='fa fa-th-list'></i> Nueva Categoría</a>
-            
+
             <!-- Botón para filtrar categorías activas e inactivas -->
             <div class="btn-group">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -16,21 +16,20 @@
         </div>
         <h1>Categorías</h1>
         <br>
-        
+
         <?php
         // Obtener el estado de visualización de la categoría (activa o inactiva)
         $status = isset($_GET["status"]) ? $_GET["status"] : 'active';
 
         // Consultar categorías basándose en el filtro de estado
         $categories = ($status === 'inactive') ? CategoryData::getInactiveCategories() : CategoryData::getActiveCategories();
-        
+
         // echo "<pre>";
         // print_r($categories);
         // echo "</pre>";
 
         if (count($categories) > 0) {
-            ?>
-
+        ?>
             <table class="table table-bordered table-hover">
                 <thead>
                     <th>Nombre</th>

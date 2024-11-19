@@ -23,6 +23,7 @@ if (!isset($_SESSION["username_id"])) {
     $query = $con->query($sql);
     $found = false;
     $userid = null;
+    $rolid = null;
 
     // echo $query;
 
@@ -30,6 +31,7 @@ if (!isset($_SESSION["username_id"])) {
         $found = true;
         while ($row = $query->fetch_assoc()) {
             $userid = $row['id_persona'];
+            $rolid = $row['id_rol'];
         }
     } else {
         $found = false;
@@ -38,6 +40,7 @@ if (!isset($_SESSION["username_id"])) {
     // Si se encontró el usuario, iniciar sesión
     if ($found == true) {
         $_SESSION['user_id'] = $userid;
+        $_SESSION['rol_id'] = $rolid;
         // print "Cargando ... $user";
         print "<script>window.location='index.php?view=home';</script>";
     } else {
@@ -45,7 +48,7 @@ if (!isset($_SESSION["username_id"])) {
 
 
         // Si no se encontró el usuario, redirigir al login
-        print "<script>window.location='index.php?view=login';</script>";
+        // print "<script>window.location='index.php?view=login';</script>";
     }
 } else {
     echo "ya existe una sesión iniciada";

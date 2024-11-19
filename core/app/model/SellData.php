@@ -294,9 +294,8 @@ class SellData
 
 	public static function getAllByDateOp($start, $end)
 	{
-		$sql = "SELECT v.*, c.*, v.fecha_venta
+		$sql = "SELECT *  
             FROM tb_ventas v
-            JOIN tb_clientes c ON v.id_cliente = c.id_cliente
             WHERE date(v.fecha_venta) >= \"$start\" 
               AND date(v.fecha_venta) <= \"$end\" 
             ORDER BY v.fecha_venta DESC";

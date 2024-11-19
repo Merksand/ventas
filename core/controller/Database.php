@@ -9,7 +9,7 @@ class Database
 		$this->user = "root";
 		$this->pass = "Miguelangelomy1";
 		$this->host = "localhost";
-		// $this->ddbb = "inventiolite2";
+		// $this->ddbb = "inventiolite";
 		$this->ddbb = "db_sanabria";
 	}
 

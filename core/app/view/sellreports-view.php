@@ -1,5 +1,10 @@
 <?php
 $clients = PersonData::getClients();
+
+// echo "<pre>";
+// print_r($_GET);
+// echo "</pre>";
+
 ?>
 
 <section class="content">
@@ -25,7 +30,7 @@ $clients = PersonData::getClients();
 							<?php foreach ($clients as $p): ?>
 								<?php $idCliente = SellData::getPersonClientById($p->id); ?>
 								<option value="<?php echo $idCliente->id_cliente; ?>" <?php echo (isset($_GET["client_id"]) && $_GET["client_id"] == $idCliente->id_cliente) ? "selected" : ""; ?>>
-									<?php echo $p->name. " " . $p->lastname; ?>
+									<?php echo $p->name . " " . $p->lastname; ?>
 								</option>
 							<?php endforeach; ?>
 						</select>

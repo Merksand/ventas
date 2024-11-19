@@ -30,6 +30,6 @@ if (count($_POST) > 0) {
 	}
 
 	setcookie("prdupd", "true");
-	// echo "<script>window.location='index.php?view=editproduct&id=" . $_POST["product_id"] . "';</script>";
+	// echo "<script;>window.location='index.php?view=editproduct&id=" . $_POST["product_id"] . "';</script;
 	echo "<script>window.location='index.php?view=products';</script>";
 }
